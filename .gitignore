@@ -130,3 +130,10 @@ dmypy.json
 
 # Visual Studio stuff (added manually)
 .vs
+
+# Token
+BotToken.txt
+
+# Music folder and files
+music
+*.mp3

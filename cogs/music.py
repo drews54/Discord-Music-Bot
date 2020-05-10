@@ -14,6 +14,7 @@ class Music(commands.Cog):
     
     def __init__(self, client):
         self.client = client
+        if not os.path.exists('./music'): os.mkdir('./music')
         #shutil.rmtree('./music', True)
     
     @commands.command()

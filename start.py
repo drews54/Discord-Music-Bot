@@ -3,7 +3,9 @@ import os
 from discord.ext import commands
 
 client = commands.Bot(command_prefix = 'bro ')
-token = 'NzA4MzcwMzk1NDgwMzI2MTc0.XrWXvg.JA8qAhSscRuR_6Ujju2b72qPGhs'
+token = ''
+with open('BotToken.txt') as tokenFile:
+    token = tokenFile.readline()
 
 @client.event
 async def on_ready():
@@ -26,8 +28,6 @@ async def reload(ctx, extension):
     client.load_extension(f'cogs.{extension}')
     print(extension + ' loaded')
     await ctx.message.channel.send('```' + extension + ' module has been reloaded```')
-
-if not os.path.exists('./music'): os.mkdir('./music')
 
 for filename in os.listdir('./cogs'):
     if filename.endswith('.py'):
