@@ -130,6 +130,7 @@ dmypy.json
 
 # Visual Studio stuff (added manually)
 .vs
+.vscode
 
 # Token
 BotToken.txt
