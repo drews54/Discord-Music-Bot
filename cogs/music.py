@@ -92,6 +92,7 @@ class Music(commands.Cog):
             if filename.endswith('.mp3'):
                 shutil.move(filename, './music')
                 await ctx.message.channel.send('```Song downloaded:\n' + filename + '```')
+        await self.list(ctx)
 
 def setup(client):
     client.add_cog(Music(client))
