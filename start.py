@@ -29,6 +29,10 @@ async def reload(ctx, extension):
     print(extension + ' loaded')
     await ctx.message.channel.send('```' + extension + ' module has been reloaded```')
 
+@client.command()
+async def about(ctx):
+    await ctx.message.channel.send('```Github source code link: https://github.com/duha54rus/Discord-Music-Bot```')
+
 for filename in os.listdir('./cogs'):
     if filename.endswith('.py'):
         client.load_extension(f'cogs.{filename[:-3]}')
