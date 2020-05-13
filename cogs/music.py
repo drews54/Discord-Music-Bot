@@ -9,13 +9,11 @@ import asyncio
 import json
 
 class Music(commands.Cog):
-    _length = {}
-    #_lengthfile = open('./music/lengths', 'r+')
+    # _length = {}
     
     def __init__(self, client):
         self.client = client
         if not os.path.exists('./music'): os.mkdir('./music')
-        #shutil.rmtree('./music', True)
     
     @commands.command()
     async def list(self, ctx):
@@ -47,11 +45,10 @@ class Music(commands.Cog):
         song = './music/' + name + '.mp3'
         await ctx.message.channel.send('```Playing: ' + name + '```')
         ctx.message.guild.voice_client.play(discord.FFmpegPCMAudio(song))
-        #await asyncio.sleep(self._length[name])
-        length = 0
-        with open('./music/lengths', 'r') as lengthsfile:
-            length = json.load(lengthsfile)[name]
-        await asyncio.sleep(length)
+        # length = 0
+        # with open('./music/lengths', 'r') as lengthsfile:
+        #     length = json.load(lengthsfile)[name]
+        # await asyncio.sleep(length)
         if ctx.voice_client.is_connected():
             while ctx.voice_client.is_playing():
                 await asyncio.sleep(1)
@@ -69,21 +66,24 @@ class Music(commands.Cog):
         }
     
         with youtube_dl.YoutubeDL(ydl_opts) as ydl:
-            file = ydl.extract_info(url)
-            try:
-                if file['_type'] == 'playlist':
-                    for data in file['entries']:
-                        self._length[
-                            str(data['title']).replace(':', ' -') +
-                            '-' + data['id']] = data['duration']
-            except:
-                self._length[
-                     str(file['title']).replace(':', ' -') +
-                     '-' + file['id']] = file['duration']
-            with open('./music/lengths', 'w') as lengthsfile:
-                json.dump(self._length, lengthsfile)
+            ydl.download(url)
+            #region length file creation (remove ydl.download(url) before uncommenting)
+            # file = ydl.extract_info(url)
+            # try:
+            #     if file['_type'] == 'playlist':
+            #         for data in file['entries']:
+            #             self._length[
+            #                 str(data['title']).replace(':', ' -') +
+            #                 '-' + data['id']] = data['duration']
+            # except:
+            #     self._length[
+            #          str(file['title']).replace(':', ' -') +
+            #          '-' + file['id']] = file['duration']
+            # with open('./music/lengths', 'w') as lengthsfile:
+            #     json.dump(self._length, lengthsfile)
+            #endregion
             #region DEBUG
-            #with open('./music/lengths', 'r') as testfile:
+            # with open('./music/lengths', 'r') as testfile:
             #    print(self._length)
             #    print(json.load(testfile))
             #endregion
