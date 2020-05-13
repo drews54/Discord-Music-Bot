@@ -18,16 +18,16 @@ class Music(commands.Cog):
         #shutil.rmtree('./music', True)
     
     @commands.command()
-    async def list(self,ctx):
+    async def list(self, ctx):
         songs = [ ]
-        i = 1
+        i = 0
         string = ''
         for filename in os.listdir('./music'):
             if filename.endswith('.mp3'):
                 songs.append(filename[:-4])
         for name in songs:
-            string = string + str(i) + ' - ' + str(name) + '\n'
-            i = i + 1
+            i += 1
+            string += str(i) + ' - ' + str(name) + '\n'
         await ctx.message.channel.send('```' + string + '```')
     
     @commands.command()
@@ -40,7 +40,6 @@ class Music(commands.Cog):
         if not status:
             await ctx.message.author.voice.channel.connect()
         songs = [ ]
-        i = 1
         for filename in os.listdir('./music'):
             if filename.endswith('.mp3'):
                 songs.append(filename[:-4])
@@ -96,4 +95,3 @@ class Music(commands.Cog):
 
 def setup(client):
     client.add_cog(Music(client))
-
