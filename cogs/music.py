@@ -1,12 +1,11 @@
 import discord
 import os
 import youtube_dl
-import shutil
+from shutil import move
 from discord.utils import get
 from discord.ext import commands
-#from discord import opus
-import asyncio
-import json
+from asyncio import sleep
+# import json
 
 class Music(commands.Cog):
     # _length = {}
@@ -51,7 +50,7 @@ class Music(commands.Cog):
         # await asyncio.sleep(length)
         if ctx.voice_client.is_connected():
             while ctx.voice_client.is_playing():
-                await asyncio.sleep(1)
+                await sleep(1)
             await ctx.message.guild.voice_client.disconnect()
     
     @commands.command()
@@ -89,7 +88,7 @@ class Music(commands.Cog):
             #endregion
         for filename in os.listdir('./'):
             if filename.endswith('.mp3'):
-                shutil.move(filename, './music')
+                move(filename, './music')
                 await ctx.message.channel.send('```Song downloaded:\n' + filename + '```')
         await self.list(ctx)
 
