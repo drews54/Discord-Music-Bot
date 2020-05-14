@@ -25,7 +25,6 @@ class Music(commands.Cog):
     @commands.command()
     async def list(self, ctx):
         if not self._songs:
-            #await ctx.message.channel.send('```No songs! Use "bro download" to download songs```')
             await self.boxed_print(ctx, 'No songs! Use "bro download" to download songs')
             return
         i = 0
@@ -33,7 +32,6 @@ class Music(commands.Cog):
         for name in self._songs:
             i += 1
             string += str(i) + '. ' + str(name[:-5]) + '\n'
-        #await ctx.message.channel.send('```' + string + '```')
         await self.boxed_print(ctx, string)
 
     @commands.command()
@@ -48,7 +46,6 @@ class Music(commands.Cog):
             if not status and ctx.message.author.voice != None:
                 await ctx.message.author.voice.channel.connect()
         except:
-            #ctx.message.channel.send('```Connect to a voice channel before playing```')
             await self.boxed_print(ctx, 'Connect to a voice channel before playing')
         name = self._songs[int(number) - 1]
         song = './music/' + self._songs[int(number) - 1]
@@ -76,7 +73,6 @@ class Music(commands.Cog):
 
         with youtube_dl.YoutubeDL(ydl_opts) as ydl:
             info = ydl.extract_info(url)
-            #await ctx.message.channel.send('```Song downloaded: \n' + info['title'] + '```')
             await self.boxed_print(ctx, 'Song downloaded: \n' + info['title'])
         self._tracklist()
         await self.list(ctx)
@@ -87,7 +83,6 @@ class Music(commands.Cog):
         if not status:
             for filename in os.scandir('./music'):
                 os.remove(filename.path)
-        #await ctx.message.channel.send('```Music folder is now empty```')
         await self.boxed_print(ctx, 'Music folder is now empty')
         self._tracklist()
 
