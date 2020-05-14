@@ -46,9 +46,8 @@ class Music(commands.Cog):
                 await ctx.message.author.voice.channel.connect()
         except:
             ctx.message.channel.send('```Connect to a voice channel before playing```')
-        name = self._songs[int(number) - 1]
         song = './music/' + self._songs[int(number) - 1]
-        await ctx.message.channel.send('```Playing: ' + name[:-5] + '```')
+        await ctx.message.channel.send('```Playing: ' + self._songs[int(number) - 1][:-5] + '```')
         def after_play(error):
             coroutine = ctx.voice_client.disconnect()
             future = run_coroutine_threadsafe(coroutine, self.client.loop)
