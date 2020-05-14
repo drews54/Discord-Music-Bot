@@ -15,11 +15,9 @@ class Music(commands.Cog):
         self._tracklist()
 
     def _tracklist(self):
-        songlist = [ ]
         for filename in os.listdir('./music'):
             if filename.endswith('.opus'):
-                songlist.append(filename)
-        self._songs = songlist
+                self._songs.append(filename)
 
     @commands.command()
     async def list(self, ctx):
