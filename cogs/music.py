@@ -91,6 +91,11 @@ class Music(commands.Cog):
         #         move(filename, './music')
             await ctx.message.channel.send('```Song downloaded```')
         await self.list(ctx)
+    
+    @commands.command()
+    async def flush(self, ctx):
+        for filename in os.scandir('./music'):
+            os.remove(filename.path)
 
 def setup(client):
     client.add_cog(Music(client))
