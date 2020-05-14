@@ -10,18 +10,24 @@ class Music(commands.Cog):
     def __init__(self, client):
         self.client = client
         if not os.path.exists('./music'): os.mkdir('./music')
-
-    @commands.command()
-    async def list(self, ctx):
+          
+    def tracklist(self, ctx):
         songs = [ ]
         i = 0
         string = ''
         for filename in os.listdir('./music'):
             if filename.endswith('.opus'):
-                songs.append(filename[:-5])
+                songs.append(filename)
+        return songs
+
+    @commands.command()
+    async def list(self, ctx):
+        songs = self.tracklist(ctx)
+        i = 0
+        string = ''
         for name in songs:
             i += 1
-            string += str(i) + '. ' + str(name) + '\n'
+            string += str(i) + '. ' + str(name[:-5]) + '\n'
         await ctx.message.channel.send('```' + string + '```')
     
     @commands.command()
@@ -37,13 +43,10 @@ class Music(commands.Cog):
                 await ctx.message.author.voice.channel.connect()
         except:
             ctx.message.channel.send('```Connect to a voice channel before playing```')
-        songs = [ ]
-        for filename in os.listdir('./music'):
-            if filename.endswith('.opus'):
-                songs.append(filename[:-5])
+        songs = self.tracklist(ctx)
         name = songs[int(number) - 1]
-        song = './music/' + name + '.opus'
-        await ctx.message.channel.send('```Playing: ' + name + '```')
+        song = './music/' + songs[int(number) - 1]
+        await ctx.message.channel.send('```Playing: ' + name[:-5] + '```')
         def after_play(error):
             coroutine = ctx.voice_client.disconnect()
             future = run_coroutine_threadsafe(coroutine, self.client.loop)
