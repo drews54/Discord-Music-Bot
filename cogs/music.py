@@ -40,7 +40,7 @@ class Music(commands.Cog):
             await ctx.message.guild.voice_client.disconnect()
 
     @commands.command()
-    async def play(self, ctx, number, loop):
+    async def play(self, ctx, number, loop = ''):
         status = get(self.client.voice_clients, guild=ctx.guild)
         try:
             if not status and ctx.message.author.voice != None:
@@ -52,7 +52,11 @@ class Music(commands.Cog):
         await self.boxed_print(ctx, 'Playing: ' + name[:-5])
         def after_play(error):
             if loop == 'loop':
-                ctx.message.guild.voice_client.play(discord.FFmpegOpusAudio(song), after = after_play)
+                try:
+                    ctx.message.guild.voice_client.play(discord.FFmpegOpusAudio(song), after = after_play)
+                except:
+                    pass
+
             else:
                 coroutine = ctx.voice_client.disconnect()
                 future = run_coroutine_threadsafe(coroutine, self.client.loop)
