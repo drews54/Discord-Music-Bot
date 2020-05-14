@@ -20,8 +20,8 @@ class Music(commands.Cog):
         i = 0
         string = ''
         for filename in os.listdir('./music'):
-            if filename.endswith('.mp3'):
-                songs.append(filename[:-4])
+            if filename.endswith('.opus'):
+                songs.append(filename[:-5])
         for name in songs:
             i += 1
             string += str(i) + ' - ' + str(name) + '\n'
@@ -38,12 +38,12 @@ class Music(commands.Cog):
             await ctx.message.author.voice.channel.connect()
         songs = [ ]
         for filename in os.listdir('./music'):
-            if filename.endswith('.mp3'):
-                songs.append(filename[:-4])
+            if filename.endswith('.opus'):
+                songs.append(filename[:-5])
         name = songs[int(number) - 1]
-        song = './music/' + name + '.mp3'
+        song = './music/' + name + '.opus'
         await ctx.message.channel.send('```Playing: ' + name + '```')
-        ctx.message.guild.voice_client.play(discord.FFmpegPCMAudio(song))
+        ctx.message.guild.voice_client.play(discord.FFmpegOpusAudio(song))
         # length = 0
         # with open('./music/lengths', 'r') as lengthsfile:
         #     length = json.load(lengthsfile)[name]
@@ -56,11 +56,11 @@ class Music(commands.Cog):
     @commands.command()
     async def download(self, ctx, url):
         ydl_opts = {
-            'format': 'bestaudio/best',
+            'format': 'bestaudio/opus',
             'postprocessors': [{
                 'key': 'FFmpegExtractAudio',
-                'preferredcodec': 'mp3',
-                'preferredquality': '192',
+                'preferredcodec': 'opus',
+                'preferredquality': '48',
                 }],
         }
     
@@ -87,7 +87,7 @@ class Music(commands.Cog):
             #    print(json.load(testfile))
             #endregion
         for filename in os.listdir('./'):
-            if filename.endswith('.mp3'):
+            if filename.endswith('.opus'):
                 move(filename, './music')
                 await ctx.message.channel.send('```Song downloaded:\n' + filename + '```')
         await self.list(ctx)
