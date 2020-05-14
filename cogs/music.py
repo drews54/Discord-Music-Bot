@@ -10,19 +10,20 @@ class Music(commands.Cog):
     def __init__(self, client):
         self.client = client
         if not os.path.exists('./music'): os.mkdir('./music')
+        self._tracklist()
           
-    def _tracklist(self, ctx):
-        songs = [ ]
+    def _tracklist(self):
+        songlist = [ ]
         i = 0
         string = ''
         for filename in os.listdir('./music'):
             if filename.endswith('.opus'):
-                songs.append(filename)
-        return songs
+                songlist.append(filename)
+        self.songs = songlist
 
     @commands.command()
     async def list(self, ctx):
-        songs = self._tracklist(ctx)
+        songs = self.songs
         i = 0
         string = ''
         for name in songs:
@@ -43,9 +44,8 @@ class Music(commands.Cog):
                 await ctx.message.author.voice.channel.connect()
         except:
             ctx.message.channel.send('```Connect to a voice channel before playing```')
-        songs = self._tracklist(ctx)
-        name = songs[int(number) - 1]
-        song = './music/' + songs[int(number) - 1]
+        name = self.songs[int(number) - 1]
+        song = './music/' + self.songs[int(number) - 1]
         await ctx.message.channel.send('```Playing: ' + name[:-5] + '```')
         def after_play(error):
             coroutine = ctx.voice_client.disconnect()
@@ -70,6 +70,7 @@ class Music(commands.Cog):
         with youtube_dl.YoutubeDL(ydl_opts) as ydl:
             info = ydl.extract_info(url)
             await ctx.message.channel.send('```Song downloaded: \n' + info['title'] + '```')
+        self._tracklist()
         await self.list(ctx)
     
     @commands.command()
