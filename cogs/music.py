@@ -1,7 +1,6 @@
 import discord
 import os
 import youtube_dl
-from shutil import move
 from discord.utils import get
 from discord.ext import commands
 from asyncio import run_coroutine_threadsafe
