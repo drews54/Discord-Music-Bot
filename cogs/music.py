@@ -4,16 +4,14 @@ import youtube_dl
 from shutil import move
 from discord.utils import get
 from discord.ext import commands
-from asyncio import sleep
-# import json
+from asyncio import run_coroutine_threadsafe
 
 class Music(commands.Cog):
-    # _length = {}
-    
+
     def __init__(self, client):
         self.client = client
         if not os.path.exists('./music'): os.mkdir('./music')
-    
+
     @commands.command()
     async def list(self, ctx):
         songs = [ ]
@@ -29,7 +27,8 @@ class Music(commands.Cog):
     
     @commands.command()
     async def stop(self, ctx):
-        await ctx.message.guild.voice_client.disconnect()
+        if ctx.voice_client.is_connected():
+            await ctx.message.guild.voice_client.disconnect()
     
     @commands.command()
     async def play(self, ctx, number):
@@ -43,15 +42,14 @@ class Music(commands.Cog):
         name = songs[int(number) - 1]
         song = './music/' + name + '.opus'
         await ctx.message.channel.send('```Playing: ' + name + '```')
-        ctx.message.guild.voice_client.play(discord.FFmpegOpusAudio(song))
-        # length = 0
-        # with open('./music/lengths', 'r') as lengthsfile:
-        #     length = json.load(lengthsfile)[name]
-        # await asyncio.sleep(length)
-        if ctx.voice_client.is_connected():
-            while ctx.voice_client.is_playing():
-                await sleep(1)
-            await ctx.message.guild.voice_client.disconnect()
+        def after_play(error):
+            coroutine = ctx.voice_client.disconnect()
+            future = run_coroutine_threadsafe(coroutine, self.client.loop)
+            try:
+                future.result()
+            except:
+                print('Disconnect has failed. Run "stop" manually', error)
+        ctx.message.guild.voice_client.play(discord.FFmpegOpusAudio(song), after = after_play)
     
     @commands.command()
     async def download(self, ctx, url):
@@ -66,36 +64,15 @@ class Music(commands.Cog):
     
         with youtube_dl.YoutubeDL(ydl_opts) as ydl:
             ydl.download([url])
-            #region length file creation (remove ydl.download(url) before uncommenting)
-            # file = ydl.extract_info(url)
-            # try:
-            #     if file['_type'] == 'playlist':
-            #         for data in file['entries']:
-            #             self._length[
-            #                 str(data['title']).replace(':', ' -') +
-            #                 '-' + data['id']] = data['duration']
-            # except:
-            #     self._length[
-            #          str(file['title']).replace(':', ' -') +
-            #          '-' + file['id']] = file['duration']
-            # with open('./music/lengths', 'w') as lengthsfile:
-            #     json.dump(self._length, lengthsfile)
-            #endregion
-            #region DEBUG
-            # with open('./music/lengths', 'r') as testfile:
-            #    print(self._length)
-            #    print(json.load(testfile))
-            #endregion
-        # for filename in os.listdir('./'):
-        #     if filename.endswith('.opus'):
-        #         move(filename, './music')
             await ctx.message.channel.send('```Song downloaded```')
         await self.list(ctx)
     
     @commands.command()
     async def flush(self, ctx):
-        for filename in os.scandir('./music'):
-            os.remove(filename.path)
+        if not ctx.voice_client.is_connected():
+            for filename in os.scandir('./music'):
+                os.remove(filename.path)
+        await ctx.message.channel.send('```Music folder is now empty```')
 
 def setup(client):
     client.add_cog(Music(client))
