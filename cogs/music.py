@@ -82,6 +82,5 @@ class Music(commands.Cog):
         await ctx.message.channel.send('```Music folder is now empty```')
         self._tracklist()
 
-
 def setup(client):
     client.add_cog(Music(client))

@@ -2,10 +2,12 @@ import discord
 import os
 from discord.ext import commands
 
-client = commands.Bot(command_prefix = 'bro ')
-token = ''
-with open('BotToken.txt') as tokenFile:
+with open('BotData.txt', encoding = 'utf-8') as tokenFile:
+    global client
+    global token
+
     token = tokenFile.readline()
+    client = commands.Bot(command_prefix = tokenFile.readline())
 
 @client.event
 async def on_ready():
