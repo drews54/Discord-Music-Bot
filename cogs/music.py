@@ -7,28 +7,35 @@ from asyncio import run_coroutine_threadsafe
 
 class Music(commands.Cog):
 
+    _songs = []
+
     def __init__(self, client):
         self.client = client
         if not os.path.exists('./music'): os.mkdir('./music')
+        self._tracklist()
+
+    def _tracklist(self):
+        for filename in os.listdir('./music'):
+            if filename.endswith('.opus'):
+                self._songs.append(filename)
 
     @commands.command()
     async def list(self, ctx):
-        songs = [ ]
+        if not self._songs:
+            await ctx.channel.message.send('```No songs! Use "bro download" to download songs```')
+            return
         i = 0
         string = ''
-        for filename in os.listdir('./music'):
-            if filename.endswith('.opus'):
-                songs.append(filename[:-5])
-        for name in songs:
+        for name in self._songs:
             i += 1
-            string += str(i) + '. ' + str(name) + '\n'
+            string += str(i) + '. ' + str(name[:-5]) + '\n'
         await ctx.message.channel.send('```' + string + '```')
-    
+
     @commands.command()
     async def stop(self, ctx):
         if ctx.voice_client.is_connected():
             await ctx.message.guild.voice_client.disconnect()
-    
+
     @commands.command()
     async def play(self, ctx, number):
         status = get(self.client.voice_clients, guild=ctx.guild)
@@ -37,13 +44,9 @@ class Music(commands.Cog):
                 await ctx.message.author.voice.channel.connect()
         except:
             ctx.message.channel.send('```Connect to a voice channel before playing```')
-        songs = [ ]
-        for filename in os.listdir('./music'):
-            if filename.endswith('.opus'):
-                songs.append(filename[:-5])
-        name = songs[int(number) - 1]
-        song = './music/' + name + '.opus'
-        await ctx.message.channel.send('```Playing: ' + name + '```')
+        name = self._songs[int(number) - 1]
+        song = './music/' + self._songs[int(number) - 1]
+        await ctx.message.channel.send('```Playing: ' + name[:-5] + '```')
         def after_play(error):
             coroutine = ctx.voice_client.disconnect()
             future = run_coroutine_threadsafe(coroutine, self.client.loop)
@@ -52,7 +55,7 @@ class Music(commands.Cog):
             except:
                 print('Disconnect has failed. Run "stop" manually', error)
         ctx.message.guild.voice_client.play(discord.FFmpegOpusAudio(song), after = after_play)
-    
+
     @commands.command()
     async def download(self, ctx, url):
         ydl_opts = {
@@ -63,12 +66,13 @@ class Music(commands.Cog):
                 'preferredcodec': 'opus',
                 }],
         }
-    
+
         with youtube_dl.YoutubeDL(ydl_opts) as ydl:
             info = ydl.extract_info(url)
             await ctx.message.channel.send('```Song downloaded: \n' + info['title'] + '```')
+        self._tracklist()
         await self.list(ctx)
-    
+
     @commands.command()
     async def flush(self, ctx):
         status = get(self.client.voice_clients, guild=ctx.guild)
@@ -76,6 +80,8 @@ class Music(commands.Cog):
             for filename in os.scandir('./music'):
                 os.remove(filename.path)
         await ctx.message.channel.send('```Music folder is now empty```')
+        self._tracklist()
+
 
 def setup(client):
     client.add_cog(Music(client))
