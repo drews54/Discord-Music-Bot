@@ -23,12 +23,11 @@ class Music(commands.Cog):
 
     @commands.command()
     async def list(self, ctx):
-        songs = self._songs
-        if songs == []:
-            songs.append('No songs! Use "bro download [url]" to download songs11111')
+        if self._songs == []:
+            self._songs.append('No songs! Use "bro download [url]" to download songsPIDOR')
         i = 0
         string = ''
-        for name in songs:
+        for name in self._songs:
             i += 1
             string += str(i) + '. ' + str(name[:-5]) + '\n'
         await ctx.message.channel.send('```' + string + '```')
@@ -46,8 +45,9 @@ class Music(commands.Cog):
                 await ctx.message.author.voice.channel.connect()
         except:
             ctx.message.channel.send('```Connect to a voice channel before playing```')
+        name = self._songs[int(number) - 1]
         song = './music/' + self._songs[int(number) - 1]
-        await ctx.message.channel.send('```Playing: ' + self._songs[int(number) - 1][:-5] + '```')
+        await ctx.message.channel.send('```Playing: ' + name[:-5] + '```')
         def after_play(error):
             coroutine = ctx.voice_client.disconnect()
             future = run_coroutine_threadsafe(coroutine, self.client.loop)
@@ -86,4 +86,3 @@ class Music(commands.Cog):
 
 def setup(client):
     client.add_cog(Music(client))
-
