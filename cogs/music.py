@@ -40,7 +40,7 @@ class Music(commands.Cog):
             await ctx.message.guild.voice_client.disconnect()
 
     @commands.command()
-    async def play(self, ctx, number, loop):
+    async def play(self, ctx, number, loop = ''):
         status = get(self.client.voice_clients, guild=ctx.guild)
         try:
             if not status and ctx.message.author.voice != None:
