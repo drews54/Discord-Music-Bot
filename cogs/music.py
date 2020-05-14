@@ -62,8 +62,8 @@ class Music(commands.Cog):
         }
     
         with youtube_dl.YoutubeDL(ydl_opts) as ydl:
-            ydl.download([url])
-            await ctx.message.channel.send('```Song downloaded```')
+            info = ydl.extract_info(url)
+            await ctx.message.channel.send('```Song downloaded: \n' + info['title'] + '```')
         await self.list(ctx)
     
     @commands.command()
