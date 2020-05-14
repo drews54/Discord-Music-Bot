@@ -6,8 +6,8 @@ from discord.ext import commands
 from asyncio import run_coroutine_threadsafe
 
 class Music(commands.Cog):
-    
-    _songs = [ ]
+
+    _songs = []
 
     def __init__(self, client):
         self.client = client
@@ -23,7 +23,7 @@ class Music(commands.Cog):
 
     @commands.command()
     async def list(self, ctx):
-        songs = self.songs
+        songs = self._songs
         if songs == []:
             songs.append('No songs! Use "bro download [url]" to download songs11111')
         i = 0
@@ -84,5 +84,7 @@ class Music(commands.Cog):
         await ctx.message.channel.send('```Music folder is now empty```')
         self._tracklist()
 
+
 def setup(client):
     client.add_cog(Music(client))
+
