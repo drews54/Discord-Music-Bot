@@ -32,8 +32,11 @@ class Music(commands.Cog):
     @commands.command()
     async def play(self, ctx, number):
         status = get(self.client.voice_clients, guild=ctx.guild)
-        if not status:
-            await ctx.message.author.voice.channel.connect()
+        try:
+            if not status and ctx.message.author.voice != None:
+                await ctx.message.author.voice.channel.connect()
+        except:
+            ctx.message.channel.send('```Connect to a voice channel before playing```')
         songs = [ ]
         for filename in os.listdir('./music'):
             if filename.endswith('.opus'):
@@ -68,7 +71,8 @@ class Music(commands.Cog):
     
     @commands.command()
     async def flush(self, ctx):
-        if not ctx.voice_client.is_connected():
+        status = get(self.client.voice_clients, guild=ctx.guild)
+        if not status:
             for filename in os.scandir('./music'):
                 os.remove(filename.path)
         await ctx.message.channel.send('```Music folder is now empty```')
