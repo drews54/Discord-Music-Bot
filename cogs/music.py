@@ -7,7 +7,7 @@ from asyncio import run_coroutine_threadsafe
 
 class Music(commands.Cog):
     
-    songs = [ ]
+    _songs = [ ]
 
     def __init__(self, client):
         self.client = client
@@ -19,7 +19,7 @@ class Music(commands.Cog):
         for filename in os.listdir('./music'):
             if filename.endswith('.opus'):
                 songlist.append(filename)
-        self.songs = songlist
+        self._songs = songlist
 
     @commands.command()
     async def list(self, ctx):
@@ -46,8 +46,8 @@ class Music(commands.Cog):
                 await ctx.message.author.voice.channel.connect()
         except:
             ctx.message.channel.send('```Connect to a voice channel before playing```')
-        name = self.songs[int(number) - 1]
-        song = './music/' + self.songs[int(number) - 1]
+        name = self._songs[int(number) - 1]
+        song = './music/' + self._songs[int(number) - 1]
         await ctx.message.channel.send('```Playing: ' + name[:-5] + '```')
         def after_play(error):
             coroutine = ctx.voice_client.disconnect()
