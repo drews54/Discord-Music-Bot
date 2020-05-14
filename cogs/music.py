@@ -24,7 +24,7 @@ class Music(commands.Cog):
                 songs.append(filename[:-5])
         for name in songs:
             i += 1
-            string += str(i) + ' - ' + str(name) + '\n'
+            string += str(i) + '. ' + str(name) + '\n'
         await ctx.message.channel.send('```' + string + '```')
     
     @commands.command()
@@ -57,10 +57,10 @@ class Music(commands.Cog):
     async def download(self, ctx, url):
         ydl_opts = {
             'format': 'bestaudio/opus',
+            'outtmpl': '/music/%(title)s.%(ext)s',
             'postprocessors': [{
                 'key': 'FFmpegExtractAudio',
                 'preferredcodec': 'opus',
-                'preferredquality': '48',
                 }],
         }
     
@@ -86,10 +86,10 @@ class Music(commands.Cog):
             #    print(self._length)
             #    print(json.load(testfile))
             #endregion
-        for filename in os.listdir('./'):
-            if filename.endswith('.opus'):
-                move(filename, './music')
-                await ctx.message.channel.send('```Song downloaded:\n' + filename + '```')
+        # for filename in os.listdir('./'):
+        #     if filename.endswith('.opus'):
+        #         move(filename, './music')
+            await ctx.message.channel.send('```Song downloaded```')
         await self.list(ctx)
 
 def setup(client):
