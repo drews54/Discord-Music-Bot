@@ -21,8 +21,9 @@ class Music(commands.Cog):
 
     @commands.command()
     async def list(self, ctx):
-        if self._songs == []:
-            self._songs.append('No songs! Use "bro download [url]" to download songsPIDOR')
+        if not self._songs:
+            await ctx.channel.message.send('```No songs! Use "bro download" to download songs```')
+            return
         i = 0
         string = ''
         for name in self._songs:
