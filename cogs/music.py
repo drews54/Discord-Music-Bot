@@ -11,7 +11,7 @@ class Music(commands.Cog):
         self.client = client
         if not os.path.exists('./music'): os.mkdir('./music')
         self._tracklist()
-          
+
     def _tracklist(self):
         songlist = [ ]
         i = 0
@@ -24,18 +24,20 @@ class Music(commands.Cog):
     @commands.command()
     async def list(self, ctx):
         songs = self.songs
+        if songs == []:
+            songs.append('No songs! Use "bro download [url]" to download songs11111')
         i = 0
         string = ''
         for name in songs:
             i += 1
             string += str(i) + '. ' + str(name[:-5]) + '\n'
         await ctx.message.channel.send('```' + string + '```')
-    
+
     @commands.command()
     async def stop(self, ctx):
         if ctx.voice_client.is_connected():
             await ctx.message.guild.voice_client.disconnect()
-    
+
     @commands.command()
     async def play(self, ctx, number):
         status = get(self.client.voice_clients, guild=ctx.guild)
@@ -55,7 +57,7 @@ class Music(commands.Cog):
             except:
                 print('Disconnect has failed. Run "stop" manually', error)
         ctx.message.guild.voice_client.play(discord.FFmpegOpusAudio(song), after = after_play)
-    
+
     @commands.command()
     async def download(self, ctx, url):
         ydl_opts = {
@@ -66,13 +68,13 @@ class Music(commands.Cog):
                 'preferredcodec': 'opus',
                 }],
         }
-    
+
         with youtube_dl.YoutubeDL(ydl_opts) as ydl:
             info = ydl.extract_info(url)
             await ctx.message.channel.send('```Song downloaded: \n' + info['title'] + '```')
         self._tracklist()
         await self.list(ctx)
-    
+
     @commands.command()
     async def flush(self, ctx):
         status = get(self.client.voice_clients, guild=ctx.guild)
@@ -80,6 +82,7 @@ class Music(commands.Cog):
             for filename in os.scandir('./music'):
                 os.remove(filename.path)
         await ctx.message.channel.send('```Music folder is now empty```')
+        self._tracklist()
 
 def setup(client):
     client.add_cog(Music(client))
