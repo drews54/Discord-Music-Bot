@@ -65,7 +65,7 @@ class Music(commands.Cog):
         }
     
         with youtube_dl.YoutubeDL(ydl_opts) as ydl:
-            ydl.download(url)
+            ydl.download([url])
             #region length file creation (remove ydl.download(url) before uncommenting)
             # file = ydl.extract_info(url)
             # try:
