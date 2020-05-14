@@ -6,6 +6,8 @@ from discord.ext import commands
 from asyncio import run_coroutine_threadsafe
 
 class Music(commands.Cog):
+    
+    songs = [ ]
 
     def __init__(self, client):
         self.client = client
@@ -14,8 +16,6 @@ class Music(commands.Cog):
 
     def _tracklist(self):
         songlist = [ ]
-        i = 0
-        string = ''
         for filename in os.listdir('./music'):
             if filename.endswith('.opus'):
                 songlist.append(filename)
