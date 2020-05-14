@@ -22,7 +22,7 @@ class Music(commands.Cog):
     @commands.command()
     async def list(self, ctx):
         if not self._songs:
-            await ctx.channel.message.send('```No songs! Use "bro download" to download songs```')
+            await ctx.message.channel.send('```No songs! Use "bro download" to download songs```')
             return
         i = 0
         string = ''
