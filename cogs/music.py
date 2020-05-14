@@ -11,7 +11,7 @@ class Music(commands.Cog):
         self.client = client
         if not os.path.exists('./music'): os.mkdir('./music')
           
-    def tracklist(self, ctx):
+    def _tracklist(self, ctx):
         songs = [ ]
         i = 0
         string = ''
@@ -22,7 +22,7 @@ class Music(commands.Cog):
 
     @commands.command()
     async def list(self, ctx):
-        songs = self.tracklist(ctx)
+        songs = self._tracklist(ctx)
         i = 0
         string = ''
         for name in songs:
@@ -43,7 +43,7 @@ class Music(commands.Cog):
                 await ctx.message.author.voice.channel.connect()
         except:
             ctx.message.channel.send('```Connect to a voice channel before playing```')
-        songs = self.tracklist(ctx)
+        songs = self._tracklist(ctx)
         name = songs[int(number) - 1]
         song = './music/' + songs[int(number) - 1]
         await ctx.message.channel.send('```Playing: ' + name[:-5] + '```')
