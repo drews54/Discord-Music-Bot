@@ -137,3 +137,5 @@ Data.json
 
 # Music folder and files
 music
+# Start file for bot
+start.bat
