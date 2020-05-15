@@ -90,23 +90,27 @@ class Music(commands.Cog):
         with youtube_dl.YoutubeDL(ydl_opts) as ydl:
             info = ydl.extract_info(url)
             await self.boxed_print(ctx, 'Song downloaded: \n' + info['title'])
-#            self._songlist.append(info['title'])
-#        self._songlist.sort()
         self._update_songlist()
         await self.list_(ctx)
 
-    @commands.command(brief = 'Deletes choosen song')
-    async def flush(self, ctx, number = 'all'):
+    @commands.command(brief = 'Removes a song selected from the list')
+    async def remove(self, ctx, number = 0):
+        status = get(self.client.voice_clients, guild=ctx.guild)
+        if not status and (1 <= int(number) <= len(self._songlist)):
+            song = self._songlist.pop(int(number) - 1)
+            os.remove('./music/' + song)
+            await self.boxed_print(ctx, f'Song {song[:-5]} has been deleted')
+        else:
+            await self.boxed_print(ctx, f'Select an existing song from the list')
+
+    
+    @commands.command(brief = 'Flushes the music directory')
+    async def flush(self, ctx):
         status = get(self.client.voice_clients, guild=ctx.guild)
         if not status:
-            if number == 'all':
-                for filename in os.scandir('./music'):
-                    os.remove(filename.path)
-                await self.boxed_print(ctx, 'Music folder is now empty')
-            else:
-                song = './music/' + self._songlist[int(number) - 1]
-                os.remove(song)
-                await self.boxed_print(ctx, f'Song {self._songlist[int(number) - 1][:-5]} has been deleted')
+            for filename in os.scandir('./music'):
+                os.remove(filename.path)
+            await self.boxed_print(ctx, 'Music folder is now empty')
         self._songlist.clear()
 
 def setup(client):
