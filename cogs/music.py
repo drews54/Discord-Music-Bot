@@ -90,8 +90,9 @@ class Music(commands.Cog):
         with youtube_dl.YoutubeDL(ydl_opts) as ydl:
             info = ydl.extract_info(url)
             await self.boxed_print(ctx, 'Song downloaded: \n' + info['title'])
-            self._songlist.append(info['title'])
-        self._songlist.sort()
+#            self._songlist.append(info['title'])
+#        self._songlist.sort()
+        self._update_songlist()
         await self.list_(ctx)
 
     @commands.command(brief = 'Deletes all your cool songs((')
