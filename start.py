@@ -1,13 +1,15 @@
 import discord
 import os
+import json
 from discord.ext import commands
 
-with open('BotData.txt', encoding = 'utf-8') as tokenFile:
+with open('Data.json', encoding = 'utf-8') as dataFile:
     global client
     global token
+    data = json.load(dataFile)
 
-    token = tokenFile.readline()
-    client = commands.Bot(command_prefix = tokenFile.readline())
+    token = data['token']
+    client = commands.Bot(command_prefix = tuple(data['prefix']))
 
 @client.event
 async def on_ready():

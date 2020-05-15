@@ -133,7 +133,7 @@ dmypy.json
 .vscode
 
 # Token and command prefix
-BotData.txt
+Data.json
 
 # Music folder and files
 music
