@@ -9,19 +9,12 @@ class Music(commands.Cog):
     def __init__(self, client):
         self.client = client
         self._songlist = []
-        if os.path.exists('./music'):
-            self.update_songlist()
-        else:
-            os.mkdir('./music')
-
-    def update_songlist(self):
         self._unknown_files = 0
-        self._songlist.clear()
-        for filename in os.listdir('./music'):
-            if filename.endswith('.opus'):
-                self._songlist.append(filename)
-            else:
-                self._unknown_files += 1
+        self._music_path = './music/'
+        if os.path.exists(self._music_path):
+            self._songlist, self._unknown_files = update_songlist(self._music_path)
+        else:
+            os.mkdir(self._music_path)
 
     async def boxed_print(self, ctx, text):
         await ctx.message.channel.send('```' + text + '```')
@@ -58,7 +51,7 @@ class Music(commands.Cog):
         except:
             await self.boxed_print(ctx, 'Connect to a voice channel before playing')
         name = self._songlist[int(number) - 1]
-        song = './music/' + self._songlist[int(number) - 1]
+        song = self._music_path + self._songlist[int(number) - 1]
         await self.boxed_print(ctx, 'Playing: ' + name[:-5])
         self._stop_loop = False
         def after_play(error):
@@ -90,27 +83,39 @@ class Music(commands.Cog):
         with youtube_dl.YoutubeDL(ydl_opts) as ydl:
             info = ydl.extract_info(url)
             await self.boxed_print(ctx, 'Song downloaded: \n' + info['title'])
-#            self._songlist.append(info['title'])
-#        self._songlist.sort()
-        self.update_songlist()
-
+        self._songlist, self._unknown_files = update_songlist(self._music_path)
         await self.list_(ctx)
 
-    @commands.command(brief = 'Deletes choosen song')
-    async def flush(self, ctx, number = 'miss'):
+    @commands.command(brief = 'Removes a song selected from the list')
+    async def remove(self, ctx, number = 0):
         status = get(self.client.voice_clients, guild=ctx.guild)
         if not status:
-            if number == 'all':
-                for filename in os.scandir('./music'):
-                    os.remove(filename.path)
-                await self.boxed_print(ctx, 'Music folder is now empty')
-            elif number == 'miss':
-                await self.boxed_print(ctx, 'Missing argument. Use @help flush for more info.')
+            if (1 <= int(number) <= len(self._songlist)):
+                song = self._songlist.pop(int(number) - 1)
+                os.remove(self._music_path + song)
+                await self.boxed_print(ctx, f'Song {song[:-5]} has been deleted')
             else:
-                song = './music/' + self._songlist[int(number) - 1]
-                os.remove(song)
-                await self.boxed_print(ctx, f'Song {self._songlist[int(number) - 1][:-5]} has been deleted')
+                await self.boxed_print(ctx, f'Select an existing song from the list')
+
+
+    @commands.command(brief = 'Flushes the music directory')
+    async def flush(self, ctx):
+        status = get(self.client.voice_clients, guild=ctx.guild)
+        if not status:
+            for filename in os.scandir(self._music_path):
+                os.remove(filename.path)
+            await self.boxed_print(ctx, 'Music folder is now empty')
         self._songlist.clear()
+
+def update_songlist(music_path):
+    songlist = []
+    unknown_files = 0
+    for filename in os.listdir(music_path):
+        if filename.endswith('.opus'):
+            songlist.append(filename)
+        else:
+            unknown_files += 1
+    return songlist, unknown_files
 
 def setup(client):
     client.add_cog(Music(client))
