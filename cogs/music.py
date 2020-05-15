@@ -22,8 +22,8 @@ class Music(commands.Cog):
             if filename.endswith('.opus'):
                 self._songlist.append(filename)
 
-    @commands.command(brief = 'Shows songs list')
-    async def list(self, ctx):
+    @commands.command(name = 'list', brief = 'Shows songs list')
+    async def list_(self, ctx):
         if not self._songlist:
             await self.boxed_print(ctx, 'No songs! Use "bro download" to download songs')
             return
