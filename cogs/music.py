@@ -11,6 +11,7 @@ class Music(commands.Cog):
         if not os.path.exists('./music'): os.mkdir('./music')
         self._songlist = []
         self._update_songlist()
+        self._stop_loop = False
 
     def _update_songlist(self):
         for filename in os.listdir('./music'):
@@ -33,9 +34,12 @@ class Music(commands.Cog):
         await self.boxed_print(ctx, string)
 
     @commands.command(brief = 'Stops playing audio')
-    async def stop(self, ctx):
-        if ctx.voice_client.is_connected():
-            await ctx.message.guild.voice_client.disconnect()
+    async def stop(self, ctx, loop = ''):
+        if loop == 'loop':
+            self._stop_loop = True
+        else:
+            if ctx.voice_client.is_connected():
+                await ctx.message.guild.voice_client.disconnect()
 
     @commands.command(brief = 'Plays song from list')
     async def play(self, ctx, number, loop = ''):
@@ -49,7 +53,7 @@ class Music(commands.Cog):
         song = './music/' + self._songlist[int(number) - 1]
         await self.boxed_print(ctx, 'Playing: ' + name[:-5])
         def after_play(error):
-            if loop == 'loop':
+            if loop == 'loop' and not self._stop_loop:
                 try:
                     ctx.message.guild.voice_client.play(discord.FFmpegOpusAudio(song), after = after_play)
                 except:
