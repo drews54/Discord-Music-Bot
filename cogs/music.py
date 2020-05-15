@@ -13,7 +13,6 @@ class Music(commands.Cog):
             self._update_songlist()
         else:
             os.mkdir('./music')
-        self._stop_loop = False
 
     def _update_songlist(self):
         self.wrong_files = 0
@@ -41,7 +40,7 @@ class Music(commands.Cog):
         if self.wrong_files == 1:
             await self.boxed_print(ctx, 'Also there is a file with unknown extension. Check your music path.')
         elif self.wrong_files > 1:
-            await self.boxed_print(ctx, 'Also there are ' + str(self.wrong_files) + ' files with unknown extension. Check your music path.')
+            await self.boxed_print(ctx, 'Also there are ' + str(self.wrong_files) + ' files with unknown extension. Check your music depository.')
 
     @commands.command(brief = 'Stops playing audio')
     async def stop(self, ctx, loop = ''):
@@ -61,6 +60,7 @@ class Music(commands.Cog):
         name = self._songlist[int(number) - 1]
         song = './music/' + self._songlist[int(number) - 1]
         await self.boxed_print(ctx, 'Playing: ' + name[:-5])
+        self._stop_loop = False
         def after_play(error):
             if loop == 'loop' and not self._stop_loop:
                 try:
