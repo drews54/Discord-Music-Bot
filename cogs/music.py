@@ -100,7 +100,6 @@ class Music(commands.Cog):
             else:
                 await self.boxed_print(ctx, f'Select an existing song from the list')
 
-
     @commands.command(brief = 'Flushes the music directory')
     async def flush(self, ctx):
         status = get(self.client.voice_clients, guild=ctx.guild)
