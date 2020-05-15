@@ -9,15 +9,16 @@ class Music(commands.Cog):
     def __init__(self, client):
         self.client = client
         self._songlist = []
-        if os.path.exists('./music'):
+        self._music_path = './music'
+        if os.path.exists(self._music_path):
             self._update_songlist()
         else:
-            os.mkdir('./music')
+            os.mkdir(self._music_path)
 
     def _update_songlist(self):
         self._unknown_files = 0
         self._songlist.clear()
-        for filename in os.listdir('./music'):
+        for filename in os.listdir(self._music_path):
             if filename.endswith('.opus'):
                 self._songlist.append(filename)
             else:
@@ -58,7 +59,7 @@ class Music(commands.Cog):
         except:
             await self.boxed_print(ctx, 'Connect to a voice channel before playing')
         name = self._songlist[int(number) - 1]
-        song = './music/' + self._songlist[int(number) - 1]
+        song = self._music_path + self._songlist[int(number) - 1]
         await self.boxed_print(ctx, 'Playing: ' + name[:-5])
         self._stop_loop = False
         def after_play(error):
@@ -99,7 +100,7 @@ class Music(commands.Cog):
         if not status:
             if (1 <= int(number) <= len(self._songlist)):
                 song = self._songlist.pop(int(number) - 1)
-                os.remove('./music/' + song)
+                os.remove(self._music_path + song)
                 await self.boxed_print(ctx, f'Song {song[:-5]} has been deleted')
             else:
                 await self.boxed_print(ctx, f'Select an existing song from the list')
@@ -109,7 +110,7 @@ class Music(commands.Cog):
     async def flush(self, ctx):
         status = get(self.client.voice_clients, guild=ctx.guild)
         if not status:
-            for filename in os.scandir('./music'):
+            for filename in os.scandir(self._music_path):
                 os.remove(filename.path)
             await self.boxed_print(ctx, 'Music folder is now empty')
         self._songlist.clear()
