@@ -121,7 +121,7 @@ class Music(commands.Cog):
             for name in self._filelist:
                 i += 1
                 string += f'{i!s}. {name!s}\n'
-            string = string + 'Use @convert [number] to convert files from list to "opus" format.'
+            string = string + 'Use convert [number] to convert files from list to "opus" format.'
             await self.boxed_print(ctx, string)
         elif (1 <= int(arg) <= len(self._filelist)):
             file = self._filelist[int(arg) - 1]
@@ -135,7 +135,7 @@ class Music(commands.Cog):
             await self.boxed_print(ctx, 'Converted!')
             await self.list_(ctx)
         else:
-            await self.boxed_print(ctx, f'Select an existing file from the list')
+            await self.boxed_print(ctx, 'Select an existing file from the list or use convert list.')
 
 def update_songlist(ext = 'opus', music_path = self._music_path):
     songlist = []
