@@ -6,21 +6,19 @@ from discord.ext import commands
 from asyncio import run_coroutine_threadsafe
 
 class Music(commands.Cog):
-
-    _songlist = []
-
     def __init__(self, client):
         self.client = client
         if not os.path.exists('./music'): os.mkdir('./music')
-        self.tracklist()
+        self._songlist = []
+        self._update_songlist()
 
-    async def boxed_print(self, ctx, text):
-        await ctx.message.channel.send('```' + text + '```')
-
-    def tracklist(self):
+    def _update_songlist(self):
         for filename in os.listdir('./music'):
             if filename.endswith('.opus'):
                 self._songlist.append(filename)
+
+    async def boxed_print(self, ctx, text):
+        await ctx.message.channel.send('```' + text + '```')
 
     @commands.command()
     async def list(self, ctx):
@@ -56,7 +54,6 @@ class Music(commands.Cog):
                     ctx.message.guild.voice_client.play(discord.FFmpegOpusAudio(song), after = after_play)
                 except:
                     pass
-
             else:
                 coroutine = ctx.voice_client.disconnect()
                 future = run_coroutine_threadsafe(coroutine, self.client.loop)
@@ -65,7 +62,6 @@ class Music(commands.Cog):
                 except:
                     print('Disconnect has failed. Run "stop" manually', error)
         ctx.message.guild.voice_client.play(discord.FFmpegOpusAudio(song), after = after_play)
-
 
     @commands.command()
     async def download(self, ctx, url):
@@ -81,7 +77,7 @@ class Music(commands.Cog):
         with youtube_dl.YoutubeDL(ydl_opts) as ydl:
             info = ydl.extract_info(url)
             await self.boxed_print(ctx, 'Song downloaded: \n' + info['title'])
-        self.tracklist()
+        self._update_songlist()
         await self.list(ctx)
 
     @commands.command()
@@ -91,8 +87,7 @@ class Music(commands.Cog):
             for filename in os.scandir('./music'):
                 os.remove(filename.path)
         await self.boxed_print(ctx, 'Music folder is now empty')
-        self.tracklist()
-
+        self._update_songlist()
 
 def setup(client):
     client.add_cog(Music(client))
