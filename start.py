@@ -13,17 +13,17 @@ with open('BotData.txt', encoding = 'utf-8') as tokenFile:
 async def on_ready():
     print('Connected.')
 
-@client.command()
+@client.command(hidden = True)
 async def load(ctx, extension):
     client.load_extension(f'cogs.{extension}')
     print(extension + ' loaded')
 
-@client.command()
+@client.command(hidden = True)
 async def unload(ctx, extension):
     client.unload_extension(f'cogs.{extension}')
     print(extension + ' unloaded')
 
-@client.command()
+@client.command(hidden = True)
 async def reload(ctx, extension):
     client.unload_extension(f'cogs.{extension}')
     print(extension + ' unloaded')
