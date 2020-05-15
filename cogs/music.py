@@ -113,7 +113,7 @@ class Music(commands.Cog):
     @commands.command(brief = 'Converts music file to opus format')
     async def convert(self, ctx, arg, ext = 'mp3'):
         if arg == 'list':
-            self._filelist = update_songlist('mp3')[0]
+            self._filelist = update_songlist(ext)[0]
             if not self._filelist:
                 await self.boxed_print(ctx, 'No files to convert')
                 return
@@ -124,7 +124,7 @@ class Music(commands.Cog):
                 string += f'{i!s}. {name!s}\n'
             string = string + 'Use @convert [number] to convert files from list to "opus" format.'
             await self.boxed_print(ctx, string)
-        else:
+        elif (1 <= int(arg) <= len(self._filelist)):
             file = self._filelist[int(arg) - 1]
             await self.boxed_print(ctx, f'Performing convertation {file} to ".opus" format...')
             cmd = f'ffmpeg -i "music/{file}" "music/{file[:-len(ext)]}opus"'
@@ -132,11 +132,13 @@ class Music(commands.Cog):
             os.remove('./music/' + file)
             self._songlist.append(f'{file[:-len(ext)]}opus')
             self._songlist.sort()
-            self._unknown_files = self._unknown_files - 1
+            self._unknown_files -= 1
             await self.boxed_print(ctx, 'Converted!')
             await self.list_(ctx)
+        else:
+            await self.boxed_print(ctx, f'Select an existing file from the list')
 
-def update_songlist(ext = 'opus', music_path = './music/'):
+def update_songlist(ext = 'opus', music_path = self._music_path):
     songlist = []
     unknown_files = 0
     for filename in os.listdir(music_path):
