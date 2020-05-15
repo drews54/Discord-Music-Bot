@@ -9,20 +9,12 @@ class Music(commands.Cog):
     def __init__(self, client):
         self.client = client
         self._songlist = []
-        self._music_path = './music'
+        self._unknown_files = 0
+        self._music_path = './music/'
         if os.path.exists(self._music_path):
-            self._update_songlist()
+            self._songlist, self._unknown_files = update_songlist(self._music_path)
         else:
             os.mkdir(self._music_path)
-
-    def _update_songlist(self):
-        self._unknown_files = 0
-        self._songlist.clear()
-        for filename in os.listdir(self._music_path):
-            if filename.endswith('.opus'):
-                self._songlist.append(filename)
-            else:
-                self._unknown_files += 1
 
     async def boxed_print(self, ctx, text):
         await ctx.message.channel.send('```' + text + '```')
@@ -91,7 +83,7 @@ class Music(commands.Cog):
         with youtube_dl.YoutubeDL(ydl_opts) as ydl:
             info = ydl.extract_info(url)
             await self.boxed_print(ctx, 'Song downloaded: \n' + info['title'])
-        self._update_songlist()
+        self._songlist, self._unknown_files = update_songlist(self._music_path)
         await self.list_(ctx)
 
     @commands.command(brief = 'Removes a song selected from the list')
@@ -114,6 +106,16 @@ class Music(commands.Cog):
                 os.remove(filename.path)
             await self.boxed_print(ctx, 'Music folder is now empty')
         self._songlist.clear()
+
+def update_songlist(music_path):
+    songlist = []
+    unknown_files = 0
+    for filename in os.listdir(music_path):
+        if filename.endswith('.opus'):
+            songlist.append(filename)
+        else:
+            unknown_files += 1
+    return songlist, unknown_files
 
 def setup(client):
     client.add_cog(Music(client))
