@@ -16,6 +16,7 @@ class Music(commands.Cog):
         self._stop_loop = False
 
     def _update_songlist(self):
+        self._songlist.clear()
         for filename in os.listdir('./music'):
             if filename.endswith('.opus'):
                 self._songlist.append(filename)
