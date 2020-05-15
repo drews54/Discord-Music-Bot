@@ -96,15 +96,13 @@ class Music(commands.Cog):
         await self.list_(ctx)
 
     @commands.command(brief = 'Deletes choosen song')
-    async def flush(self, ctx, number = 'miss'):
+    async def flush(self, ctx, number = 'all'):
         status = get(self.client.voice_clients, guild=ctx.guild)
         if not status:
             if number == 'all':
                 for filename in os.scandir('./music'):
                     os.remove(filename.path)
                 await self.boxed_print(ctx, 'Music folder is now empty')
-            elif number == 'miss':
-                await self.boxed_print(ctx, 'Missing argument. Use @help flush for more info.')
             else:
                 song = './music/' + self._songlist[int(number) - 1]
                 os.remove(song)
