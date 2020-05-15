@@ -96,12 +96,13 @@ class Music(commands.Cog):
     @commands.command(brief = 'Removes a song selected from the list')
     async def remove(self, ctx, number = 0):
         status = get(self.client.voice_clients, guild=ctx.guild)
-        if not status and (1 <= int(number) <= len(self._songlist)):
-            song = self._songlist.pop(int(number) - 1)
-            os.remove('./music/' + song)
-            await self.boxed_print(ctx, f'Song {song[:-5]} has been deleted')
-        else:
-            await self.boxed_print(ctx, f'Select an existing song from the list')
+        if not status:
+            if (1 <= int(number) <= len(self._songlist)):
+                song = self._songlist.pop(int(number) - 1)
+                os.remove('./music/' + song)
+                await self.boxed_print(ctx, f'Song {song[:-5]} has been deleted')
+            else:
+                await self.boxed_print(ctx, f'Select an existing song from the list')
 
     
     @commands.command(brief = 'Flushes the music directory')
