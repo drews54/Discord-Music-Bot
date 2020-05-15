@@ -37,9 +37,15 @@ async def reload(ctx, extension):
 async def about(ctx):
     await ctx.message.channel.send('```Github source code link: https://github.com/duha54rus/Discord-Music-Bot```')
 
-for filename in os.listdir('./cogs'):
-    if filename.endswith('.py'):
-        client.load_extension(f'cogs.{filename[:-3]}')
-        print(filename[:-3] + ' loaded')
+#for filename in os.listdir('./cogs'):
+#    if filename.endswith('.py'):
+#        client.load_extension(f'cogs.{filename[:-3]}')
+#        print(filename[:-3] + ' loaded')
+client.load_extension('cogs.music')
+
+@client.command()
+async def convert(ctx):
+    client.load_extension(f'cogs.convert')
+    await ctx.message.channel.send('```Converter loaded```')
 
 client.run(token)
