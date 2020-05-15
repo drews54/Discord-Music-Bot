@@ -20,8 +20,8 @@ class Music(commands.Cog):
     async def boxed_print(self, ctx, text):
         await ctx.message.channel.send('```' + text + '```')
 
-    @commands.command()
-    async def list(self, ctx):
+    @commands.command(name = 'list', brief = 'Shows songs list')
+    async def list_(self, ctx):
         if not self._songlist:
             await self.boxed_print(ctx, 'No songs! Use "bro download" to download songs')
             return
@@ -32,12 +32,12 @@ class Music(commands.Cog):
             string += str(i) + '. ' + str(name[:-5]) + '\n'
         await self.boxed_print(ctx, string)
 
-    @commands.command()
+    @commands.command(brief = 'Stops playing audio')
     async def stop(self, ctx):
         if ctx.voice_client.is_connected():
             await ctx.message.guild.voice_client.disconnect()
 
-    @commands.command()
+    @commands.command(brief = 'Plays song from list')
     async def play(self, ctx, number, loop = ''):
         status = get(self.client.voice_clients, guild=ctx.guild)
         try:
@@ -63,7 +63,7 @@ class Music(commands.Cog):
                     print('Disconnect has failed. Run "stop" manually', error)
         ctx.message.guild.voice_client.play(discord.FFmpegOpusAudio(song), after = after_play)
 
-    @commands.command()
+    @commands.command(brief = 'Downloads audio from YouTube')
     async def download(self, ctx, url):
         ydl_opts = {
             'format': 'bestaudio/opus',
@@ -80,7 +80,7 @@ class Music(commands.Cog):
         self._update_songlist()
         await self.list(ctx)
 
-    @commands.command()
+    @commands.command(brief = 'Deletes all your cool songs((')
     async def flush(self, ctx):
         status = get(self.client.voice_clients, guild=ctx.guild)
         if not status:
