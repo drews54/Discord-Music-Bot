@@ -97,7 +97,6 @@ class Music(commands.Cog):
             else:
                 await self.boxed_print(ctx, f'Select an existing song from the list')
 
-    
     @commands.command(brief = 'Flushes the music directory')
     async def flush(self, ctx):
         status = get(self.client.voice_clients, guild=ctx.guild)
@@ -107,11 +106,11 @@ class Music(commands.Cog):
             await self.boxed_print(ctx, 'Music folder is now empty')
         self._songlist.clear()
 
-def update_songlist(music_path):
+def update_songlist(music_path, ext = '.opus'):
     songlist = []
     unknown_files = 0
     for filename in os.listdir(music_path):
-        if filename.endswith('.opus'):
+        if filename.endswith(ext):
             songlist.append(filename)
         else:
             unknown_files += 1
