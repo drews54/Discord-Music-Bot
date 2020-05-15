@@ -7,29 +7,29 @@ from asyncio import run_coroutine_threadsafe
 
 class Music(commands.Cog):
 
-    _songs = []
+    __songlist = []
 
     def __init__(self, client):
         self.client = client
         if not os.path.exists('./music'): os.mkdir('./music')
-        self._tracklist()
+        self.__tracklist()
 
     async def boxed_print(self, ctx, text):
         await ctx.message.channel.send('```' + text + '```')
 
-    def _tracklist(self):
+    def __tracklist(self):
         for filename in os.listdir('./music'):
             if filename.endswith('.opus'):
-                self._songs.append(filename)
+                self.__songlist.append(filename)
 
     @commands.command()
     async def list(self, ctx):
-        if not self._songs:
+        if not self.__songlist:
             await self.boxed_print(ctx, 'No songs! Use "bro download" to download songs')
             return
         i = 0
         string = ''
-        for name in self._songs:
+        for name in self.__songlist:
             i += 1
             string += str(i) + '. ' + str(name[:-5]) + '\n'
         await self.boxed_print(ctx, string)
@@ -47,8 +47,8 @@ class Music(commands.Cog):
                 await ctx.message.author.voice.channel.connect()
         except:
             await self.boxed_print(ctx, 'Connect to a voice channel before playing')
-        name = self._songs[int(number) - 1]
-        song = './music/' + self._songs[int(number) - 1]
+        name = self.__songlist[int(number) - 1]
+        song = './music/' + self.__songlist[int(number) - 1]
         await self.boxed_print(ctx, 'Playing: ' + name[:-5])
         def after_play(error):
             if loop == 'loop':
@@ -81,7 +81,7 @@ class Music(commands.Cog):
         with youtube_dl.YoutubeDL(ydl_opts) as ydl:
             info = ydl.extract_info(url)
             await self.boxed_print(ctx, 'Song downloaded: \n' + info['title'])
-        self._tracklist()
+        self.__tracklist()
         await self.list(ctx)
 
     @commands.command()
@@ -91,7 +91,7 @@ class Music(commands.Cog):
             for filename in os.scandir('./music'):
                 os.remove(filename.path)
         await self.boxed_print(ctx, 'Music folder is now empty')
-        self._tracklist()
+        self.__tracklist()
 
 
 def setup(client):
