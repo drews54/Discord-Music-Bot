@@ -1,5 +1,7 @@
 import discord
 import os
+import subprocess
+#import music as music
 from discord.ext import commands
 
 class Converter(commands.Cog):
@@ -27,6 +29,11 @@ class Converter(commands.Cog):
         else:
             file = self._fileslist[int(arg) - 1]
             await self.boxed_print(ctx, f'I`m going to convert {file} to ".opus" format')
+            cmd = f'ffmpeg -i "music/{file}" "music/{file[:-3]}opus"'
+            subprocess.call(cmd, shell=True)
+            os.remove('./music/' + file)
+#            music.Music.update_songlist()
+            await self.boxed_print(ctx, 'Converted!')
 
 
     def _fileslist_updater(self):

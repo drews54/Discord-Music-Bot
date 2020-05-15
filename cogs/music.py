@@ -10,11 +10,11 @@ class Music(commands.Cog):
         self.client = client
         self._songlist = []
         if os.path.exists('./music'):
-            self._update_songlist()
+            self.update_songlist()
         else:
             os.mkdir('./music')
 
-    def _update_songlist(self):
+    def update_songlist(self):
         self._unknown_files = 0
         self._songlist.clear()
         for filename in os.listdir('./music'):
