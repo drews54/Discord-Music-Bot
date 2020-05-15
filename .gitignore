@@ -135,7 +135,8 @@ dmypy.json
 # Token and command prefix
 Data.json
 
-# Music folder and files
+# Music folder
 music
-# Start file for bot
+
+# Optional startup batch file
 start.bat
