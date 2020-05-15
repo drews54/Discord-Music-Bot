@@ -78,7 +78,7 @@ class Music(commands.Cog):
             info = ydl.extract_info(url)
             await self.boxed_print(ctx, 'Song downloaded: \n' + info['title'])
         self._update_songlist()
-        await self.list(ctx)
+        await self.list_(ctx)
 
     @commands.command(brief = 'Deletes all your cool songs((')
     async def flush(self, ctx):
