@@ -16,10 +16,13 @@ class Music(commands.Cog):
         self._stop_loop = False
 
     def _update_songlist(self):
+        self.wrong_files = 0
         self._songlist.clear()
         for filename in os.listdir('./music'):
             if filename.endswith('.opus'):
                 self._songlist.append(filename)
+            else:
+                self.wrong_files += 1
 
     async def boxed_print(self, ctx, text):
         await ctx.message.channel.send('```' + text + '```')
@@ -35,6 +38,10 @@ class Music(commands.Cog):
             i += 1
             string += str(i) + '. ' + str(name[:-5]) + '\n'
         await self.boxed_print(ctx, string)
+        if self.wrong_files == 1:
+            await self.boxed_print(ctx, 'Also there is a file with unknown extension. Check your music path.')
+        elif self.wrong_files > 1:
+            await self.boxed_print(ctx, 'Also there are ' + str(self.wrong_files) + ' files with unknown extension. Check your music path.')
 
     @commands.command(brief = 'Stops playing audio')
     async def stop(self, ctx, loop = ''):
