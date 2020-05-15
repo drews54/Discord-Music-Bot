@@ -8,9 +8,11 @@ from asyncio import run_coroutine_threadsafe
 class Music(commands.Cog):
     def __init__(self, client):
         self.client = client
-        if not os.path.exists('./music'): os.mkdir('./music')
         self._songlist = []
-        self._update_songlist()
+        if os.path.exists('./music'):
+            self._update_songlist()
+        else:
+            os.mkdir('./music')
         self._stop_loop = False
 
     def _update_songlist(self):
@@ -80,7 +82,8 @@ class Music(commands.Cog):
         with youtube_dl.YoutubeDL(ydl_opts) as ydl:
             info = ydl.extract_info(url)
             await self.boxed_print(ctx, 'Song downloaded: \n' + info['title'])
-        self._update_songlist()
+            self._songlist.append(info['title'])
+        self._songlist.sort()
         await self.list_(ctx)
 
     @commands.command(brief = 'Deletes all your cool songs((')
@@ -90,7 +93,7 @@ class Music(commands.Cog):
             for filename in os.scandir('./music'):
                 os.remove(filename.path)
         await self.boxed_print(ctx, 'Music folder is now empty')
-        self._update_songlist()
+        self._songlist.clear()
 
 def setup(client):
     client.add_cog(Music(client))
