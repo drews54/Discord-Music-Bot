@@ -39,7 +39,7 @@ class Music(commands.Cog):
         if ctx.voice_client.is_connected():
             await ctx.message.guild.voice_client.disconnect()
 
-    @commands.command(brief = 'plays song from list')
+    @commands.command(brief = 'Plays song from list')
     async def play(self, ctx, number, loop = ''):
         status = get(self.client.voice_clients, guild=ctx.guild)
         try:
@@ -67,7 +67,7 @@ class Music(commands.Cog):
         ctx.message.guild.voice_client.play(discord.FFmpegOpusAudio(song), after = after_play)
 
 
-    @commands.command(brief = 'downloads audio from YouTube')
+    @commands.command(brief = 'Downloads audio from YouTube')
     async def download(self, ctx, url):
         ydl_opts = {
             'format': 'bestaudio/opus',
@@ -84,7 +84,7 @@ class Music(commands.Cog):
         self._tracklist()
         await self.list(ctx)
 
-    @commands.command(brief = 'deletes all your cool songs((')
+    @commands.command(brief = 'Deletes all your cool songs((')
     async def flush(self, ctx):
         status = get(self.client.voice_clients, guild=ctx.guild)
         if not status:
@@ -96,4 +96,3 @@ class Music(commands.Cog):
 
 def setup(client):
     client.add_cog(Music(client))
-
