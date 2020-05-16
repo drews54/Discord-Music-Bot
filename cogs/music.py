@@ -137,7 +137,7 @@ class Music(commands.Cog):
         else:
             await self.boxed_print(ctx, 'Select an existing file from the list or use convert list.')
 
-def update_songlist(ext = 'opus', music_path = self._music_path):
+def update_songlist(ext = 'opus', music_path = './music/'):
     songlist = []
     unknown_files = 0
     for filename in os.listdir(music_path):
