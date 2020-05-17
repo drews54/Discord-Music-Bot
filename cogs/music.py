@@ -14,6 +14,7 @@ class Music(commands.Cog):
         self._filelist = []
         self._unknown_files = 0
         self._music_path = './music/'
+        self.prefix = self.client.command_prefix[0]
         if os.path.exists(self._music_path):
             self._songlist, self._unknown_files = update_songlist()
         else:
@@ -39,9 +40,9 @@ class Music(commands.Cog):
                 string += f'{i!s}. {name[:-5]!s}\n'
         await self.boxed_print(ctx, string)
         if self._unknown_files == 1:
-            await self.boxed_print(ctx, 'Also there is a file with unknown extension. Use @convert list to convert your music files to "opus" format.')
+            await self.boxed_print(ctx, f'Also there is a file with unknown extension. Use {self.prefix}convert list to convert your music files to "opus" format.')
         elif self._unknown_files > 1:
-            await self.boxed_print(ctx, f'Also there are {self._unknown_files!s} files with unknown extension. Use @convert list to convert your music files to "opus" format.')
+            await self.boxed_print(ctx, f'Also there are {self._unknown_files!s} files with unknown extension. Use {self.prefix}convert list to convert your music files to "opus" format.')
 
     @commands.command(brief = 'Stops playing audio')
     async def stop(self, ctx, loop = ''):
@@ -75,7 +76,7 @@ class Music(commands.Cog):
                 try:
                     future.result()
                 except:
-                    print('Disconnect has failed. Run "stop" manually', error)
+                    print(f'Disconnect has failed. Run {self.prefix}stop manually', error)
         ctx.message.guild.voice_client.play(discord.FFmpegOpusAudio(song), after = after_play)
 
     @commands.command(brief = 'Downloads audio from YouTube')
@@ -105,7 +106,7 @@ class Music(commands.Cog):
                 await self.boxed_print(ctx, f'Song {song[:-5]} has been deleted')
                 await self.list_(ctx)
             else:
-                await self.boxed_print(ctx, f'Select an existing song from the list')
+                await self.boxed_print(ctx, 'Select an existing song from the list')
 
     @commands.command(brief = 'Flushes the music directory')
     async def flush(self, ctx):
@@ -128,7 +129,7 @@ class Music(commands.Cog):
             for name in self._filelist:
                 i += 1
                 string += f'{i!s}. {name!s}\n'
-            string = string + 'Use convert [number] to convert files from list to "opus" format.'
+            string = string + f'Use {self.prefix}convert [number] to convert files from list to "opus" format.'
             await self.boxed_print(ctx, string)
         elif (1 <= int(arg) <= len(self._filelist)):
             file = self._filelist[int(arg) - 1]
@@ -142,7 +143,7 @@ class Music(commands.Cog):
             await self.boxed_print(ctx, 'Converted!')
             await self.list_(ctx)
         else:
-            await self.boxed_print(ctx, 'Select an existing file from the list or use convert list.')
+            await self.boxed_print(ctx, f'Select an existing file from the list or use {self.prefix}convert list.')
 
 def update_songlist(ext = 'opus', music_path = './music/'):
     songlist = []
