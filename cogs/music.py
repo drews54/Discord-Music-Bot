@@ -48,10 +48,11 @@ class Music(commands.Cog):
     async def play(self, ctx, number, loop = ''):
         status = get(self.client.voice_clients, guild=ctx.guild)
         try:
-            if not status and ctx.message.author.voice != None:
+            if not status:
                 await ctx.message.author.voice.channel.connect()
-        except:
+        except AttributeError:
             await self.boxed_print(ctx, 'Connect to a voice channel before playing')
+            return
         name = self._songlist[int(number) - 1]
         song = self._music_path + self._songlist[int(number) - 1]
         await self.boxed_print(ctx, 'Playing: ' + name[:-5])
