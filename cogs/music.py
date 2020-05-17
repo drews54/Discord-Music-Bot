@@ -25,7 +25,6 @@ class Music(commands.Cog):
     async def list_(self, ctx):
         if not self._songlist:
             await self.boxed_print(ctx, 'No songs! Use "bro download" to download songs')
-            return
         i = 0
         string = ''
         for name in self._songlist:
@@ -48,10 +47,11 @@ class Music(commands.Cog):
     async def play(self, ctx, number, loop = ''):
         status = get(self.client.voice_clients, guild=ctx.guild)
         try:
-            if not status and ctx.message.author.voice != None:
+            if not status:
                 await ctx.message.author.voice.channel.connect()
-        except:
+        except AttributeError:
             await self.boxed_print(ctx, 'Connect to a voice channel before playing')
+            return
         name = self._songlist[int(number) - 1]
         song = self._music_path + self._songlist[int(number) - 1]
         await self.boxed_print(ctx, 'Playing: ' + name[:-5])
