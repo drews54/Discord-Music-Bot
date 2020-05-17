@@ -2,6 +2,7 @@ import discord
 import os
 import youtube_dl
 import subprocess
+import math
 from discord.utils import get
 from discord.ext import commands
 from asyncio import run_coroutine_threadsafe
@@ -22,15 +23,20 @@ class Music(commands.Cog):
         await ctx.message.channel.send('```' + text + '```')
 
     @commands.command(name = 'list', brief = 'Shows songs list')
-    async def list_(self, ctx):
-        if not self._songlist:
+    async def list_(self, ctx, page = 1):
+        max_page = math.ceil(len(self._songlist)/10)
+        if self._songlist and (max_page < page or page <= 0):
+            await self.boxed_print(ctx, f'404 bro, use one of {max_page!s} existing pages')
+            return
+        elif not self._songlist:
             await self.boxed_print(ctx, 'No songs! Use "bro download" to download songs')
             return
         i = 0
-        string = ''
+        string = f'Page {page!s} of {max_page!s}:\n'
         for name in self._songlist:
             i += 1
-            string += f'{i!s}. {name[:-5]!s}\n'
+            if (page - 1) * 10 < i <= page * 10:
+                string += f'{i!s}. {name[:-5]!s}\n'
         await self.boxed_print(ctx, string)
         if self._unknown_files == 1:
             await self.boxed_print(ctx, 'Also there is a file with unknown extension. Use @convert list to convert your music files to "opus" format.')
