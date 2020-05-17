@@ -22,7 +22,7 @@ class Music(commands.Cog):
         await ctx.message.channel.send('```' + text + '```')
 
     @commands.command(name = 'list', brief = 'Shows songs list')
-    async def list_(self, ctx):
+    async def list_(self, ctx, page = 1):
         if not self._songlist:
             await self.boxed_print(ctx, 'No songs! Use "bro download" to download songs')
             return
@@ -30,7 +30,9 @@ class Music(commands.Cog):
         string = ''
         for name in self._songlist:
             i += 1
-            string += f'{i!s}. {name[:-5]!s}\n'
+            if (page - 1) * 10 < i <= page * 10:
+                string += f'{i!s}. {name[:-5]!s}\n'
+
         await self.boxed_print(ctx, string)
         if self._unknown_files == 1:
             await self.boxed_print(ctx, 'Also there is a file with unknown extension. Use @convert list to convert your music files to "opus" format.')
