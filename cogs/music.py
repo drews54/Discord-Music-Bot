@@ -25,6 +25,7 @@ class Music(commands.Cog):
     async def list_(self, ctx):
         if not self._songlist:
             await self.boxed_print(ctx, 'No songs! Use "bro download" to download songs')
+            return
         i = 0
         string = ''
         for name in self._songlist:
