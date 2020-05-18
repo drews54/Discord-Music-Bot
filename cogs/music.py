@@ -1,11 +1,10 @@
 import discord
-import os
 import youtube_dl
-import subprocess
-import math
+import os, math, subprocess, json
 from discord.utils import get
 from discord.ext import commands
 from asyncio import run_coroutine_threadsafe
+from youtube_search import YoutubeSearch
 
 class Music(commands.Cog):
     def __init__(self, client):
@@ -144,6 +143,19 @@ class Music(commands.Cog):
             await self.list_(ctx)
         else:
             await self.boxed_print(ctx, f'Select an existing file from the list or use {self.prefix}convert list.')
+
+    @commands.command()
+    async def search(self, ctx, key):
+        searchlist = YoutubeSearch(key, max_results = 2).to_dict()
+        i = 0
+        string = 'Search results:\n'
+        for video in searchlist:
+            i +=1
+            title = video['title']
+            url = video['link']
+            string += f'{i!s}. {title}\n   url: {url}\n'
+        await self.boxed_print(ctx, string)
+
 
 def update_songlist(ext = 'opus', music_path = './music/'):
     songlist = []
