@@ -26,7 +26,7 @@ class Music(commands.Cog):
     @commands.command(name = 'list', brief = 'Shows songs list')
     async def list_(self, ctx, page = 1):
         max_page = math.ceil(len(self._songlist)/10)
-        if self._songlist and (max_page < page or page <= 0):
+        if self._songlist and not 0 < page <= max_page:
             await self.boxed_print(ctx, f'404 bro, use one of {max_page!s} existing pages')
             return
         elif not self._songlist:
@@ -36,7 +36,7 @@ class Music(commands.Cog):
         string = f'Page {page!s} of {max_page!s}:\n'
         for name in self._songlist:
             i += 1
-            if (page - 1) * 10 < i <= page * 10:
+            if page == (i - 1)//10 + 1:
                 string += f'{i!s}. {name[:-5]!s}\n'
         await self.boxed_print(ctx, string)
         if self._unknown_files == 1:
