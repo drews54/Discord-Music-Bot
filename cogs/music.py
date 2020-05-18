@@ -146,7 +146,7 @@ class Music(commands.Cog):
 
     @commands.command()
     async def search(self, ctx, key):
-        searchlist = YoutubeSearch(key, max_results = 2).to_dict()
+        searchlist = YoutubeSearch(key, max_results = 5).to_dict()
         i = 0
         string = 'Search results:\n'
         for video in searchlist:
