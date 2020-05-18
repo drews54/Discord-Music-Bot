@@ -11,12 +11,12 @@ class Music(commands.Cog):
         self.client = client
         self._songlist = []
         self._unknown_files = 0
-        self._music_path = './music/'
+        self.music_path = './music/'
         self.prefix = self.client.command_prefix[0]
-        if os.path.exists(self._music_path):
-            self._songlist, self._unknown_files = update_songlist()
+        if os.path.exists(self.music_path):
+            self._songlist, self._unknown_files = update_songlist(self.music_path)
         else:
-            os.mkdir(self._music_path)
+            os.mkdir(self.music_path)
 
     async def boxed_print(self, ctx, text):
         await ctx.message.channel.send('```' + text + '```')
@@ -59,7 +59,7 @@ class Music(commands.Cog):
             await self.boxed_print(ctx, 'Connect to a voice channel before playing')
             return
         name = self._songlist[int(number) - 1]
-        song = self._music_path + self._songlist[int(number) - 1]
+        song = self.music_path + self._songlist[int(number) - 1]
         await self.boxed_print(ctx, 'Playing: ' + name[:-5])
         self._stop_loop = False
         def after_play(error):
@@ -93,7 +93,7 @@ class Music(commands.Cog):
         with youtube_dl.YoutubeDL(ydl_opts) as ydl:
             info = ydl.extract_info(url)
             await self.boxed_print(ctx, 'Song downloaded: \n' + info['title'])
-        self._songlist, self._unknown_files = update_songlist()
+        self._songlist, self._unknown_files = update_songlist(self.music_path)
         await self.list_(ctx)
 
     @commands.command(brief = 'Removes a song selected from the list')
@@ -102,7 +102,7 @@ class Music(commands.Cog):
         if not status:
             if (1 <= int(number) <= len(self._songlist)):
                 song = self._songlist.pop(int(number) - 1)
-                os.remove(self._music_path + song)
+                os.remove(self.music_path + song)
                 await self.boxed_print(ctx, f'Song {song[:-5]} has been deleted')
                 await self.list_(ctx)
             else:
@@ -112,7 +112,7 @@ class Music(commands.Cog):
     async def flush(self, ctx):
         status = get(self.client.voice_clients, guild=ctx.guild)
         if not status:
-            for filename in os.scandir(self._music_path):
+            for filename in os.scandir(self.music_path):
                 os.remove(filename.path)
             await self.boxed_print(ctx, 'Music folder is now empty')
         self._songlist.clear()
@@ -120,7 +120,7 @@ class Music(commands.Cog):
     @commands.command(brief = 'Converts music file to opus format')
     async def convert(self, ctx, arg, ext = 'mp3'):
         if arg == 'list':
-            self._filelist = update_songlist(ext)[0]
+            self._filelist = update_songlist(self.music_path, ext)[0]
             if not self._filelist:
                 await self.boxed_print(ctx, 'No files to convert')
                 return
@@ -162,7 +162,7 @@ class Music(commands.Cog):
         await self.boxed_print(ctx, string)
 
 
-def update_songlist(ext = 'opus', music_path = './music/'):
+def update_songlist(music_path, ext = 'opus'):
     songlist = []
     unknown_files = 0
     for filename in os.listdir(music_path):
