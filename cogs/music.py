@@ -10,7 +10,8 @@ class Music(commands.Cog):
     def __init__(self, client):
         self.client = client
         self._songlist = []
-        self._filelist = []
+        #self._filelist = []
+        #self._urlslist = []
         self._unknown_files = 0
         self._music_path = './music/'
         self.prefix = self.client.command_prefix[0]
@@ -89,6 +90,8 @@ class Music(commands.Cog):
                 }],
         }
 
+        if not url.startswith('http'):
+            url = f'https://www.youtube.com{self._urlslist[int(url) - 1]}'
         with youtube_dl.YoutubeDL(ydl_opts) as ydl:
             info = ydl.extract_info(url)
             await self.boxed_print(ctx, 'Song downloaded: \n' + info['title'])
@@ -145,15 +148,22 @@ class Music(commands.Cog):
             await self.boxed_print(ctx, f'Select an existing file from the list or use {self.prefix}convert list.')
 
     @commands.command()
-    async def search(self, ctx, key):
-        searchlist = YoutubeSearch(key, max_results = 5).to_dict()
+    async def search(self, ctx, *key):
         i = 0
+        self._urlslist = []
+        searchrequest = ''
         string = 'Search results:\n'
+        for word in key:
+            searchrequest += f'{word!s} '
+        searchlist = YoutubeSearch(searchrequest, max_results = 5).to_dict()
         for video in searchlist:
             i +=1
             title = video['title']
-            url = video['link']
-            string += f'{i!s}. {title}\n   url: {url}\n'
+            #url = video['link']
+            self._urlslist.append(video['link'])
+            string += f'{i!s}. {title}\n'
+        #com = self.client.get_command('download')
+        string += f'Use {self.prefix}download <number> to download song from list.'
         await self.boxed_print(ctx, string)
 
 
