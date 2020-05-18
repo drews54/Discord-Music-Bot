@@ -145,7 +145,7 @@ class Music(commands.Cog):
         else:
             await self.boxed_print(ctx, f'Select an existing file from the list or use {self.prefix}convert list.')
 
-    @commands.command()
+    @commands.command(brief = 'Use to search videos in YT')
     async def search(self, ctx, *key):
         i = 0
         self._urlslist = []
