@@ -156,9 +156,8 @@ class Music(commands.Cog):
         searchlist = YoutubeSearch(searchrequest, max_results = 5).to_dict()
         for video in searchlist:
             i += 1
-            title = video['title']
             self._urlslist.append(video['link'])
-            string += f'{i!s}. {title}\n'
+            string += f'{i!s}. {video["title"]}\n'
         string += f'Use {self.prefix}download <number> to download song from list.'
         await self.boxed_print(ctx, string)
 
