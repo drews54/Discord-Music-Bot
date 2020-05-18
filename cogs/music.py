@@ -1,6 +1,6 @@
 import discord
 import youtube_dl
-import os, math, subprocess, json
+import os, math, subprocess
 from discord.utils import get
 from discord.ext import commands
 from asyncio import run_coroutine_threadsafe
