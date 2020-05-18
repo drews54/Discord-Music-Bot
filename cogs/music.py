@@ -30,7 +30,7 @@ class Music(commands.Cog):
             await self.boxed_print(ctx, f'404 bro, use one of {max_page!s} existing pages')
             return
         elif not self._songlist:
-            await self.boxed_print(ctx, 'No songs! Use "bro download" to download songs')
+            await self.boxed_print(ctx, f'No songs! Use {self.prefix}download to download songs')
             return
         i = 0
         string = f'Page {page!s} of {max_page!s}:\n'
