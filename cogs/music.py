@@ -77,6 +77,20 @@ class Music(commands.Cog):
                     print(f'Disconnect has failed. Run {self.prefix}stop manually', error)
         ctx.message.guild.voice_client.play(discord.FFmpegOpusAudio(song), after = after_play)
 
+    @commands.command(brief = 'Pauses playback')
+    async def pause(self, ctx):
+        if ctx.message.guild.voice_client is not None and ctx.message.guild.voice_client.is_playing():
+            ctx.message.guild.voice_client.pause()
+        else:
+            await self.boxed_print(ctx, 'Nothing is playing')
+                
+    @commands.command(brief = 'Resumes playback')
+    async def resume(self, ctx):
+        if ctx.message.guild.voice_client is not None and ctx.message.guild.voice_client.is_paused():
+            ctx.message.guild.voice_client.resume()
+        else:
+            await self.boxed_print(ctx, 'Nothing is paused')
+
     @commands.command(brief = 'Downloads audio from YouTube')
     async def download(self, ctx, url):
         ydl_opts = {
