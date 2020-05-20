@@ -89,7 +89,7 @@ class Music(commands.Cog):
         }
 
         if not url.startswith('http'):
-            url = f'https://www.youtu.be{self._urlslist[int(url) - 1]}'
+            url = f'https://www.youtube.com{self._urlslist[int(url) - 1]}' #It works better then hhtp://youtu.be/
         with youtube_dl.YoutubeDL(ydl_opts) as ydl:
             info = ydl.extract_info(url)
             await self.boxed_print(ctx, 'Song downloaded: \n' + info['title'])
