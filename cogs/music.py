@@ -46,8 +46,10 @@ class Music(commands.Cog):
     async def stop(self, ctx, loop = ''):
         if loop == 'loop':
             self._stop_loop = True
-        elif ctx.voice_client.is_connected():
+        elif ctx.voice_client is not None and ctx.voice_client.is_connected():
             await ctx.message.guild.voice_client.disconnect()
+        else:
+            await ctx.message.channel.send('```Nothing is playing```')
 
     @commands.command(brief = 'Plays song from list')
     async def play(self, ctx, number, loop = ''):
