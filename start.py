@@ -37,6 +37,12 @@ async def reload(ctx, extension):
 async def about(ctx):
     await ctx.message.channel.send('```Github source code link: https://github.com/duha54rus/Discord-Music-Bot```')
 
+@client.command(hidden=True, aliases=['exit', 'die', 'logout'])
+@commands.is_owner()
+async def shutdown(ctx):
+    await ctx.message.channel.send('Shutting down.\nGoodbye.')
+    await client.logout()
+
 for filename in os.listdir('./cogs'):
     if filename.endswith('.py'):
         client.load_extension(f'cogs.{filename[:-3]}')
