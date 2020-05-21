@@ -49,7 +49,7 @@ class Music(commands.Cog):
         elif ctx.voice_client is not None and ctx.voice_client.is_connected():
             await ctx.message.guild.voice_client.disconnect()
         else:
-            await self.boxed_print(ctx, '```Nothing is playing```')
+            await self.boxed_print(ctx, 'Nothing is playing')
 
     @commands.command(brief = 'Plays song from list')
     async def play(self, ctx, number, loop = ''):
