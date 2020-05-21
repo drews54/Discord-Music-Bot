@@ -46,8 +46,10 @@ class Music(commands.Cog):
     async def stop(self, ctx, loop = ''):
         if loop == 'loop':
             self._stop_loop = True
-        elif ctx.voice_client.is_connected():
+        elif ctx.voice_client is not None and ctx.voice_client.is_connected():
             await ctx.message.guild.voice_client.disconnect()
+        else:
+            await self.boxed_print(ctx, 'Nothing is playing')
 
     @commands.command(brief = 'Plays song from list')
     async def play(self, ctx, number, loop = ''):
@@ -103,7 +105,7 @@ class Music(commands.Cog):
         }
 
         if not url.startswith('http'):
-            url = f'https://www.youtube.com{self._urlslist[int(url) - 1]}' #It works better then hhtp://youtu.be/
+            url = f'https://www.youtube.com{self._urlslist[int(url) - 1]}'
         with youtube_dl.YoutubeDL(ydl_opts) as ydl:
             info = ydl.extract_info(url)
             await self.boxed_print(ctx, 'Song downloaded: \n' + info['title'])
