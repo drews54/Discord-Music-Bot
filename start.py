@@ -31,16 +31,16 @@ async def reload(ctx, extension):
     print(extension + ' unloaded')
     client.load_extension(f'cogs.{extension}')
     print(extension + ' loaded')
-    await ctx.message.channel.send('```' + extension + ' module has been reloaded```')
+    await ctx.send('```' + extension + ' module has been reloaded```')
 
 @client.command()
 async def about(ctx):
-    await ctx.message.channel.send('```Github source code link: https://github.com/duha54rus/Discord-Music-Bot```')
+    await ctx.send('```Github source code link: https://github.com/duha54rus/Discord-Music-Bot```')
 
 @client.command(hidden=True, aliases=['exit', 'die', 'logout'])
 @commands.is_owner()
 async def shutdown(ctx):
-    await ctx.message.channel.send('Shutting down.\nGoodbye.')
+    await ctx.send('Shutting down.\nGoodbye.')
     await client.logout()
 
 for filename in os.listdir('./cogs'):

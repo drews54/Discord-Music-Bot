@@ -19,7 +19,7 @@ class Music(commands.Cog):
             os.mkdir(self.music_path)
 
     async def boxed_print(self, ctx, text):
-        await ctx.message.channel.send('```' + text + '```')
+        await ctx.send('```' + text + '```')
 
     @commands.command(name = 'list', brief = 'Shows songs list')
     async def list_(self, ctx, page = 1):
