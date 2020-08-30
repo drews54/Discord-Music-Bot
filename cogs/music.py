@@ -109,8 +109,9 @@ class Music(commands.Cog):
         with youtube_dl.YoutubeDL(ydl_opts) as ydl:
             info = ydl.extract_info(url)
             await self.boxed_print(ctx, 'Song downloaded: \n' + info['title'])
-        self._songlist, self._unknown_files = update_songlist(self.music_path)
-        await self.list_(ctx)
+            self._songlist, self._unknown_files = update_songlist(self.music_path)
+            await self.boxed_print(ctx ,f'Song number: {self._songlist.index(info["title"] + ".opus") + 1}')
+
 
     @commands.command(brief = 'Removes a song selected from the list')
     async def remove(self, ctx, number = 0):
