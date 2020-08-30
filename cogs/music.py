@@ -11,6 +11,7 @@ class Music(commands.Cog):
         self.client = client
         self._songlist = []
         self._unknown_files = 0
+        self._playlist = []
         self.music_path = './music/'
         self.prefix = self.client.command_prefix[0]
         if os.path.exists(self.music_path):
@@ -70,6 +71,15 @@ class Music(commands.Cog):
                     ctx.message.guild.voice_client.play(discord.FFmpegOpusAudio(song), after = after_play)
                 except:
                     pass
+            elif self._playlist:
+                try:
+                    next_song = self.music_path + self._playlist[0]
+                    coroutine = self.boxed_print(ctx, 'Playing: ' + self._playlist[0][:-5])
+                    run_coroutine_threadsafe(coroutine, self.client.loop).result()
+                    self._playlist.pop(0)
+                    ctx.message.guild.voice_client.play(discord.FFmpegOpusAudio(next_song), after = after_play)
+                except:
+                    print('Error in playlist')
             else:
                 coroutine = ctx.voice_client.disconnect()
                 future = run_coroutine_threadsafe(coroutine, self.client.loop)
@@ -177,6 +187,29 @@ class Music(commands.Cog):
         string += f'Use {self.prefix}download <number> to download song from list.'
         await self.boxed_print(ctx, string)
 
+    @commands.command()
+    async def playlist(self, ctx, action = 'show', song_number = None):
+        if action == 'show':
+            string = ''
+            i = 0
+            if self._playlist:
+                for song in self._playlist:
+                    i += 1
+                    string += f'{i}. {song[:-5]}\n'
+            else:
+                string = 'Playlist is empty'
+            await self.boxed_print(ctx, string)
+    
+        if action == 'add':
+            self._playlist.append(self._songlist[int(song_number) - 1])
+            await self.boxed_print(ctx, f'{self._songlist[int(song_number) - 1][:-5]} added to queue.')
+
+        if action == 'remove':
+            self._playlist.pop(int(song_number) - 1)
+
+        if action == 'clear':
+            self._playlist.clear()
+            await self.boxed_print(ctx, 'Playlist is cleared.')
 
 def update_songlist(music_path, ext = 'opus'):
     songlist = []
