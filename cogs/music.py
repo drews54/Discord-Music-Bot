@@ -202,12 +202,11 @@ class Music(commands.Cog):
     
         if action == 'add':
             self._playlist.append(self._songlist[int(song_number) - 1])
-            await self.boxed_print(ctx, f'**{self._songlist[int(song_number) - 1][:-5]}** added to queue.')
+            await self.boxed_print(ctx, f'«‎{self._songlist[int(song_number) - 1][:-5]}»‎ added to queue.')
 
         if action == 'del':
-            await self.boxed_print(ctx, f'Song **{self._playlist[int(song_number) - 1][:-5]}** has been removed from queue')
+            await self.boxed_print(ctx, f'Song «‎{self._playlist[int(song_number) - 1][:-5]}»‎ has been removed from queue')
             self._playlist.pop(int(song_number) - 1)
-            self.playlist(self, ctx)
 
         if action == 'clear':
             self._playlist.clear()
