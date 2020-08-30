@@ -187,7 +187,7 @@ class Music(commands.Cog):
         string += f'Use {self.prefix}download <number> to download song from list.'
         await self.boxed_print(ctx, string)
 
-    @commands.command()
+    @commands.command(brief = 'Use <add/remove/clear> + song number to edit playlist.')
     async def playlist(self, ctx, action = 'show', song_number = None):
         if action == 'show':
             string = ''
