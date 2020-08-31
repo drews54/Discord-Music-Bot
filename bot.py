@@ -1,11 +1,24 @@
-import discord
-import os
-import json
+import discord, os, json
 from discord.ext import commands
 
-with open('Data.json', encoding = 'utf-8') as dataFile:
+if not os.path.exists('./data.json'):
+        
+        user_token = input('Enter your bot token:\n')
+        user_input = input('Enter your prefixes separated by commas(do not use spaces between prefixes)\n')
+        user_prefixes = user_input.split(',')
+
+        data_file = {
+            'token' : user_token,
+            'prefix' : user_prefixes
+        }
+        with open('data.json', 'x', encoding = 'utf-8') as file:
+            json.dump(data_file, file, sort_keys = True, indent = 2)
+        print('Data file has been created.')
+
+with open('data.json', encoding = 'utf-8') as dataFile:
     global client
     global token
+
     data = json.load(dataFile)
 
     token = data['token']
@@ -18,20 +31,19 @@ async def on_ready():
 @client.command(hidden = True)
 async def load(ctx, extension):
     client.load_extension(f'cogs.{extension}')
-    print(extension + ' loaded')
+    print(f'Module {extension} loaded')
 
 @client.command(hidden = True)
 async def unload(ctx, extension):
     client.unload_extension(f'cogs.{extension}')
-    print(extension + ' unloaded')
+    print(f'Module {extension} unloaded')
 
 @client.command(hidden = True)
 async def reload(ctx, extension):
     client.unload_extension(f'cogs.{extension}')
-    print(extension + ' unloaded')
     client.load_extension(f'cogs.{extension}')
-    print(extension + ' loaded')
-    await ctx.send('```' + extension + ' module has been reloaded```')
+    print(f'Module {extension} reloaded')
+    await ctx.send(f'```Module {extension} module has been reloaded```')
 
 @client.command()
 async def about(ctx):
@@ -46,6 +58,7 @@ async def shutdown(ctx):
 for filename in os.listdir('./cogs'):
     if filename.endswith('.py'):
         client.load_extension(f'cogs.{filename[:-3]}')
-        print(filename[:-3] + ' loaded')
+        print(f'Module {filename[:-3]} loaded')
 
+print('\nConnecting to server...')
 client.run(token)

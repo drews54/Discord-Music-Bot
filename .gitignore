@@ -133,10 +133,8 @@ dmypy.json
 .vscode
 
 # Token and command prefix
-Data.json
+data.json
 
 # Music folder
 music
 
-# Optional startup batch file
-start.bat
