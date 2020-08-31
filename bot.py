@@ -2,17 +2,18 @@ import discord, os, json
 from discord.ext import commands
 
 if not os.path.exists('./data.json'):
+        
+        user_token = input('Enter your bot token:\n')
+        user_input = input('Enter your prefixes separated by commas(do not use spaces between prefixes)\n')
+        user_prefixes = user_input.split(',')
+
         data_file = {
-            'token' : 'PUT YOUR TOKEN HERE',
-            'prefix' : [
-                'first prefix',
-                'second prefix'
-            ]
+            'token' : user_token,
+            'prefix' : user_prefixes
         }
         with open('data.json', 'x', encoding = 'utf-8') as file:
             json.dump(data_file, file, sort_keys = True, indent = 2)
-        print('Data file has been created. Edit it with your token and prifix to use the bot.')
-        exit()
+        print('Data file has been created.')
 
 with open('data.json', encoding = 'utf-8') as dataFile:
     global client
