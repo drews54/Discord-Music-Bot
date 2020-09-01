@@ -19,8 +19,6 @@ class Music(commands.Cog):
         else:
             os.mkdir(self.music_path)
 
-        #client.CustomActivity('Eating...')
-
     async def boxed_print(self, ctx, text):
         await ctx.send('```' + text + '```')
 
@@ -68,7 +66,6 @@ class Music(commands.Cog):
             return
         name = self._songlist[int(number) - 1]
         song = self.music_path + self._songlist[int(number) - 1]
-        #await self.boxed_print(ctx, 'Playing: ' + name[:-5])
         await self.changestatus(ctx, name[:-5])
         self._stop_loop = False
         self.is_stoped = False
@@ -81,7 +78,6 @@ class Music(commands.Cog):
             elif self._playlist:
                 try:
                     next_song = self.music_path + self._playlist[0]
-                    #coroutine = self.boxed_print(ctx, 'Playing: ' + self._playlist[0][:-5])
                     coroutine = self.changestatus(ctx, self._playlist[0][:-5])
 
                     run_coroutine_threadsafe(coroutine, self.client.loop).result()
@@ -90,7 +86,7 @@ class Music(commands.Cog):
                 except:
                     print('Error in playlist')
             elif not self.is_stoped:
-                coroutine = self.stop(ctx) #ctx.voice_client.disconnect()
+                coroutine = self.stop(ctx)
                 future = run_coroutine_threadsafe(coroutine, self.client.loop)
                 try:
                     future.result()
