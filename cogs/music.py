@@ -50,7 +50,7 @@ class Music(commands.Cog):
         elif ctx.voice_client is not None and ctx.voice_client.is_connected():
             await ctx.message.guild.voice_client.disconnect()
             await self.client.change_presence(status = discord.Status.idle, afk = True)
-            self.is_stoped = True
+            self.is_stopped = True
             
         else:
             await self.boxed_print(ctx, 'Nothing is playing')
@@ -68,7 +68,7 @@ class Music(commands.Cog):
         song = self.music_path + self._songlist[int(number) - 1]
         await self.changestatus(ctx, name[:-5])
         self._stop_loop = False
-        self.is_stoped = False
+        self.is_stopped = False
         def after_play(error):
             if loop == 'loop' and not self._stop_loop:
                 try:
@@ -85,7 +85,7 @@ class Music(commands.Cog):
                     ctx.message.guild.voice_client.play(discord.FFmpegOpusAudio(next_song), after = after_play)
                 except:
                     print('Error in playlist')
-            elif not self.is_stoped:
+            elif not self.is_stopped:
                 coroutine = self.stop(ctx)
                 future = run_coroutine_threadsafe(coroutine, self.client.loop)
                 try:
