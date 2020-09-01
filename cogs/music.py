@@ -49,6 +49,9 @@ class Music(commands.Cog):
             self._stop_loop = True
         elif ctx.voice_client is not None and ctx.voice_client.is_connected():
             await ctx.message.guild.voice_client.disconnect()
+            await self.client.change_presence(status = discord.Status.idle, afk = True)
+            self.is_stopped = True
+            
         else:
             await self.boxed_print(ctx, 'Nothing is playing')
 
@@ -63,8 +66,9 @@ class Music(commands.Cog):
             return
         name = self._songlist[int(number) - 1]
         song = self.music_path + self._songlist[int(number) - 1]
-        await self.boxed_print(ctx, 'Playing: ' + name[:-5])
+        await self.changestatus(ctx, name[:-5])
         self._stop_loop = False
+        self.is_stopped = False
         def after_play(error):
             if loop == 'loop' and not self._stop_loop:
                 try:
@@ -74,14 +78,15 @@ class Music(commands.Cog):
             elif self._playlist:
                 try:
                     next_song = self.music_path + self._playlist[0]
-                    coroutine = self.boxed_print(ctx, 'Playing: ' + self._playlist[0][:-5])
+                    coroutine = self.changestatus(ctx, self._playlist[0][:-5])
+
                     run_coroutine_threadsafe(coroutine, self.client.loop).result()
                     self._playlist.pop(0)
                     ctx.message.guild.voice_client.play(discord.FFmpegOpusAudio(next_song), after = after_play)
                 except:
                     print('Error in playlist')
-            else:
-                coroutine = ctx.voice_client.disconnect()
+            elif not self.is_stopped:
+                coroutine = self.stop(ctx)
                 future = run_coroutine_threadsafe(coroutine, self.client.loop)
                 try:
                     future.result()
@@ -211,6 +216,12 @@ class Music(commands.Cog):
         if action == 'clear':
             self._playlist.clear()
             await self.boxed_print(ctx, 'Playlist is cleared.')
+    
+    @commands.command(hidden = True)
+    async def changestatus(self, ctx, status):
+        await self.client.change_presence(activity = discord.Game(name = status))
+        await self.boxed_print(ctx, 'Playing: ' + status)
+
 
 def update_songlist(music_path, ext = 'opus'):
     songlist = []
