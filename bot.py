@@ -60,5 +60,13 @@ for filename in os.listdir('./cogs'):
         client.load_extension(f'cogs.{filename[:-3]}')
         print(f'Module {filename[:-3]} loaded')
 
+@client.event
+async def on_command_error(ctx, error):
+    if isinstance(error, commands.CommandNotFound):
+        await ctx.send(f'**{ctx.message.content}** command not found. Use {client.command_prefix[0]}help')
+    else:
+        await ctx.send(f'{client.get_user(333726348625313793).mention}, something went **wrong**...')
+        print(error)
+
 print('\nConnecting to server...')
 client.run(token)
