@@ -50,8 +50,7 @@ class Music(commands.Cog):
         elif ctx.voice_client is not None and ctx.voice_client.is_connected():
             await ctx.message.guild.voice_client.disconnect()
             await self.client.change_presence(status = discord.Status.idle, afk = True)
-            self.is_stopped = True
-            
+            self.is_stopped = True            
         else:
             await self.boxed_print(ctx, 'Nothing is playing')
 
@@ -124,7 +123,13 @@ class Music(commands.Cog):
         with youtube_dl.YoutubeDL(ydl_opts) as ydl:
             info = ydl.extract_info(url)
             self._songlist, self._unknown_files = update_songlist(self.music_path)
-            await self.boxed_print(ctx, f'Song downloaded:\n{info["title"]}\nSong number: {self._songlist.index(info["title"] + ".opus") + 1}')
+            name = ''
+            for letter in info['title']:
+                if letter == '"':
+                    name += "'"
+                else:
+                    name += letter
+            await self.boxed_print(ctx, f'Song downloaded:\n{name}\nSong number: {self._songlist.index(name + ".opus") + 1}')
 
 
     @commands.command(brief = 'Removes a song selected from the list')
