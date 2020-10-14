@@ -123,12 +123,7 @@ class Music(commands.Cog):
         with youtube_dl.YoutubeDL(ydl_opts) as ydl:
             info = ydl.extract_info(url)
             self._songlist, self._unknown_files = update_songlist(self.music_path)
-            name = ''
-            for letter in info['title']:
-                if letter == '"':
-                    name += "'"
-                else:
-                    name += letter
+            name = info['title'].replace('"', "'")
             await self.boxed_print(ctx, f'Song downloaded:\n{name}\nSong number: {self._songlist.index(name + ".opus") + 1}')
 
 
