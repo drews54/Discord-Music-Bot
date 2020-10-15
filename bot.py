@@ -64,8 +64,10 @@ for filename in os.listdir('./cogs'):
 async def on_command_error(ctx, error):
     if isinstance(error, commands.CommandNotFound):
         await ctx.send(f'**{ctx.message.content}** command not found. Use {client.command_prefix[0]}help')
+    elif isinstance(error, commands.MissingRequiredArgument):
+        await ctx.send(f'Missing command parameter. Use **{client.command_prefix[0]}help {ctx.command}**')
     else:
-        await ctx.send(f'{client.get_user(333726348625313793).mention}, something went **wrong**...')
+        await ctx.send(f'{client.get_user(333726348625313793).mention}, эти **дибилы** опять что-то сломали.\n{error}')
         print(error)
 
 print('\nConnecting to server...')
