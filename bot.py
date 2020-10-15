@@ -6,6 +6,8 @@ if not os.path.exists('./data.json'):
         user_token = input('Enter your bot token:\n')
         user_input = input('Enter your prefixes separated by commas(do not use spaces between prefixes)\n')
         user_id = input("Enter your user ID(Enter to skip):\n")
+        if user_id == '':
+            user_id = None
         user_prefixes = user_input.split(',')
 
         data_file = {
@@ -71,7 +73,8 @@ async def on_command_error(ctx, error):
     elif isinstance(error, commands.MissingRequiredArgument):
         await ctx.send(f'Missing command parameter. Use **{client.command_prefix[0]}help {ctx.command}**')
     else:
-        await ctx.send(f'{client.get_user(owner_id).mention}, эти **дибилы** опять что-то сломали.\n{error}')
+        if not owner_id == None:
+            await ctx.send(f'{client.get_user(owner_id).mention}, эти **дибилы** опять что-то сломали.\n{error}')
         print(error)
 
 print('\nConnecting to server...')
