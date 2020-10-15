@@ -5,13 +5,13 @@ if not os.path.exists('./data.json'):
         
         user_token = input('Enter your bot token:\n')
         user_input = input('Enter your prefixes separated by commas(do not use spaces between prefixes)\n')
-        owner_id = input("Enter your user ID(Enter to skip):\n")
+        user_id = input("Enter your user ID(Enter to skip):\n")
         user_prefixes = user_input.split(',')
 
         data_file = {
             'token' : user_token,
             'prefix' : user_prefixes,
-            'owner_id' : owner_id
+            'owner_id' : user_id
         }
         with open('data.json', 'x', encoding = 'utf-8') as file:
             json.dump(data_file, file, sort_keys = True, indent = 2)
