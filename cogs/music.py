@@ -1,6 +1,6 @@
 import discord
 import youtube_dl
-import os, math, subprocess
+import os, math, subprocess, random
 from discord.utils import get
 from discord.ext import commands
 from asyncio import run_coroutine_threadsafe
@@ -63,6 +63,8 @@ class Music(commands.Cog):
         except AttributeError:
             await self.boxed_print(ctx, 'Connect to a voice channel before playing')
             return
+        if number == 'random':
+            number = random.randint(0, len(self._songlist) - 1)
         name = self._songlist[int(number) - 1]
         song = self.music_path + self._songlist[int(number) - 1]
         await self.changestatus(ctx, name[:-5])
@@ -206,6 +208,8 @@ class Music(commands.Cog):
             await self.boxed_print(ctx, string)
     
         if action == 'add':
+            if song_number == 'random':
+                song_number = random.randint(0, len(self._songlist) - 1)
             self._playlist.append(self._songlist[int(song_number) - 1])
             await self.boxed_print(ctx, f'«‎{self._songlist[int(song_number) - 1][:-5]}»‎ added to queue.')
 
