@@ -56,6 +56,18 @@ class Music(commands.Cog):
 
     @commands.command(brief = 'Plays song from list')
     async def play(self, ctx, number='playlist', loop = ''):
+        if number == 'random':
+            number = random.randint(0, len(self._songlist) - 1)
+        elif number == 'playlist':
+            if self._playlist:
+                number = self._songlist.index(self._playlist[0]) + 1
+                self._playlist.pop(0)
+            else:
+                await self.boxed_print(ctx, 'Nothing to play!')
+                return
+        name = self._songlist[int(number) - 1]
+        song = self.music_path + self._songlist[int(number) - 1]
+
         status = get(self.client.voice_clients, guild=ctx.guild)
         try:
             if not status:
@@ -63,13 +75,7 @@ class Music(commands.Cog):
         except AttributeError:
             await self.boxed_print(ctx, 'Connect to a voice channel before playing')
             return
-        if number == 'random':
-            number = random.randint(0, len(self._songlist) - 1)
-        elif number == 'playlist':
-            number = self._songlist.index(self._playlist[0]) + 1
-            self._playlist.pop(0)
-        name = self._songlist[int(number) - 1]
-        song = self.music_path + self._songlist[int(number) - 1]
+
         await self.changestatus(ctx, name[:-5])
         self._stop_loop = False
         self.is_stopped = False
@@ -140,7 +146,6 @@ class Music(commands.Cog):
                 song = self._songlist.pop(int(number) - 1)
                 os.remove(self.music_path + song)
                 await self.boxed_print(ctx, f'Song {song[:-5]} has been deleted')
-                await self.list_(ctx)
             else:
                 await self.boxed_print(ctx, 'Select an existing song from the list')
 
@@ -229,13 +234,15 @@ class Music(commands.Cog):
                 number = random.randint(0, len(self._songlist) - 1)
                 self._playlist.append(self._songlist[int(number) - 1])
                 await self.boxed_print(ctx, f'«‎{self._songlist[int(number) - 1][:-5]}»‎ added to queue.')
-            await self.play(ctx)
-    
+            if ctx.message.guild.voice_client is not None and ctx.message.guild.voice_client.is_playing():
+                pass
+            else:
+                await self.play(ctx)
+
     @commands.command(hidden = True)
     async def changestatus(self, ctx, status):
         await self.client.change_presence(activity = discord.Game(name = status))
         await self.boxed_print(ctx, 'Playing: ' + status)
-
 
 def update_songlist(music_path, ext = 'opus'):
     songlist = []
