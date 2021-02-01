@@ -67,6 +67,7 @@ class Music(commands.Cog):
             number = random.randint(0, len(self._songlist) - 1)
         elif number == 'playlist':
             number = self._songlist.index(self._playlist[0]) + 1
+            self._playlist.pop(0)
         name = self._songlist[int(number) - 1]
         song = self.music_path + self._songlist[int(number) - 1]
         await self.changestatus(ctx, name[:-5])
