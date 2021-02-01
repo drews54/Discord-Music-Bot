@@ -55,7 +55,7 @@ class Music(commands.Cog):
             await self.boxed_print(ctx, 'Nothing is playing')
 
     @commands.command(brief = 'Plays song from list')
-    async def play(self, ctx, number, loop = ''):
+    async def play(self, ctx, number='playlist', loop = ''):
         status = get(self.client.voice_clients, guild=ctx.guild)
         try:
             if not status:
@@ -65,6 +65,8 @@ class Music(commands.Cog):
             return
         if number == 'random':
             number = random.randint(0, len(self._songlist) - 1)
+        elif number == 'playlist':
+            number = self._songlist.index(self._playlist[0]) + 1
         name = self._songlist[int(number) - 1]
         song = self.music_path + self._songlist[int(number) - 1]
         await self.changestatus(ctx, name[:-5])
@@ -207,19 +209,26 @@ class Music(commands.Cog):
                 string = 'Playlist is empty'
             await self.boxed_print(ctx, string)
     
-        if action == 'add':
+        elif action == 'add':
             if song_number == 'random':
                 song_number = random.randint(0, len(self._songlist) - 1)
             self._playlist.append(self._songlist[int(song_number) - 1])
             await self.boxed_print(ctx, f'«‎{self._songlist[int(song_number) - 1][:-5]}»‎ added to queue.')
 
-        if action == 'del':
+        elif action == 'del':
             await self.boxed_print(ctx, f'Song «‎{self._playlist[int(song_number) - 1][:-5]}»‎ has been removed from queue')
             self._playlist.pop(int(song_number) - 1)
 
-        if action == 'clear':
+        elif action == 'clear':
             self._playlist.clear()
             await self.boxed_print(ctx, 'Playlist is cleared.')
+
+        elif action == 'random':
+            for i in range(int(song_number)):
+                number = random.randint(0, len(self._songlist) - 1)
+                self._playlist.append(self._songlist[int(number) - 1])
+                await self.boxed_print(ctx, f'«‎{self._songlist[int(number) - 1][:-5]}»‎ added to queue.')
+            await self.play(ctx)
     
     @commands.command(hidden = True)
     async def changestatus(self, ctx, status):
