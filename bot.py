@@ -1,19 +1,15 @@
-import discord, os, json
+import discord, os, json, time
 from discord.ext import commands
 
 if not os.path.exists('./data.json'):
         
         user_token = input('Enter your bot token:\n')
         user_input = input('Enter your prefixes separated by commas(do not use spaces between prefixes)\n')
-        user_id = input("Enter your user ID(Enter to skip):\n")
-        if user_id == '':
-            user_id = None
         user_prefixes = user_input.split(',')
 
         data_file = {
             'token' : user_token,
-            'prefix' : user_prefixes,
-            'owner_id' : user_id
+            'prefix' : user_prefixes
         }
         with open('data.json', 'x', encoding = 'utf-8') as file:
             json.dump(data_file, file, sort_keys = True, indent = 2)
@@ -22,13 +18,11 @@ if not os.path.exists('./data.json'):
 with open('data.json', encoding = 'utf-8') as dataFile:
     global client
     global token
-    global owner_id
 
     data = json.load(dataFile)
 
     token = data['token']
     client = commands.Bot(command_prefix = tuple(data['prefix']))
-    owner_id = data['owner_id']
 
 @client.event
 async def on_ready():
@@ -57,7 +51,8 @@ async def about(ctx):
 
 @client.command(hidden=True, aliases=['exit', 'die', 'logout'])
 @commands.is_owner()
-async def shutdown(ctx):
+async def shutdown(ctx, time=0):
+    time.sleep(time)
     await ctx.send('Shutting down.\nGoodbye.')
     await client.logout()
 
@@ -73,8 +68,7 @@ async def on_command_error(ctx, error):
     elif isinstance(error, commands.MissingRequiredArgument):
         await ctx.send(f'Missing command parameter. Use **{client.command_prefix[0]}help {ctx.command}**')
     else:
-        if not owner_id == None:
-            await ctx.send(f'{client.get_user(owner_id).mention}, эти **дибилы** опять что-то сломали.\n{error}')
+        await ctx.send(f'Something went wrong...\nError log:\n{error}')
         print(error)
 
 print('\nConnecting to server...')
