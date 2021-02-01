@@ -66,10 +66,10 @@ async def on_command_error(ctx, error):
     if isinstance(error, commands.CommandNotFound):
         await ctx.send(f'**{ctx.message.content}** command not found. Use {client.command_prefix[0]}help')
     elif isinstance(error, commands.MissingRequiredArgument):
-        await ctx.send(f'Missing command parameter. Use **{client.command_prefix[0]}help {ctx.command}**')
+        await ctx.send(f'Missing command parameter.\nMissing parameter: **{error.param}**\nUse **{client.command_prefix[0]}help {ctx.command}**')
     else:
-        await ctx.send(f'Something went wrong...\nError log:\n{error}')
-        print(error)
+        await ctx.send(f'Something went wrong...\nCommand: {ctx.command}\nError log:\n{error}')
+        print(f'Command: {ctx.command}\nError log:\n{error}')
 
 print('\nConnecting to server...')
 client.run(token)
