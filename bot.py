@@ -1,4 +1,4 @@
-import discord, os, json
+import discord, os, json, time
 from discord.ext import commands
 
 if not os.path.exists('./data.json'):
@@ -51,7 +51,8 @@ async def about(ctx):
 
 @client.command(hidden=True, aliases=['exit', 'die', 'logout'])
 @commands.is_owner()
-async def shutdown(ctx):
+async def shutdown(ctx, sec=60):
+    time.sleep(sec)
     await ctx.send('Shutting down.\nGoodbye.')
     await client.logout()
 
@@ -59,6 +60,16 @@ for filename in os.listdir('./cogs'):
     if filename.endswith('.py'):
         client.load_extension(f'cogs.{filename[:-3]}')
         print(f'Module {filename[:-3]} loaded')
+
+@client.event
+async def on_command_error(ctx, error):
+    if isinstance(error, commands.CommandNotFound):
+        await ctx.send(f'**{ctx.message.content}** command not found. Use {client.command_prefix[0]}help')
+    elif isinstance(error, commands.MissingRequiredArgument):
+        await ctx.send(f'Missing command parameter. Use **{client.command_prefix[0]}help {ctx.command}**')
+    else:
+        await ctx.send(f'Something went wrong...\nError log:\n{error}')
+        print(error)
 
 print('\nConnecting to server...')
 client.run(token)
