@@ -136,5 +136,4 @@ dmypy.json
 data.json
 
 # Music folder
-music
-
+music/
