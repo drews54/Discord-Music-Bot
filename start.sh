@@ -1,5 +1,9 @@
 #!/bin/bash
-$DISCORD_TOKEN=PASTE_YOUR_TOKEN_HERE
-$DISCORD_PREFIXES=TYPE_PREFIXES_HERE
+if [[ -e .env ]]; then
+  source .env
+fi
+# Values of environment variables can be overridden by assigning values to names below
+export DISCORD_TOKEN
+export DISCORD_PREFIXES
 python bot.py
 read -p "Press any key to continue . . . "
