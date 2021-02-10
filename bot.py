@@ -27,7 +27,8 @@ async def reload(ctx, extension):
 
 @client.command()
 async def about(ctx):
-    await ctx.send('```GitHub source code: https://github.com/duha54rus/Discord-Music-Bot\nDocker Hub repository: https://hub.docker.com/r/drews54/discord-music-bot```')
+    await ctx.send('''```GitHub source code: https://github.com/duha54rus/Discord-Music-Bot\n
+                         Docker Hub repository: https://hub.docker.com/r/drews54/discord-music-bot```''')
 
 @client.command(hidden=True, aliases=['exit', 'die', 'logout'])
 @commands.is_owner()
