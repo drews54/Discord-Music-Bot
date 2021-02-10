@@ -12,7 +12,7 @@ To download and run the latest build of the bot from [Docker Hub](https://hub.do
 ## Build and deploy
 
 If you want to build the container yourself:
-1. Download the .zip of `Docker` branch and extract it
+1. Download the .zip of this branch and extract it
 2. Run `docker build -t discord-music-bot .` in the extracted directory
 3. Create a text file in the same directory, populate it with your discord bot token and chat prefixes as shown below:  
 ```env
