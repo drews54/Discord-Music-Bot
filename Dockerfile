@@ -10,7 +10,7 @@ ENV PYTHONUNBUFFERED=1
 ARG BuildMode
 
 # Install pip requirements and ffmpeg
-RUN apt-get install -y ffmpeg
+RUN apt-get update && apt-get install -y ffmpeg
 COPY requirements.txt .
 # RUN if [ "$BuildMode" = "debug" ] ; \
 #     then echo "debugpy" >> requirements.txt ; \
