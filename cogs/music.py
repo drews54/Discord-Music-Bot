@@ -122,7 +122,7 @@ class Music(commands.Cog):
     async def download(self, ctx, url):
         ydl_opts = {
             'format': 'bestaudio/opus',
-            'outtmpl': './music/%(title)s.%(ext)s',
+            'outtmpl': f'{self.music_path}%(title)s.%(ext)s',
             'postprocessors': [{
                 'key': 'FFmpegExtractAudio',
                 'preferredcodec': 'opus',
