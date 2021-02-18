@@ -1,28 +1,8 @@
-import discord, os, json, time
+import discord, os, time
 from discord.ext import commands
 
-if not os.path.exists('./data.json'):
-        
-        user_token = input('Enter your bot token:\n')
-        user_input = input('Enter your prefixes separated by commas(do not use spaces between prefixes)\n')
-        user_prefixes = user_input.split(',')
-
-        data_file = {
-            'token' : user_token,
-            'prefix' : user_prefixes
-        }
-        with open('data.json', 'x', encoding = 'utf-8') as file:
-            json.dump(data_file, file, sort_keys = True, indent = 2)
-        print('Data file has been created.')
-
-with open('data.json', encoding = 'utf-8') as dataFile:
-    global client
-    global token
-
-    data = json.load(dataFile)
-
-    token = data['token']
-    client = commands.Bot(command_prefix = tuple(data['prefix']))
+token = os.getenv('DISCORD_TOKEN')
+client = commands.Bot(command_prefix = tuple(os.getenv('DISCORD_PREFIXES').split())) #Import prefixes as space-separated values
 
 @client.event
 async def on_ready():
@@ -47,7 +27,8 @@ async def reload(ctx, extension):
 
 @client.command()
 async def about(ctx):
-    await ctx.send('```Github source code link: https://github.com/duha54rus/Discord-Music-Bot```')
+    await ctx.send('''```GitHub source code: https://github.com/duha54rus/Discord-Music-Bot\n
+                         Docker Hub repository: https://hub.docker.com/r/drews54/discord-music-bot```''')
 
 @client.command(hidden=True, aliases=['exit', 'die', 'logout'])
 @commands.is_owner()
