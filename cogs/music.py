@@ -25,18 +25,28 @@ class Music(commands.Cog):
     @commands.command(name = 'list', brief = 'Shows songs list')
     async def list_(self, ctx, page = 1):
         max_page = math.ceil(len(self._songlist)/10)
-        if self._songlist and not 0 < page <= max_page:
-            await self.boxed_print(ctx, f'404 bro, use one of {max_page!s} existing pages')
-            return
-        elif not self._songlist:
-            await self.boxed_print(ctx, f'No songs! Use {self.prefix}download to download songs')
-            return
-        i = 0
-        string = f'Page {page!s} of {max_page!s}:\n'
-        for name in self._songlist:
-            i += 1
-            if page == (i - 1)//10 + 1:
+        if page == 'all':
+            i = 0
+            string = 'Full song list:\n'
+            for name in self._songlist:
+                i += 1
                 string += f'{i!s}. {name[:-5]!s}\n'
+                if len(string) >= 1900:
+                    await self.boxed_print(ctx, string)
+                    string = ''
+        else:
+            if self._songlist and not 0 < page <= max_page:
+                await self.boxed_print(ctx, f'404 bro, use one of {max_page!s} existing pages')
+                return
+            elif not self._songlist:
+                await self.boxed_print(ctx, f'No songs! Use {self.prefix}download to download songs')
+                return
+            i = 0
+            string = f'Page {page!s} of {max_page!s}:\n'
+            for name in self._songlist:
+                i += 1
+                if page == (i - 1)//10 + 1:
+                    string += f'{i!s}. {name[:-5]!s}\n'
         await self.boxed_print(ctx, string)
         if self._unknown_files == 1:
             await self.boxed_print(ctx, f'Also there is a file with unknown extension. Use {self.prefix}convert list to convert your music files to "opus" format.')
