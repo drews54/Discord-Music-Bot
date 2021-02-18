@@ -249,7 +249,7 @@ class Music(commands.Cog):
 
     @commands.command(hidden = True)
     async def changestatus(self, ctx, status):
-        await self.client.change_presence(activity = discord.Game(name = status))
+        await self.client.change_presence(activity = discord.Activity(type=discord.ActivityType.listening, name=status))
         await self.boxed_print(ctx, 'Playing: ' + status)
 
 def update_songlist(music_path, ext = 'opus'):
