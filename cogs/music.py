@@ -18,6 +18,7 @@ class Music(commands.Cog):
             self._songlist, self._unknown_files = update_songlist(self.music_path)
         else:
             os.mkdir(self.music_path)
+        random.seed()
 
     async def boxed_print(self, ctx, text):
         await ctx.send('```' + text + '```')
