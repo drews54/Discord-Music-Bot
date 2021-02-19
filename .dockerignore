@@ -3,6 +3,7 @@
 **/.dockerignore
 **/.env
 **/.git
+**/.github
 **/.gitignore
 **/.project
 **/.settings
@@ -24,4 +25,5 @@
 **/values.dev.yaml
 README.md
 LICENSE
+SECURITY.md
 start.*
