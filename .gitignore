@@ -132,8 +132,5 @@ dmypy.json
 .vs
 .vscode
 
-# Token and command prefix
-data.json
-
 # Music folder
 music/
