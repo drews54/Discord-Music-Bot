@@ -131,6 +131,7 @@ dmypy.json
 # Visual Studio stuff (added manually)
 .vs
 .vscode
+.devcontainer
 
 # Music folder
 music/
