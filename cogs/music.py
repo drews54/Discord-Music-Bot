@@ -64,6 +64,8 @@ class Music(commands.Cog):
 
     @commands.command(brief = 'Plays song from list')
     async def play(self, ctx, number='playlist', loop = ''):
+        if number == 'loop':
+            self._stop_loop = False
         if number == 'random':
             number = random.randint(0, len(self._songlist) - 1)
         elif number == 'playlist':
