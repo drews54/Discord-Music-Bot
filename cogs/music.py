@@ -55,10 +55,13 @@ class Music(commands.Cog):
     async def stop(self, ctx, loop = ''):
         if loop == 'loop':
             self._stop_loop = True
+            self._looped = False
+            await self.boxed_print(ctx, 'Loop stopped!')
         elif ctx.voice_client is not None and ctx.voice_client.is_connected():
             await ctx.message.guild.voice_client.disconnect()
             await self.client.change_presence(status = discord.Status.idle, afk = True)
-            self.is_stopped = True            
+            self.is_stopped = True
+            self._looped = False          
         else:
             await self.boxed_print(ctx, 'Nothing is playing')
 
@@ -66,6 +69,8 @@ class Music(commands.Cog):
     async def play(self, ctx, number='playlist', loop = ''):
         if number == 'loop':
             self._stop_loop = False
+            self._looped = True
+            await self.boxed_print(ctx, 'Loop activated!')
             return
         if number == 'random':
             number = random.randint(0, len(self._songlist) - 1)
@@ -76,6 +81,10 @@ class Music(commands.Cog):
             else:
                 await self.boxed_print(ctx, 'Nothing to play!')
                 return
+
+        if loop == 'loop':
+            self._looped = True
+
         name = self._songlist[int(number) - 1]
         song = self.music_path + self._songlist[int(number) - 1]
 
@@ -91,7 +100,7 @@ class Music(commands.Cog):
         self._stop_loop = False
         self.is_stopped = False
         def after_play(error):
-            if loop == 'loop' and not self._stop_loop:
+            if self._looped and not self._stop_loop:
                 try:
                     ctx.message.guild.voice_client.play(discord.FFmpegOpusAudio(song), after = after_play)
                 except:
