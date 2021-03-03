@@ -141,8 +141,16 @@ class Music(commands.Cog):
             await self.boxed_print(ctx, 'Nothing is paused')
 
     @commands.command(brief = 'Changes music volume %')
-    async def volume(self, ctx, volume):
-        self.music_volume = volume / 100
+    async def volume(self, ctx, volume=None):
+        if volume == None:
+            await self.boxed_print(ctx, f'Volume = {self.music_volume * 100}%')
+        elif 0 <= int(volume) <= 100:
+            self.music_volume = int(volume) / 100
+            if ctx.message.guild.voice_client is not None and ctx.message.guild.voice_client.is_playing():
+                ctx.voice_client.source.volume = self.music_volume
+            await self.boxed_print(ctx, f'Volume set to {int(self.music_volume * 100)}%')
+        else:
+            await self.boxed_print(ctx, 'Wrong arguments were given')
 
     @commands.command(brief = 'Downloads audio from YouTube')
     async def download(self, ctx, url):
