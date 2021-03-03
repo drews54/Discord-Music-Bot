@@ -19,7 +19,7 @@ async def unload(ctx, extension):
     print(f'Module {extension} unloaded')
 
 @client.command(hidden = True)
-async def reload(ctx, extension):
+async def reload(ctx, extension = 'music'):
     client.unload_extension(f'cogs.{extension}')
     client.load_extension(f'cogs.{extension}')
     print(f'Module {extension} reloaded')
