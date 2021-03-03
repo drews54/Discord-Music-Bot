@@ -187,14 +187,17 @@ class Music(commands.Cog):
 
     @commands.command(brief = 'Removes a song selected from the list')
     async def remove(self, ctx, number = 0):
-        status = get(self.client.voice_clients, guild=ctx.guild)
-        if not status:
-            if (1 <= int(number) <= len(self._songlist)):
-                song = self._songlist.pop(int(number) - 1)
+        if (1 <= int(number) <= len(self._songlist)):
+            song = self._songlist.pop(int(number) - 1)
+            try:
                 os.remove(self.music_path + song)
-                await self.boxed_print(ctx, f'Song {song[:-5]} has been deleted')
-            else:
-                await self.boxed_print(ctx, 'Select an existing song from the list')
+            except PermissionError:
+                await self.boxed_print(ctx, 'Unable to delete song file, probably it is being playing now.')
+            except:
+                await self.boxed_print(ctx, 'Unable to delete song file')
+            await self.boxed_print(ctx, f'Song {song[:-5]} has been deleted')
+        else:
+            await self.boxed_print(ctx, 'Select an existing song from the list')
 
     @commands.command(brief = 'Flushes the music directory')
     async def flush(self, ctx):
