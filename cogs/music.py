@@ -37,15 +37,15 @@ class Music(commands.Cog):
                     string = ''
                 string += temp_string
         else:
-            if self._songlist and not 0 < page <= max_page:
+            if self._songlist and not 0 < (int)(page) <= max_page:
                 await self.boxed_print(ctx, f'404 bro, use one of {max_page!s} existing pages')
                 return
             elif not self._songlist:
                 await self.boxed_print(ctx, f'No songs! Use {self.prefix}download to download songs')
                 return
             string = f'Page {page!s} of {max_page!s}:\n'
-            for i, name in self._songlist:
-                if page == (i)//10 + 1:
+            for i, name in enumerate(self._songlist):
+                if (int)(page) == (i)//10 + 1:
                     string += f'{(i + 1)!s}. {name[:-5]!s}\n'
         await self.boxed_print(ctx, string)
         if self._unknown_files == 1:
