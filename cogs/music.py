@@ -15,7 +15,7 @@ class Music(commands.Cog):
         self.music_path = './music/'
         self.prefix = self.client.command_prefix[0]
         self._looped = False
-        self.music_volume = 0.1
+        self.music_volume = 0.05
         if os.path.exists(self.music_path):
             self._songlist, self._unknown_files = update_songlist(self.music_path)
         else:
