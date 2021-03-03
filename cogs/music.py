@@ -74,7 +74,7 @@ class Music(commands.Cog):
             self._looped = True
             await self.boxed_print(ctx, 'Loop activated!')
             return
-        if number == 'random':
+        elif number == 'random':
             number = random.randint(0, len(self._songlist) - 1)
         elif number == 'playlist':
             if self._playlist:
@@ -83,12 +83,20 @@ class Music(commands.Cog):
             else:
                 await self.boxed_print(ctx, 'Nothing to play!')
                 return
+        elif number.startswith('http'):
+            ydl_opts = {'format':'bestaudio'}
+            with youtube_dl.YoutubeDL(ydl_opts) as ydl:
+                info = ydl.extract_info(number, download=False)
+            song = info['formats'][0]['url']
+        elif number.isnumeric():
+            name = self._songlist[int(number) - 1]
+            song = self.music_path + self._songlist[int(number) - 1]
+            await self.changestatus(ctx, name[:-5])
+        else:
+            await self.boxed_print(ctx, 'Wrong arguments were given')
 
         if loop == 'loop':
             self._looped = True
-
-        name = self._songlist[int(number) - 1]
-        song = self.music_path + self._songlist[int(number) - 1]
 
         status = get(self.client.voice_clients, guild=ctx.guild)
         try:
@@ -98,7 +106,6 @@ class Music(commands.Cog):
             await self.boxed_print(ctx, 'Connect to a voice channel before playing')
             return
 
-        await self.changestatus(ctx, name[:-5])
         self._stop_loop = False
         self.is_stopped = False
         def after_play(error):
