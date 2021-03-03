@@ -15,6 +15,7 @@ class Music(commands.Cog):
         self.music_path = './music/'
         self.prefix = self.client.command_prefix[0]
         self._looped = False
+        self.music_volume = 0.1
         if os.path.exists(self.music_path):
             self._songlist, self._unknown_files = update_songlist(self.music_path)
         else:
@@ -103,7 +104,7 @@ class Music(commands.Cog):
         def after_play(error):
             if self._looped and not self._stop_loop:
                 try:
-                    ctx.message.guild.voice_client.play(discord.FFmpegOpusAudio(song), after = after_play)
+                    ctx.message.guild.voice_client.play(discord.PCMVolumeTransformer(discord.FFmpegPCMAudio(song), self.music_volume), after = after_play)
                 except:
                     pass
             elif self._playlist:
@@ -113,7 +114,7 @@ class Music(commands.Cog):
 
                     run_coroutine_threadsafe(coroutine, self.client.loop).result()
                     self._playlist.pop(0)
-                    ctx.message.guild.voice_client.play(discord.FFmpegOpusAudio(next_song), after = after_play)
+                    ctx.message.guild.voice_client.play(discord.PCMVolumeTransformer(discord.FFmpegPCMAudio(next_song), self.music_volume), after = after_play)
                 except:
                     print('Error in playlist')
             elif not self.is_stopped:
@@ -123,7 +124,7 @@ class Music(commands.Cog):
                     future.result()
                 except:
                     print(f'Disconnect has failed. Run {self.prefix}stop manually', error)
-        ctx.message.guild.voice_client.play(discord.FFmpegOpusAudio(song), after = after_play)
+        ctx.message.guild.voice_client.play(discord.PCMVolumeTransformer(discord.FFmpegPCMAudio(song), self.music_volume), after = after_play)
 
     @commands.command(brief = 'Pauses playback')
     async def pause(self, ctx):
@@ -138,6 +139,10 @@ class Music(commands.Cog):
             ctx.message.guild.voice_client.resume()
         else:
             await self.boxed_print(ctx, 'Nothing is paused')
+
+    @commands.command(brief = 'Changes music volume %')
+    async def volume(self, ctx, volume):
+        self.music_volume = volume / 100
 
     @commands.command(brief = 'Downloads audio from YouTube')
     async def download(self, ctx, url):
