@@ -85,12 +85,19 @@ class Music(commands.Cog):
                 return
         elif number.startswith('http'):
             ydl_opts = {'format':'bestaudio'}
+            ffmpeg_opts = {
+            'before_options': '-reconnect 1 -reconnect_streamed 1 -reconnect_delay_max 5', 
+            'options': '-vn'
+            }
             with youtube_dl.YoutubeDL(ydl_opts) as ydl:
                 info = ydl.extract_info(number, download=False)
             song = info['formats'][0]['url']
+            name = info['title']
+            await self.changestatus(ctx, name)
         if (str)(number).isnumeric():
             name = self._songlist[int(number) - 1]
             song = self.music_path + self._songlist[int(number) - 1]
+            ffmpeg_opts = {}
             await self.changestatus(ctx, name[:-5])
 
         if loop == 'loop':
@@ -109,7 +116,7 @@ class Music(commands.Cog):
         def after_play(error):
             if self._looped and not self._stop_loop:
                 try:
-                    ctx.message.guild.voice_client.play(discord.PCMVolumeTransformer(discord.FFmpegPCMAudio(song), self.music_volume), after = after_play)
+                    ctx.message.guild.voice_client.play(discord.PCMVolumeTransformer(discord.FFmpegPCMAudio(song, **ffmpeg_opts), self.music_volume), after = after_play)
                 except:
                     pass
             elif self._playlist:
@@ -119,7 +126,7 @@ class Music(commands.Cog):
 
                     run_coroutine_threadsafe(coroutine, self.client.loop).result()
                     self._playlist.pop(0)
-                    ctx.message.guild.voice_client.play(discord.PCMVolumeTransformer(discord.FFmpegPCMAudio(next_song), self.music_volume), after = after_play)
+                    ctx.message.guild.voice_client.play(discord.PCMVolumeTransformer(discord.FFmpegPCMAudio(next_song, **ffmpeg_opts), self.music_volume), after = after_play)
                 except:
                     print('Error in playlist')
             elif not self.is_stopped:
@@ -129,7 +136,8 @@ class Music(commands.Cog):
                     future.result()
                 except:
                     print(f'Disconnect has failed. Run {self.prefix}stop manually', error)
-        ctx.message.guild.voice_client.play(discord.PCMVolumeTransformer(discord.FFmpegPCMAudio(song), self.music_volume), after = after_play)
+
+        ctx.message.guild.voice_client.play(discord.PCMVolumeTransformer(discord.FFmpegPCMAudio(song, **ffmpeg_opts), self.music_volume), after = after_play)
 
     @commands.command(brief = 'Pauses playback')
     async def pause(self, ctx):
