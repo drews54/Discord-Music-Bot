@@ -88,12 +88,10 @@ class Music(commands.Cog):
             with youtube_dl.YoutubeDL(ydl_opts) as ydl:
                 info = ydl.extract_info(number, download=False)
             song = info['formats'][0]['url']
-        elif number.isnumeric():
+        if (str)(number).isnumeric():
             name = self._songlist[int(number) - 1]
             song = self.music_path + self._songlist[int(number) - 1]
             await self.changestatus(ctx, name[:-5])
-        else:
-            await self.boxed_print(ctx, 'Wrong arguments were given')
 
         if loop == 'loop':
             self._looped = True
