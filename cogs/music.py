@@ -60,7 +60,7 @@ class Music(commands.Cog):
             self._looped = False
             await self.boxed_print(ctx, 'Loop stopped!')
         elif ctx.voice_client is not None and ctx.voice_client.is_connected():
-            await ctx.message.guild.voice_client.disconnect()
+            await ctx.voice_client.disconnect()
             await self.client.change_presence(status = discord.Status.idle, afk = True)
             self.is_stopped = True
             self._looped = False          
@@ -116,7 +116,7 @@ class Music(commands.Cog):
         def after_play(error):
             if self._looped and not self._stop_loop:
                 try:
-                    ctx.message.guild.voice_client.play(discord.PCMVolumeTransformer(discord.FFmpegPCMAudio(song, **ffmpeg_opts), self.music_volume), after = after_play)
+                    ctx.voice_client.play(discord.PCMVolumeTransformer(discord.FFmpegPCMAudio(song, **ffmpeg_opts), self.music_volume), after = after_play)
                 except:
                     pass
             elif self._playlist:
@@ -126,7 +126,7 @@ class Music(commands.Cog):
 
                     run_coroutine_threadsafe(coroutine, self.client.loop).result()
                     self._playlist.pop(0)
-                    ctx.message.guild.voice_client.play(discord.PCMVolumeTransformer(discord.FFmpegPCMAudio(next_song, **ffmpeg_opts), self.music_volume), after = after_play)
+                    ctx.voice_client.play(discord.PCMVolumeTransformer(discord.FFmpegPCMAudio(next_song, **ffmpeg_opts), self.music_volume), after = after_play)
                 except:
                     print('Error in playlist')
             elif not self.is_stopped:
@@ -137,19 +137,19 @@ class Music(commands.Cog):
                 except:
                     print(f'Disconnect has failed. Run {self.prefix}stop manually', error)
 
-        ctx.message.guild.voice_client.play(discord.PCMVolumeTransformer(discord.FFmpegPCMAudio(song, **ffmpeg_opts), self.music_volume), after = after_play)
+        ctx.voice_client.play(discord.PCMVolumeTransformer(discord.FFmpegPCMAudio(song, **ffmpeg_opts), self.music_volume), after = after_play)
 
     @commands.command(brief = 'Pauses playback')
     async def pause(self, ctx):
-        if ctx.message.guild.voice_client is not None and ctx.message.guild.voice_client.is_playing():
-            ctx.message.guild.voice_client.pause()
+        if ctx.voice_client is not None and ctx.voice_client.is_playing():
+            ctx.voice_client.pause()
         else:
             await self.boxed_print(ctx, 'Nothing is playing')
                 
     @commands.command(brief = 'Resumes playback')
     async def resume(self, ctx):
-        if ctx.message.guild.voice_client is not None and ctx.message.guild.voice_client.is_paused():
-            ctx.message.guild.voice_client.resume()
+        if ctx.voice_client is not None and ctx.voice_client.is_paused():
+            ctx.voice_client.resume()
         else:
             await self.boxed_print(ctx, 'Nothing is paused')
 
@@ -159,7 +159,7 @@ class Music(commands.Cog):
             await self.boxed_print(ctx, f'Volume = {int(self.music_volume * 100)}%')
         elif volume.isnumeric() and 0 <= int(volume) <= 100:
             self.music_volume = int(volume) / 100
-            if ctx.message.guild.voice_client is not None and ctx.message.guild.voice_client.is_playing():
+            if ctx.voice_client is not None and ctx.voice_client.is_playing():
                 ctx.voice_client.source.volume = self.music_volume
             await self.boxed_print(ctx, f'Volume set to {int(self.music_volume * 100)}%')
         else:
@@ -281,7 +281,7 @@ class Music(commands.Cog):
                 number = random.randint(0, len(self._songlist) - 1)
                 self._playlist.append(self._songlist[int(number) - 1])
                 await self.boxed_print(ctx, f'«‎{self._songlist[int(number) - 1][:-5]}»‎ added to queue.')
-            if ctx.message.guild.voice_client is not None and ctx.message.guild.voice_client.is_playing():
+            if ctx.voice_client is not None and ctx.voice_client.is_playing():
                 pass
             else:
                 await self.play(ctx)
