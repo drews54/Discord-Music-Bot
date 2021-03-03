@@ -191,11 +191,11 @@ class Music(commands.Cog):
             song = self._songlist.pop(int(number) - 1)
             try:
                 os.remove(self.music_path + song)
+                await self.boxed_print(ctx, f'Song {song[:-5]} has been deleted')
             except PermissionError:
                 await self.boxed_print(ctx, 'Unable to delete song file, probably it is being playing now.')
             except:
                 await self.boxed_print(ctx, 'Unable to delete song file')
-            await self.boxed_print(ctx, f'Song {song[:-5]} has been deleted')
         else:
             await self.boxed_print(ctx, 'Select an existing song from the list')
 
