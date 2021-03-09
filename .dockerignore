@@ -23,7 +23,6 @@
 **/obj
 **/secrets.dev.yaml
 **/values.dev.yaml
-**/*.po
 **/*.pot
 README.md
 LICENSE

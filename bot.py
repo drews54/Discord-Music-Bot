@@ -1,11 +1,11 @@
 import discord, os, time, gettext
 from discord.ext import commands
-from gettext import gettext as _
 
 token = os.getenv('DISCORD_TOKEN')
 client = commands.Bot(command_prefix = tuple(os.getenv('DISCORD_PREFIXES').split())) #Import prefixes as space-separated values
 
-gettext.install('Discord-Music-Bot')
+langRU = gettext.translation('Discord-Music-Bot', './locale', languages=['ru'])
+_ = langRU.gettext
 
 @client.event
 async def on_ready():

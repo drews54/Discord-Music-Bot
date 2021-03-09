@@ -1,13 +1,15 @@
 import discord
 import youtube_dl
-import os, math, subprocess, random
-from gettext import gettext as _
+import os, math, subprocess, random, gettext
 from discord.utils import get
 from discord.ext import commands
 from asyncio import run_coroutine_threadsafe
 from youtube_search import YoutubeSearch
 
 class Music(commands.Cog):
+    langRU = gettext.translation('Discord-Music-Bot', './locale', languages=['ru'])
+    _ = langRU.gettext
+    
     def __init__(self, client):
         self.client = client
         self._songlist = []
@@ -30,7 +32,7 @@ class Music(commands.Cog):
     async def list_(self, ctx, page = 'all'):
         max_page = math.ceil(len(self._songlist)/10)
         if page == 'all':
-            string = 'Full song list:\n'
+            string = self._('Full song list:\n')
             for i, name in enumerate(self._songlist):
                 temp_string = f'{(i + 1)!s}. {name[:-5]!s}\n'
                 if len(string + temp_string) > 2000:
@@ -39,10 +41,10 @@ class Music(commands.Cog):
                 string += temp_string
         else:
             if self._songlist and not 0 < page <= max_page:
-                await self.boxed_print(ctx, _('404 bro, use one of {} existing pages').format(max_page))
+                await self.boxed_print(ctx, self._('404 bro, use one of {} existing pages').format(max_page))
                 return
             elif not self._songlist:
-                await self.boxed_print(ctx, _('No songs! Use {}download to download songs').format(self.prefix))
+                await self.boxed_print(ctx, self._('No songs! Use {}download to download songs').format(self.prefix))
                 return
             string = f'Page {page!s} of {max_page!s}:\n'
             for i, name in self._songlist:
@@ -50,30 +52,30 @@ class Music(commands.Cog):
                     string += f'{(i + 1)!s}. {name[:-5]!s}\n'
         await self.boxed_print(ctx, string)
         if self._unknown_files == 1:
-            await self.boxed_print(ctx, _('Also there is a file with unknown extension. Use {}convert list to convert your music files to "opus" format.').format(self.prefix))
+            await self.boxed_print(ctx, self._('Also there is a file with unknown extension. Use {}convert list to convert your music files to "opus" format.').format(self.prefix))
         elif self._unknown_files > 1:
-            await self.boxed_print(ctx, _('Also there are {} files with unknown extension. Use {}convert list to convert your music files to "opus" format.').format(self._unknown_files, self.prefix))
+            await self.boxed_print(ctx, self._('Also there are {} files with unknown extension. Use {}convert list to convert your music files to "opus" format.').format(self._unknown_files, self.prefix))
 
     @commands.command(brief = _('Stops playing audio'))
     async def stop(self, ctx, loop = ''):
         if loop == 'loop':
             self._stop_loop = True
             self._looped = False
-            await self.boxed_print(ctx, _('Loop stopped!'))
+            await self.boxed_print(ctx, self._('Loop stopped!'))
         elif ctx.voice_client is not None and ctx.voice_client.is_connected():
             await ctx.voice_client.disconnect()
             await self.client.change_presence(status = discord.Status.idle, afk = True)
             self.is_stopped = True
             self._looped = False          
         else:
-            await self.boxed_print(ctx, _('Nothing is playing'))
+            await self.boxed_print(ctx, self._('Nothing is playing'))
 
     @commands.command(brief = _('Plays song from list'))
     async def play(self, ctx, number='playlist', loop = ''):
         if number == 'loop':
             self._stop_loop = False
             self._looped = True
-            await self.boxed_print(ctx, _('Loop activated!'))
+            await self.boxed_print(ctx, self._('Loop activated!'))
             return
         elif number == 'random':
             number = random.randint(0, len(self._songlist) - 1)
@@ -82,7 +84,7 @@ class Music(commands.Cog):
                 number = self._songlist.index(self._playlist[0]) + 1
                 self._playlist.pop(0)
             else:
-                await self.boxed_print(ctx, _('Nothing to play!'))
+                await self.boxed_print(ctx, self._('Nothing to play!'))
                 return
         elif number.startswith('http'):
             ydl_opts = {'format':'bestaudio'}
@@ -109,7 +111,7 @@ class Music(commands.Cog):
             if not status:
                 await ctx.message.author.voice.channel.connect()
         except AttributeError:
-            await self.boxed_print(ctx, _('Connect to a voice channel before playing'))
+            await self.boxed_print(ctx, self._('Connect to a voice channel before playing'))
             return
 
         self._stop_loop = False
@@ -136,7 +138,7 @@ class Music(commands.Cog):
                 try:
                     future.result()
                 except:
-                    print(_('Disconnect has failed. Run {}stop manually').format(self.prefix), error)
+                    print(self._('Disconnect has failed. Run {}stop manually').format(self.prefix), error)
 
         ctx.voice_client.play(discord.PCMVolumeTransformer(discord.FFmpegPCMAudio(song, **ffmpeg_opts), self.music_volume), after = after_play)
 
@@ -145,26 +147,26 @@ class Music(commands.Cog):
         if ctx.voice_client is not None and ctx.voice_client.is_playing():
             ctx.voice_client.pause()
         else:
-            await self.boxed_print(ctx, _('Nothing is playing'))
+            await self.boxed_print(ctx, self._('Nothing is playing'))
                 
     @commands.command(brief = _('Resumes playback'))
     async def resume(self, ctx):
         if ctx.voice_client is not None and ctx.voice_client.is_paused():
             ctx.voice_client.resume()
         else:
-            await self.boxed_print(ctx, _('Nothing is paused'))
+            await self.boxed_print(ctx, self._('Nothing is paused'))
 
     @commands.command(brief = _('Changes music volume (0-100)'))
     async def volume(self, ctx, volume=None):
         if volume == None:
-            await self.boxed_print(ctx, _('Volume = {}%').format(int(self.music_volume * 100)))
+            await self.boxed_print(ctx, self._('Volume = {}%').format(int(self.music_volume * 100)))
         elif volume.isnumeric() and 0 <= int(volume) <= 100:
             self.music_volume = int(volume) / 100
             if ctx.voice_client is not None and ctx.voice_client.is_playing():
                 ctx.voice_client.source.volume = self.music_volume
-            await self.boxed_print(ctx, _('Volume set to {}%').format(int(self.music_volume * 100)))
+            await self.boxed_print(ctx, self._('Volume set to {}%').format(int(self.music_volume * 100)))
         else:
-            await self.boxed_print(ctx, _('Incorrect arguments were given. Only whole values from 0 to 100 are supported.'))
+            await self.boxed_print(ctx, self._('Incorrect arguments were given. Only whole values from 0 to 100 are supported.'))
 
     @commands.command(brief = _('Downloads audio from YouTube'))
     async def download(self, ctx, url):
@@ -183,7 +185,7 @@ class Music(commands.Cog):
             info = ydl.extract_info(url)
             self._songlist, self._unknown_files = update_songlist(self.music_path)
             name = info['title'].replace('"', "'")
-            await self.boxed_print(ctx, _('Song downloaded:\n{}\nSong number: {}').format(name, self._songlist.index(name + ".opus") + 1))
+            await self.boxed_print(ctx, self._('Song downloaded:\n{}\nSong number: {}').format(name, self._songlist.index(name + ".opus") + 1))
 
 
     @commands.command(brief = _('Removes a song selected from the list'))
@@ -193,9 +195,9 @@ class Music(commands.Cog):
             if (1 <= int(number) <= len(self._songlist)):
                 song = self._songlist.pop(int(number) - 1)
                 os.remove(self.music_path + song)
-                await self.boxed_print(ctx, _('Song {} has been deleted').format(song[:-5]))
+                await self.boxed_print(ctx, self._('Song {} has been deleted').format(song[:-5]))
             else:
-                await self.boxed_print(ctx, _('Select an existing song from the list'))
+                await self.boxed_print(ctx, self._('Select an existing song from the list'))
 
     @commands.command(brief = _('Flushes the music directory'))
     async def flush(self, ctx):
@@ -203,7 +205,7 @@ class Music(commands.Cog):
         if not status:
             for filename in os.scandir(self.music_path):
                 os.remove(filename.path)
-            await self.boxed_print(ctx, _('Music folder is now empty'))
+            await self.boxed_print(ctx, self._('Music folder is now empty'))
         self._songlist.clear()
 
     @commands.command(brief = _('Converts music files to opus format'))
@@ -211,35 +213,35 @@ class Music(commands.Cog):
         if arg == 'list':
             self._filelist = update_songlist(self.music_path, ext)[0]
             if not self._filelist:
-                await self.boxed_print(ctx, _('No files to convert'))
+                await self.boxed_print(ctx, self._('No files to convert'))
                 return
             i = 0
             string = ''
             for name in self._filelist:
                 i += 1
                 string += f'{i!s}. {name!s}\n'
-            string = string + _('Use {}convert [number] to convert files from the list to ".opus" format.').format(self.prefix)
+            string = string + self._('Use {}convert [number] to convert files from the list to ".opus" format.').format(self.prefix)
             await self.boxed_print(ctx, string)
         elif (1 <= int(arg) <= len(self._filelist)):
             file = self._filelist[int(arg) - 1]
-            await self.boxed_print(ctx, _('Performing conversion {} to ".opus" format...').format(file))
+            await self.boxed_print(ctx, self._('Performing conversion {} to ".opus" format...').format(file))
             cmd = f'ffmpeg -i "music/{file}" "music/{file[:-len(ext)]}opus"'
             subprocess.call(cmd, shell=True)
             os.remove('./music/' + file)
             self._songlist.append(f'{file[:-len(ext)]}opus')
             self._songlist.sort()
             self._unknown_files -= 1
-            await self.boxed_print(ctx, _('Conversion successful!'))
+            await self.boxed_print(ctx, self._('Conversion successful!'))
             await self.list_(ctx)
         else:
-            await self.boxed_print(ctx, _('Select an existing file from the list or use {}convert list.').format(self.prefix))
+            await self.boxed_print(ctx, self._('Select an existing file from the list or use {}convert list.').format(self.prefix))
 
     @commands.command(brief = _('Use to search videos in YT'))
     async def search(self, ctx, *key):
         i = 0
         self._urlslist = []
         searchrequest = ''
-        string = _('Search results:\n')
+        string = self._('Search results:\n')
         for word in key:
             searchrequest += f'{word!s} '
         searchlist = YoutubeSearch(searchrequest, max_results = 5).to_dict()
@@ -247,7 +249,7 @@ class Music(commands.Cog):
             i += 1
             self._urlslist.append(video['url_suffix'])
             string += f'{i!s}. {video["title"]}\n'
-        string += _('Use {}download <number> to download song from list.').format(self.prefix)
+        string += self._('Use {}download <number> to download song from list.').format(self.prefix)
         await self.boxed_print(ctx, string)
 
     @commands.command(brief = _('Use with <add/del/clear> + song number to edit the current playlist.'))
@@ -260,28 +262,28 @@ class Music(commands.Cog):
                     i += 1
                     string += f'{i}. {song[:-5]}\n'
             else:
-                string = _('Playlist is empty')
+                string = self._('Playlist is empty')
             await self.boxed_print(ctx, string)
     
         elif action == 'add':
             if song_number == 'random':
                 song_number = random.randint(0, len(self._songlist) - 1)
             self._playlist.append(self._songlist[int(song_number) - 1])
-            await self.boxed_print(ctx, _('«‎{}»‎ added to queue.').format(self._songlist[int(song_number) - 1][:-5]))
+            await self.boxed_print(ctx, self._('«‎{}»‎ added to queue.').format(self._songlist[int(song_number) - 1][:-5]))
 
         elif action == 'del':
-            await self.boxed_print(ctx, _('Song «‎{}»‎ has been removed from queue').format(self._playlist[int(song_number) - 1][:-5]))
+            await self.boxed_print(ctx, self._('Song «‎{}»‎ has been removed from queue').format(self._playlist[int(song_number) - 1][:-5]))
             self._playlist.pop(int(song_number) - 1)
 
         elif action == 'clear':
             self._playlist.clear()
-            await self.boxed_print(ctx, _('Playlist is cleared.'))
+            await self.boxed_print(ctx, self._('Playlist is cleared.'))
 
         elif action == 'random':
             for i in range(int(song_number)):
                 number = random.randint(0, len(self._songlist) - 1)
                 self._playlist.append(self._songlist[int(number) - 1])
-                await self.boxed_print(ctx, _('«‎{}»‎ added to queue.').format(self._songlist[int(number) - 1][:-5]))
+                await self.boxed_print(ctx, self._('«‎{}»‎ added to queue.').format(self._songlist[int(number) - 1][:-5]))
             if ctx.voice_client is not None and ctx.voice_client.is_playing():
                 pass
             else:
@@ -290,7 +292,7 @@ class Music(commands.Cog):
     @commands.command(hidden = True)
     async def changestatus(self, ctx, status):
         await self.client.change_presence(activity = discord.Activity(type=discord.ActivityType.listening, name=status))
-        await self.boxed_print(ctx, _('Playing: ') + status)
+        await self.boxed_print(ctx, self._('Playing: ') + status)
 
 def update_songlist(music_path, ext = 'opus'):
     songlist = []
