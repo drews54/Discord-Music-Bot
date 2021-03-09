@@ -1,8 +1,11 @@
-import discord, os, time
+import discord, os, time, gettext
 from discord.ext import commands
+from gettext import gettext as _
 
 token = os.getenv('DISCORD_TOKEN')
 client = commands.Bot(command_prefix = tuple(os.getenv('DISCORD_PREFIXES').split())) #Import prefixes as space-separated values
+
+gettext.install('Discord-Music-Bot')
 
 @client.event
 async def on_ready():
@@ -27,8 +30,12 @@ async def reload(ctx, extension = 'music'):
 
 @client.command()
 async def about(ctx):
-    await ctx.send('```GitHub source code: https://github.com/duha54rus/Discord-Music-Bot\n' + 
-                      'Docker Hub repository: https://hub.docker.com/r/drews54/discord-music-bot```')
+    await ctx.send(
+        '```' +
+        _('GitHub source code') + ': https://github.com/duha54rus/Discord-Music-Bot' + '\n' +
+        _('Docker Hub repository') + ': https://hub.docker.com/r/drews54/discord-music-bot' +
+        '```'
+    )
 
 @client.command(hidden=True, aliases=['exit', 'die', 'logout'])
 @commands.is_owner()
