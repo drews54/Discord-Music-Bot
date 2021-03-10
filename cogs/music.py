@@ -161,7 +161,7 @@ class Music(commands.Cog):
         if volume == None:
             await self.boxed_print(ctx, self._('Volume = {}%').format((math.pow(self.music_volume, math.exp(-1)) * 100).__trunc__()))
         elif volume.isnumeric() and 0 <= int(volume) <= 100:
-            self.music_volume = math.pow(int(volume) / 100, math.e)
+            self.music_volume = math.pow(int(volume) / 100, math.exp())
             if ctx.voice_client is not None and ctx.voice_client.is_playing():
                 ctx.voice_client.source.volume = self.music_volume
             await self.boxed_print(ctx, self._('Volume set to {}%').format((math.pow(self.music_volume, math.exp(-1))*100).__trunc__()))
