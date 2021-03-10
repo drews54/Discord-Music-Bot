@@ -291,6 +291,16 @@ class Music(commands.Cog):
                 pass
             else:
                 await self.play(ctx)
+                
+    @commands.command(brief = _('Use to skip current song in playlist.'))
+    async def skip(self, ctx, quantity = 1):
+        i = 0
+        while i < quantity - 1:
+            if self._playlist:
+                self._playlist.pop(0)
+            i += 1
+        if ctx.voice_client is not None and (ctx.voice_client.is_playing() or ctx.voice_client.is_paused()):
+            ctx.voice_client.stop()
 
     @commands.command(hidden = True)
     async def changestatus(self, ctx, status):
