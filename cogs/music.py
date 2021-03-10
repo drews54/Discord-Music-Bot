@@ -40,15 +40,15 @@ class Music(commands.Cog):
                     string = ''
                 string += temp_string
         else:
-            if self._songlist and not 0 < page <= max_page:
+            if self._songlist and not 0 < int(page) <= max_page:
                 await self.boxed_print(ctx, self._('404 bro, use one of {} existing pages').format(max_page))
                 return
             elif not self._songlist:
                 await self.boxed_print(ctx, self._('No songs! Use {}download to download songs').format(self.prefix))
                 return
             string = f'Page {page!s} of {max_page!s}:\n'
-            for i, name in self._songlist:
-                if page == (i)//10 + 1:
+            for i, name in enumerate(self._songlist):
+                if (int)(page) == (i)//10 + 1:
                     string += f'{(i + 1)!s}. {name[:-5]!s}\n'
         await self.boxed_print(ctx, string)
         if self._unknown_files == 1:
@@ -190,14 +190,17 @@ class Music(commands.Cog):
 
     @commands.command(brief = _('Removes a song selected from the list'))
     async def remove(self, ctx, number = 0):
-        status = get(self.client.voice_clients, guild=ctx.guild)
-        if not status:
-            if (1 <= int(number) <= len(self._songlist)):
-                song = self._songlist.pop(int(number) - 1)
+        if (1 <= int(number) <= len(self._songlist)):
+            song = self._songlist.pop(int(number) - 1)
+            try:
                 os.remove(self.music_path + song)
                 await self.boxed_print(ctx, self._('Song {} has been deleted').format(song[:-5]))
-            else:
-                await self.boxed_print(ctx, self._('Select an existing song from the list'))
+            except PermissionError:
+                await self.boxed_print(ctx, 'Unable to delete song file, probably it is being playing now.')
+            except:
+                await self.boxed_print(ctx, 'Unable to delete song file')
+        else:
+            await self.boxed_print(ctx, self._('Select an existing song from the list'))
 
     @commands.command(brief = _('Flushes the music directory'))
     async def flush(self, ctx):
