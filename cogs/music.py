@@ -159,12 +159,12 @@ class Music(commands.Cog):
     @commands.command(brief = _('Changes music volume (0-100)'))
     async def volume(self, ctx, volume=None):
         if volume == None:
-            await self.boxed_print(ctx, self._('Volume = {}%').format(int(self.music_volume * 100)))
+            await self.boxed_print(ctx, self._('Volume = {}%').format((math.pow(self.music_volume, math.exp(-1)) * 100).__trunc__()))
         elif volume.isnumeric() and 0 <= int(volume) <= 100:
-            self.music_volume = int(volume) / 100
+            self.music_volume = math.pow(int(volume) / 100, math.exp(1))
             if ctx.voice_client is not None and ctx.voice_client.is_playing():
                 ctx.voice_client.source.volume = self.music_volume
-            await self.boxed_print(ctx, self._('Volume set to {}%').format(int(self.music_volume * 100)))
+            await self.boxed_print(ctx, self._('Volume set to {}%').format((math.pow(self.music_volume, math.exp(-1))*100).__trunc__()))
         else:
             await self.boxed_print(ctx, self._('Incorrect arguments were given. Only whole values from 0 to 100 are supported.'))
 
