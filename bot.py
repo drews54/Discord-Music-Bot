@@ -5,6 +5,7 @@ token = os.getenv('DISCORD_TOKEN')
 client = commands.Bot(command_prefix = tuple(os.getenv('DISCORD_PREFIXES').split())) #Import prefixes as space-separated values
 
 langRU = gettext.translation('Discord-Music-Bot', './locale', languages=['ru'])
+langEN = gettext.translation('Discord-Music-Bot', './locale', languages=['en'])
 _ = langRU.gettext
 
 @client.event
@@ -43,6 +44,19 @@ async def shutdown(ctx, sec=60):
     time.sleep(sec)
     await ctx.send('Shutting down.\nGoodbye.')
     await client.logout()
+
+@client.command(hidden=True)
+async def language(ctx, lang):
+    if lang == 'ru':
+        _ = langRU.gettext
+        await ctx.send('```Language set to RU```')
+    elif lang == 'en':
+        _ = langEN.gettext
+        await ctx.send('```Language set to EN```')
+    cmd = client.get_command('change_local')
+    cmd.enabled = True
+    await ctx.invoke(cmd, lang)
+    cmd.enabled = False
 
 for filename in os.listdir('./cogs'):
     if filename.endswith('.py'):
