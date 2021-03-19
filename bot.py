@@ -45,19 +45,6 @@ async def shutdown(ctx, sec=60):
     await ctx.send('Shutting down.\nGoodbye.')
     await client.logout()
 
-@client.command(hidden=True)
-async def language(ctx, lang):
-    if lang == 'ru':
-        _ = langRU.gettext
-        await ctx.send('```Language set to RU```')
-    elif lang == 'en':
-        _ = langEN.gettext
-        await ctx.send('```Language set to EN```')
-    cmd = client.get_command('change_local')
-    cmd.enabled = True
-    await ctx.invoke(cmd, lang)
-    cmd.enabled = False
-
 for filename in os.listdir('./cogs'):
     if filename.endswith('.py'):
         client.load_extension(f'cogs.{filename[:-3]}')

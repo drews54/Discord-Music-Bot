@@ -36,7 +36,7 @@ class Music(commands.Cog):
             string = self._('Full song list:\n')
             for i, name in enumerate(self._songlist):
                 temp_string = f'{(i + 1)!s}. {name[:-5]!s}\n'
-                if len(string + temp_string) > 2000:
+                if len(string + temp_string) > 1994:
                     await self.boxed_print(ctx, string)
                     string = ''
                 string += temp_string
