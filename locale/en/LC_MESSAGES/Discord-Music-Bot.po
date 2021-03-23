@@ -1,0 +1,206 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR ORGANIZATION
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"POT-Creation-Date: 2021-03-23 16:19+0300\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: pygettext.py 1.5\n"
+
+
+#: bot.py:39
+msgid "GitHub source code"
+msgstr ""
+
+#: bot.py:40
+msgid "Docker Hub repository"
+msgstr ""
+
+#: cogs/music.py:35
+msgid "Shows songs list"
+msgstr ""
+
+#: cogs/music.py:39
+msgid ""
+"Full song list:\n"
+msgstr ""
+
+#: cogs/music.py:48
+msgid "404 bro, use one of {} existing pages"
+msgstr ""
+
+#: cogs/music.py:51
+msgid "No songs! Use {}download to download songs"
+msgstr ""
+
+#: cogs/music.py:59
+msgid "Also there is a file with unknown extension. Use {}convert list to convert your music files to \"opus\" format."
+msgstr ""
+
+#: cogs/music.py:61
+msgid "Also there are {} files with unknown extension. Use {}convert list to convert your music files to \"opus\" format."
+msgstr ""
+
+#: cogs/music.py:63
+msgid "Stops playing audio"
+msgstr ""
+
+#: cogs/music.py:68
+msgid "Loop stopped!"
+msgstr ""
+
+#: cogs/music.py:75 cogs/music.py:154
+msgid "Nothing is playing"
+msgstr ""
+
+#: cogs/music.py:77
+msgid "Plays song from list"
+msgstr ""
+
+#: cogs/music.py:82
+msgid "Loop activated!"
+msgstr ""
+
+#: cogs/music.py:91
+msgid "Nothing to play!"
+msgstr ""
+
+#: cogs/music.py:118
+msgid "Connect to a voice channel before playing"
+msgstr ""
+
+#: cogs/music.py:145
+msgid "Disconnect has failed. Run {}stop manually"
+msgstr ""
+
+#: cogs/music.py:149
+msgid "Pauses playback"
+msgstr ""
+
+#: cogs/music.py:156
+msgid "Resumes playback"
+msgstr ""
+
+#: cogs/music.py:161
+msgid "Nothing is paused"
+msgstr ""
+
+#: cogs/music.py:163
+msgid "Changes music volume (0-100)"
+msgstr ""
+
+#: cogs/music.py:166
+msgid "Volume = {}%"
+msgstr ""
+
+#: cogs/music.py:171
+msgid "Volume set to {}%"
+msgstr ""
+
+#: cogs/music.py:173
+msgid "Incorrect arguments were given. Only whole values from 0 to 100 are supported."
+msgstr ""
+
+#: cogs/music.py:175
+msgid "Downloads audio from YouTube"
+msgstr ""
+
+#: cogs/music.py:192
+msgid ""
+"Song downloaded:\n"
+"{}\n"
+"Song number: {}"
+msgstr ""
+
+#: cogs/music.py:195
+msgid "Removes a song selected from the list"
+msgstr ""
+
+#: cogs/music.py:201
+msgid "Song {} has been deleted"
+msgstr ""
+
+#: cogs/music.py:207
+msgid "Select an existing song from the list"
+msgstr ""
+
+#: cogs/music.py:209
+msgid "Flushes the music directory"
+msgstr ""
+
+#: cogs/music.py:215
+msgid "Music folder is now empty"
+msgstr ""
+
+#: cogs/music.py:218
+msgid "Converts music files to opus format"
+msgstr ""
+
+#: cogs/music.py:223
+msgid "No files to convert"
+msgstr ""
+
+#: cogs/music.py:230
+msgid "Use {}convert [number] to convert files from the list to \".opus\" format."
+msgstr ""
+
+#: cogs/music.py:234
+msgid "Performing conversion {} to \".opus\" format..."
+msgstr ""
+
+#: cogs/music.py:241
+msgid "Conversion successful!"
+msgstr ""
+
+#: cogs/music.py:244
+msgid "Select an existing file from the list or use {}convert list."
+msgstr ""
+
+#: cogs/music.py:246
+msgid "Use to search videos in YT"
+msgstr ""
+
+#: cogs/music.py:251
+msgid ""
+"Search results:\n"
+msgstr ""
+
+#: cogs/music.py:259
+msgid "Use {}download <number> to download song from list."
+msgstr ""
+
+#: cogs/music.py:262
+msgid "Use with <add/del/clear> + song number to edit the current playlist."
+msgstr ""
+
+#: cogs/music.py:272
+msgid "Playlist is empty"
+msgstr ""
+
+#: cogs/music.py:279 cogs/music.py:293
+msgid "«‎{}»‎ added to queue."
+msgstr ""
+
+#: cogs/music.py:282
+msgid "Song «‎{}»‎ has been removed from queue"
+msgstr ""
+
+#: cogs/music.py:287
+msgid "Playlist is cleared."
+msgstr ""
+
+#: cogs/music.py:299
+msgid "Use to skip current song in playlist."
+msgstr ""
+
+#: cogs/music.py:312
+msgid "Playing: "
+msgstr ""
+
