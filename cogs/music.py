@@ -9,7 +9,10 @@ from youtube_search import YoutubeSearch
 class Music(commands.Cog):
     langRU = gettext.translation('Discord-Music-Bot', './locale', languages=['ru'])
     langEN = gettext.translation('Discord-Music-Bot', './locale', languages=['en'])
-    _ = langRU.gettext
+    if os.getenv('LANG').startswith('ru'):
+        _ = langRU.gettext
+    else:
+        _ = langEN.gettext
     
     def __init__(self, client):
         self.client = client
