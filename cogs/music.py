@@ -311,17 +311,6 @@ class Music(commands.Cog):
         await self.client.change_presence(activity = discord.Activity(type=discord.ActivityType.listening, name=status))
         await self.boxed_print(ctx, self._('Playing: ') + status)
 
-    @commands.command(hidden=True)
-    async def change_local(self, ctx, lang):
-        if lang == 'ru':
-            self._ = self.langRU.gettext
-            print("Music module language set to RU")
-        elif lang == 'en':
-            self._ = self.langEN.gettext
-            print("Music module language set to EN")
-        else:
-            print('Not found')
-
 def update_songlist(music_path, ext = 'opus'):
     songlist = []
     unknown_files = 0
