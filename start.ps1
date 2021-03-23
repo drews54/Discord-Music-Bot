@@ -11,5 +11,8 @@ if (-Not (Test-Path Env:DISCORD_TOKEN -WarningAction SilentlyContinue)) {
 if (-Not (Test-Path Env:DISCORD_PREFIXES -WarningAction SilentlyContinue)) {
     $Env:DISCORD_PREFIXES = 'TYPE_PREFIXES_HERE'
 }
+if (-Not (Test-Path Env:LANG -WarningAction SilentlyContinue)) {
+    $Env:LANG = 'EN_or_RU'
+}
 python bot.py
 Pause
