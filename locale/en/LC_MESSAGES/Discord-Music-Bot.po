@@ -1,0 +1,228 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR ORGANIZATION
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+# 
+msgid ""
+msgstr ""
+"Project-Id-Version: 1.0.0\n"
+"POT-Creation-Date: 2021-03-23 18:25+0300\n"
+"PO-Revision-Date: 2021-03-10 00:00+0300\n"
+"Last-Translator: Andrei Amosov <duha9898@gmail.com>\n"
+"Language-Team: Drews&Co\n"
+"Language: en\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: pygettext.py 1.5\n"
+
+#: bot.py:39
+msgid "GitHub source code"
+msgstr "GitHub source code"
+
+#: bot.py:40
+msgid "Docker Hub repository"
+msgstr "Docker Hub repository"
+
+#: cogs/music.py:35
+msgid "Shows songs list"
+msgstr "Shows songs list"
+
+#: cogs/music.py:39
+msgid "Full song list:\n"
+msgstr "Full song list:\n"
+
+#: cogs/music.py:48
+msgid "404 bro, use one of {} existing pages"
+msgstr "404 bro, use one of {} existing pages"
+
+#: cogs/music.py:51
+msgid "No songs! Use {}download to download songs"
+msgstr "No songs! Use {}download to download songs"
+
+#: cogs/music.py:59
+msgid ""
+"Also there is a file with unknown extension. Use {}convert list to convert "
+"your music files to \"opus\" format."
+msgstr ""
+"Also there is a file with unknown extension. Use {}convert list to convert "
+"your music files to \"opus\" format."
+
+#: cogs/music.py:61
+msgid ""
+"Also there are {} files with unknown extension. Use {}convert list to "
+"convert your music files to \"opus\" format."
+msgstr ""
+"Also there are {} files with unknown extension. Use {}convert list to "
+"convert your music files to \"opus\" format."
+
+#: cogs/music.py:63
+msgid "Stops playing audio"
+msgstr "Stops playing audio"
+
+#: cogs/music.py:68
+msgid "Loop stopped!"
+msgstr "Loop stopped!"
+
+#: cogs/music.py:75 cogs/music.py:154
+msgid "Nothing is playing"
+msgstr "Nothing is playing"
+
+#: cogs/music.py:77
+msgid "Plays song from list"
+msgstr "Plays song from list"
+
+#: cogs/music.py:82
+msgid "Loop activated!"
+msgstr "Loop activated!"
+
+#: cogs/music.py:91
+msgid "Nothing to play!"
+msgstr "Nothing to play!"
+
+#: cogs/music.py:118
+msgid "Connect to a voice channel before playing"
+msgstr "Connect to a voice channel before playing"
+
+#: cogs/music.py:145
+msgid "Disconnect has failed. Run {}stop manually"
+msgstr "Disconnect has failed. Run {}stop manually"
+
+#: cogs/music.py:149
+msgid "Pauses playback"
+msgstr "Pauses playback"
+
+#: cogs/music.py:156
+msgid "Resumes playback"
+msgstr "Resumes playback"
+
+#: cogs/music.py:161
+msgid "Nothing is paused"
+msgstr "Nothing is paused"
+
+#: cogs/music.py:163
+msgid "Changes music volume (0-100)"
+msgstr "Changes music volume (0-100)"
+
+#: cogs/music.py:166
+msgid "Volume = {}%"
+msgstr "Volume = {}%"
+
+#: cogs/music.py:171
+msgid "Volume set to {}%"
+msgstr "Volume set to {}%"
+
+#: cogs/music.py:173
+msgid ""
+"Incorrect arguments were given. Only whole values from 0 to 100 are "
+"supported."
+msgstr ""
+"Incorrect arguments were given. Only whole values from 0 to 100 are "
+"supported."
+
+#: cogs/music.py:175
+msgid "Downloads audio from YouTube"
+msgstr "Downloads audio from YouTube"
+
+#: cogs/music.py:192
+msgid ""
+"Song downloaded:\n"
+"{}\n"
+"Song number: {}"
+msgstr ""
+"Song downloaded:\n"
+"{}\n"
+"Song number: {}"
+
+#: cogs/music.py:195
+msgid "Removes a song selected from the list"
+msgstr "Removes a song selected from the list"
+
+#: cogs/music.py:201
+msgid "Song {} has been deleted"
+msgstr "Song {} has been deleted"
+
+#: cogs/music.py:203
+msgid "Unable to delete song file, probably it is being playing now."
+msgstr ""
+
+#: cogs/music.py:205
+msgid "Unable to delete song file"
+msgstr ""
+
+#: cogs/music.py:207
+msgid "Select an existing song from the list"
+msgstr "Select an existing song from the list"
+
+#: cogs/music.py:209
+msgid "Flushes the music directory"
+msgstr "Flushes the music directory"
+
+#: cogs/music.py:215
+msgid "Music folder is now empty"
+msgstr "Music folder is now empty"
+
+#: cogs/music.py:218
+msgid "Converts music files to opus format"
+msgstr "Converts music files to opus format"
+
+#: cogs/music.py:223
+msgid "No files to convert"
+msgstr "No files to convert"
+
+#: cogs/music.py:230
+msgid ""
+"Use {}convert [number] to convert files from the list to \".opus\" format."
+msgstr ""
+"Use {}convert [number] to convert files from the list to \".opus\" format."
+
+#: cogs/music.py:234
+msgid "Performing conversion {} to \".opus\" format..."
+msgstr "Performing conversion {} to \".opus\" format..."
+
+#: cogs/music.py:241
+msgid "Conversion successful!"
+msgstr "Conversion successful!"
+
+#: cogs/music.py:244
+msgid "Select an existing file from the list or use {}convert list."
+msgstr "Select an existing file from the list or use {}convert list."
+
+#: cogs/music.py:246
+msgid "Use to search videos in YT"
+msgstr "Use to search videos in YT"
+
+#: cogs/music.py:251
+msgid "Search results:\n"
+msgstr "Search results:\n"
+
+#: cogs/music.py:259
+msgid "Use {}download <number> to download song from list."
+msgstr "Use {}download <number> to download song from list."
+
+#: cogs/music.py:262
+msgid "Use with <add/del/clear> + song number to edit the current playlist."
+msgstr "Use with <add/del/clear> + song number to edit the current playlist."
+
+#: cogs/music.py:272
+msgid "Playlist is empty"
+msgstr "Playlist is empty"
+
+#: cogs/music.py:279 cogs/music.py:293
+msgid "«‎{}»‎ added to queue."
+msgstr "«‎{}»‎ added to queue."
+
+#: cogs/music.py:282
+msgid "Song «‎{}»‎ has been removed from queue"
+msgstr "Song «‎{}»‎ has been removed from queue"
+
+#: cogs/music.py:287
+msgid "Playlist is cleared."
+msgstr "Playlist is cleared."
+
+#: cogs/music.py:299
+msgid "Use to skip current song in playlist."
+msgstr ""
+
+#: cogs/music.py:312
+msgid "Playing: "
+msgstr "Playing: "
