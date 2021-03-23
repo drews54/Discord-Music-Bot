@@ -6,7 +6,7 @@ client = commands.Bot(command_prefix = tuple(os.getenv('DISCORD_PREFIXES').split
 
 langRU = gettext.translation('Discord-Music-Bot', './locale', languages=['ru'])
 langEN = gettext.translation('Discord-Music-Bot', './locale', languages=['en'])
-if os.getenv('LANG').startswith('ru'):
+if os.getenv('LANG').casefold().startswith('ru'):
     _ = langRU.gettext
 else:
     _ = langEN.gettext
