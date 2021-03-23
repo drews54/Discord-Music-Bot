@@ -200,9 +200,9 @@ class Music(commands.Cog):
                 os.remove(self.music_path + song)
                 await self.boxed_print(ctx, self._('Song {} has been deleted').format(song[:-5]))
             except PermissionError:
-                await self.boxed_print(ctx, 'Unable to delete song file, probably it is being playing now.')
+                await self.boxed_print(ctx, self._('Unable to delete song file, probably it is being playing now.'))
             except:
-                await self.boxed_print(ctx, 'Unable to delete song file')
+                await self.boxed_print(ctx, self._('Unable to delete song file'))
         else:
             await self.boxed_print(ctx, self._('Select an existing song from the list'))
 
