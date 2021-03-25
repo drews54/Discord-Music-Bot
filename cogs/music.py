@@ -1,3 +1,4 @@
+from typing import NoReturn
 import discord
 import youtube_dl
 import os, math, subprocess, random, gettext
@@ -29,7 +30,7 @@ class Music(commands.Cog):
             os.mkdir(self.music_path)
         random.seed()
 
-    async def boxed_print(self, ctx, text):
+    async def boxed_print(self, ctx, text) -> NoReturn:
         await ctx.send('```' + text + '```')
 
     @commands.command(name = 'list', brief = _('Shows songs list'))
