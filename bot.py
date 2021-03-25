@@ -64,4 +64,7 @@ async def on_command_error(ctx, error):
         print(f'Command: {ctx.command}\nError log:\n{error}')
 
 print('\nConnecting to server...')
-client.run(token)
+try:
+    client.loop.run_until_complete(client.start(token))
+except:
+    print('Connection failed')
