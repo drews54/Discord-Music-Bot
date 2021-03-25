@@ -91,22 +91,25 @@ class Music(commands.Cog):
             else:
                 await self.boxed_print(ctx, self._('Nothing to play!'))
                 return
-        elif number.startswith('http'):
+        
+        if str(number).isnumeric():
+            name = self._songlist[int(number) - 1]
+            song = self.music_path + self._songlist[int(number) - 1]
+            ffmpeg_opts = {}
+            await self.changestatus(ctx, name[:-5])
+        else:            
             ydl_opts = {'format':'bestaudio'}
             ffmpeg_opts = {
                 'before_options': '-reconnect 1 -reconnect_streamed 1 -reconnect_delay_max 5', 
                 'options': '-vn'
             }
+            if not number.startswith('http'):
+                number = 'https://www.youtube.com' + YoutubeSearch(number, max_results = 1).to_dict()[0]['url_suffix']
             with youtube_dl.YoutubeDL(ydl_opts) as ydl:
                 info = ydl.extract_info(number, download=False)
             song = info['formats'][0]['url']
             name = info['title']
             await self.changestatus(ctx, name)
-        if (str)(number).isnumeric():
-            name = self._songlist[int(number) - 1]
-            song = self.music_path + self._songlist[int(number) - 1]
-            ffmpeg_opts = {}
-            await self.changestatus(ctx, name[:-5])
 
         if loop == 'loop':
             self._looped = True
