@@ -21,6 +21,7 @@ class Music(commands.Cog):
         self._unknown_files = 0
         self._playlist = []
         self.music_path = './music/'
+        self.music_ext = '.opus'
         self.prefix = self.client.command_prefix[0]
         self._looped = False
         self.music_volume = 0.05
@@ -75,45 +76,65 @@ class Music(commands.Cog):
         else:
             await self.boxed_print(ctx, self._('Nothing is playing'))
 
-    @commands.command(brief = _('Plays song from list'))
-    async def play(self, ctx, number='playlist', loop = ''):
-        if number == 'loop':
+    @commands.command(name='play', brief = _('Plays song from list'))
+    async def choose_song(self, ctx, *arg):
+        playlist = False
+        if len(arg) == 0:
+            playlist = True
+        if not len(arg) == 0 and arg[0] == 'loop':
             self._stop_loop = False
             self._looped = True
             await self.boxed_print(ctx, self._('Loop activated!'))
             return
-        elif number == 'random':
+        elif not len(arg) == 0 and arg[0] == 'random':
             number = random.randint(0, len(self._songlist) - 1)
-        elif number == 'playlist':
+        elif playlist or arg[0] == 'playlist':
             if self._playlist:
                 number = self._songlist.index(self._playlist[0]) + 1
                 self._playlist.pop(0)
             else:
                 await self.boxed_print(ctx, self._('Nothing to play!'))
                 return
-        
-        if str(number).isnumeric():
-            name = self._songlist[int(number) - 1]
-            song = self.music_path + self._songlist[int(number) - 1]
+        elif not len(arg) == 0 and str(arg[0]).isnumeric():
+            number = int(arg[0])
+        if 'number' in locals():
+            #name = self._songlist[int(number) - 1][:-5]
+            #song = self.music_path + self._songlist[int(number) - 1]
+            self.current_song = {
+                'name'   : self._songlist[int(number) - 1][:-5],
+                'source' : self.music_path + self._songlist[int(number) - 1]
+            }
             ffmpeg_opts = {}
-            await self.changestatus(ctx, name[:-5])
         else:
             ydl_opts = {'format':'bestaudio'}
             ffmpeg_opts = {
                 'before_options': '-reconnect 1 -reconnect_streamed 1 -reconnect_delay_max 5', 
                 'options': '-vn'
             }
-            if not number.startswith('http'):
-                number = 'https://www.youtube.com' + YoutubeSearch(number, max_results = 1).to_dict()[0]['url_suffix']
+            if arg[0].startswith('http'):
+                url = arg[0]
+            else:
+                for word in arg:
+                    searchrequest = ''
+                    searchrequest += f'{word!s} '
+                url = 'https://www.youtube.com' + YoutubeSearch(searchrequest, max_results = 1).to_dict()[0]['url_suffix']
             with youtube_dl.YoutubeDL(ydl_opts) as ydl:
-                info = ydl.extract_info(number, download=False)
-            song = info['formats'][0]['url']
-            name = info['title']
-            await self.changestatus(ctx, name)
+                info = ydl.extract_info(url, download=False)
+            #song = info['formats'][0]['url']
+            #name = info['title']
+            self.current_song = {
+                'name' :   info['title'],
+                'source' : info['formats'][0]['url']
+            }
 
-        if loop == 'loop':
+        if len(arg) > 1 and arg[1] == 'loop' and str(arg[0]).isnumeric():
             self._looped = True
+        self._stop_loop = False
+        self.is_stopped = False
 
+        await self.player(ctx, ffmpeg_opts)
+
+    async def player(self, ctx, ffmpeg_opts):
         status = get(self.client.voice_clients, guild=ctx.guild)
         try:
             if not status:
@@ -121,34 +142,27 @@ class Music(commands.Cog):
         except AttributeError:
             await self.boxed_print(ctx, self._('Connect to a voice channel before playing'))
             return
-
-        self._stop_loop = False
-        self.is_stopped = False
+        await self.changestatus(ctx, self.current_song['name'])
         def after_play(error):
             if self._looped and not self._stop_loop:
-                try:
-                    ctx.voice_client.play(discord.PCMVolumeTransformer(discord.FFmpegPCMAudio(song, **ffmpeg_opts), self.music_volume), after = after_play)
-                except:
-                    pass
+                if self.current_song['source'].startswith('http'):
+                    param = self.current_song['source']
+                else:
+                    param = self._songlist.index(self.current_song['name'] + self.music_ext) + 1
             elif self._playlist:
-                try:
-                    next_song = self.music_path + self._playlist[0]
-                    coroutine = self.changestatus(ctx, self._playlist[0][:-5])
-
-                    run_coroutine_threadsafe(coroutine, self.client.loop).result()
-                    self._playlist.pop(0)
-                    ctx.voice_client.play(discord.PCMVolumeTransformer(discord.FFmpegPCMAudio(next_song, **ffmpeg_opts), self.music_volume), after = after_play)
-                except:
-                    print('Error in playlist')
+                param = 'playlist'
+            
+            if 'param' in locals():
+                coroutine = self.choose_song(ctx, param)
             elif not self.is_stopped:
                 coroutine = self.stop(ctx)
+            if 'coroutine' in locals():
                 future = run_coroutine_threadsafe(coroutine, self.client.loop)
                 try:
                     future.result()
                 except:
                     print(self._('Disconnect has failed. Run {}stop manually').format(self.prefix), error)
-
-        ctx.voice_client.play(discord.PCMVolumeTransformer(discord.FFmpegPCMAudio(song, **ffmpeg_opts), self.music_volume), after = after_play)
+        ctx.voice_client.play(discord.PCMVolumeTransformer(discord.FFmpegPCMAudio(self.current_song['source'], **ffmpeg_opts), self.music_volume), after = after_play)
 
     @commands.command(brief = _('Pauses playback'))
     async def pause(self, ctx):
@@ -298,7 +312,7 @@ class Music(commands.Cog):
             if ctx.voice_client is not None and ctx.voice_client.is_playing():
                 pass
             else:
-                await self.play(ctx)
+                await self.choose_song(ctx, 'playlist')
                 
     @commands.command(brief = _('Use to skip current song in playlist.'))
     async def skip(self, ctx, quantity = 1):
