@@ -44,7 +44,7 @@ async def about(ctx):
 @client.command(hidden=True, aliases=['exit', 'die', 'logout'])
 @commands.is_owner()
 async def shutdown(ctx, sec: int = 60):
-    await ctx.send('Shutdown has been planned in {} s', sec)
+    await ctx.send(f'Shutdown has been planned in {sec} s')
     time.sleep(sec)
     await ctx.send('Shutting down.\nGoodbye.')
     await client.logout()
