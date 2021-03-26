@@ -71,7 +71,7 @@ class Music(commands.Cog):
             await ctx.voice_client.disconnect()
             await self.client.change_presence(status = discord.Status.idle, afk = True)
             self.is_stopped = True
-            self._looped = False          
+            self._looped = False
         else:
             await self.boxed_print(ctx, self._('Nothing is playing'))
 
@@ -97,7 +97,7 @@ class Music(commands.Cog):
             song = self.music_path + self._songlist[int(number) - 1]
             ffmpeg_opts = {}
             await self.changestatus(ctx, name[:-5])
-        else:            
+        else:
             ydl_opts = {'format':'bestaudio'}
             ffmpeg_opts = {
                 'before_options': '-reconnect 1 -reconnect_streamed 1 -reconnect_delay_max 5', 
