@@ -79,14 +79,14 @@ class Music(commands.Cog):
     @commands.command(name='play', brief = _('Plays song from list'))
     async def choose_song(self, ctx, *arg):
         playlist = False
-        if len(arg) == 0:
+        if not arg:
             playlist = True
-        if not len(arg) == 0 and arg[0] == 'loop':
+        if arg and arg[0] == 'loop':
             self._stop_loop = False
             self._looped = True
             await self.boxed_print(ctx, self._('Loop activated!'))
             return
-        elif not len(arg) == 0 and arg[0] == 'random':
+        elif arg and arg[0] == 'random':
             number = random.randint(0, len(self._songlist) - 1)
         elif playlist or arg[0] == 'playlist':
             if self._playlist:
@@ -95,11 +95,9 @@ class Music(commands.Cog):
             else:
                 await self.boxed_print(ctx, self._('Nothing to play!'))
                 return
-        elif not len(arg) == 0 and str(arg[0]).isnumeric():
+        elif arg and str(arg[0]).isnumeric():
             number = int(arg[0])
         if 'number' in locals():
-            #name = self._songlist[int(number) - 1][:-5]
-            #song = self.music_path + self._songlist[int(number) - 1]
             self.current_song = {
                 'name'   : self._songlist[int(number) - 1][:-5],
                 'source' : self.music_path + self._songlist[int(number) - 1]
@@ -120,8 +118,6 @@ class Music(commands.Cog):
                 url = 'https://www.youtube.com' + YoutubeSearch(searchrequest, max_results = 1).to_dict()[0]['url_suffix']
             with youtube_dl.YoutubeDL(ydl_opts) as ydl:
                 info = ydl.extract_info(url, download=False)
-            #song = info['formats'][0]['url']
-            #name = info['title']
             self.current_song = {
                 'name' :   info['title'],
                 'source' : info['formats'][0]['url']
