@@ -112,8 +112,8 @@ class Music(commands.Cog):
             if arg[0].startswith('http'):
                 url = arg[0]
             else:
+                searchrequest = ''
                 for word in arg:
-                    searchrequest = ''
                     searchrequest += f'{word!s} '
                 url = 'https://www.youtube.com' + YoutubeSearch(searchrequest, max_results = 1).to_dict()[0]['url_suffix']
             with youtube_dl.YoutubeDL(ydl_opts) as ydl:
