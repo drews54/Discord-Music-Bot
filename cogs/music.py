@@ -145,7 +145,7 @@ class Music(commands.Cog):
                     param = self.current_song['source']
                 else:
                     param = self._songlist.index(self.current_song['name'] + self.music_ext) + 1
-            elif self._playlist:
+            elif self._playlist and not self.is_stopped:
                 param = 'playlist'
             
             if 'param' in locals():
