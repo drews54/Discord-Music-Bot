@@ -18,19 +18,19 @@ async def on_ready():
 @client.command(hidden = True)
 async def load(ctx, extension):
     client.load_extension(f'cogs.{extension}')
-    print(f'Module {extension} loaded')
+    print(f'Module "{extension}" loaded')
 
 @client.command(hidden = True)
 async def unload(ctx, extension):
     client.unload_extension(f'cogs.{extension}')
-    print(f'Module {extension} unloaded')
+    print(f'Module "{extension}" unloaded')
 
 @client.command(hidden = True)
 async def reload(ctx, extension = 'music'):
     client.unload_extension(f'cogs.{extension}')
     client.load_extension(f'cogs.{extension}')
     print(f'Module {extension} reloaded')
-    await ctx.send(f'```Module {extension} module has been reloaded```')
+    await ctx.send(f'```Module "{extension}" has been reloaded```')
 
 @client.command()
 async def about(ctx):
@@ -59,7 +59,7 @@ Hardware: {uname_result.machine}""")
 async def shutdown(ctx, sec: int = 60):
     await ctx.send(f'Shutdown has been planned in {sec} s')
     time.sleep(sec)
-    await ctx.send('Shutting down.\nGoodbye.')
+    await ctx.send('Shutting down. Goodbye.')
     await client.logout()
 
 for filename in os.listdir('./cogs'):
@@ -77,8 +77,17 @@ async def on_command_error(ctx, error):
         await ctx.send(f'Something went wrong...\nCommand: {ctx.command}\nError log:\n{error}')
         print(f'Command: {ctx.command}\nError log:\n{error}')
 
-print('\nConnecting to server...')
+print('Connecting to gateway...')
+client.run(token)
+""" Expanded run command. Interrupts are not handled for unknown reasons.
 try:
     client.loop.run_until_complete(client.start(token))
-except:
-    print('Connection failed')
+except discord.errors.LoginFailure:
+    print('Login failed')
+except discord.errors.ConnectionClosed as err:
+    print(f'Connection clesed: {err.reason}')
+except KeyboardInterrupt or InterruptedError:
+    client.loop.run_until_complete(client.logout())
+finally:
+    client.loop.close()
+"""
