@@ -171,7 +171,7 @@ class Music(commands.Cog):
         status = get(self.client.voice_clients, guild=ctx.guild)
         try:
             if not status:
-                await ctx.voice.channel.connect()
+                await ctx.author.voice.channel.connect()
         except AttributeError:
             await ctx.send(boxed_string(_('Connect to a voice channel before playing')))
             return
@@ -354,7 +354,12 @@ class Music(commands.Cog):
 
     @commands.command(hidden=True)
     async def spotify(self, ctx):
-        await ctx.send(boxed_string(f'{ctx.author.activities[1].artist} - {ctx.author.activities[1].title}'))
+        """Reads user status and tries to detect song from Spotify, after that it invoke choose_song with Artst + Song name as argument to search it on YT"""
+        for activity in ctx.author.activities:
+            if activity.name == 'Spotify':
+                await self.choose_song(ctx, f'{activity.artist} - {activity.title}')
+                return
+        await ctx.send(boxed_string('Can`t detect your Spotify status.'))
 
 def setup(client):
     client.add_cog(Music(client))
