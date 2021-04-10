@@ -171,7 +171,7 @@ class Music(commands.Cog):
         status = get(self.client.voice_clients, guild=ctx.guild)
         try:
             if not status:
-                await ctx.voice.channel.connect()
+                await ctx.author.voice.channel.connect()
         except AttributeError:
             await ctx.send(boxed_string(_('Connect to a voice channel before playing')))
             return
