@@ -4,6 +4,7 @@ Main body of the bot.
 It only contains a few top-level commands and initialization procedures.
 """
 import os
+import textwrap
 import time
 from gettext import translation
 from discord.ext import commands
@@ -96,30 +97,26 @@ async def shutdown(ctx, sec: int = 3):
 async def on_command_error(ctx, error):
     """Prints error contents to current channel when encountered."""
     if isinstance(error, commands.CommandNotFound):
-        await ctx.send(
-            '**{}** command not found.'
-            'Use {}help'
-            .format(ctx.message.content,
-                    client.command_prefix)
-        )
+        await ctx.send(textwrap.dedent("""\
+            **{}** command not found.
+            Use {}help
+            """).format(ctx.message.content,
+                        client.command_prefix))
     elif isinstance(error, commands.MissingRequiredArgument):
-        await ctx.send(
-            'Missing command parameter.'
-            'Missing parameter: **{}**'
-            'Use **{}help {}** to get help.'
-            .format(error.param,
-                    client.command_prefix, ctx.command)
-        )
+        await ctx.send(textwrap.dedent("""\
+            Missing command parameter.
+            Missing parameter: **{}**
+            Use **{}help {}** to get help.
+            """).format(error.param,
+                        client.command_prefix, ctx.command))
     else:
         await ctx.send(
             'Something went wrong...'
         )
-        print(
-            'Command: {}'
-            'Error log:'
-            '{}'.format(ctx.command,
-                        error)
-        )
+        print(textwrap.dedent("""\
+            Command: {}
+            Error log:
+            {}""").format(ctx.command, error))
 
 
 for filename in os.listdir('./cogs'):
