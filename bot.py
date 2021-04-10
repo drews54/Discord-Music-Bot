@@ -88,7 +88,7 @@ async def shutdown(ctx, sec: int = 3):
     await ctx.send(f'Shutdown has been planned in {sec} s')
     time.sleep(sec)
     await ctx.send('Shutting down. Goodbye.')
-    await client.logout()
+    await client.close()
 
 
 @client.event
@@ -107,6 +107,8 @@ async def on_command_error(ctx, error):
             Use **{}help {}** to get help.
             """).format(error.param,
                         client.command_prefix, ctx.command))
+    elif isinstance(error, commands.NotOwner):
+        await ctx.send(f"Error: {error}")
     else:
         await ctx.send(
             'Something went wrong...'
