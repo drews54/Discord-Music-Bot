@@ -352,7 +352,7 @@ class Music(commands.Cog):
         await self.client.change_presence(activity=discord.Activity(type=discord.ActivityType.listening, name=status))
         await ctx.send(boxed_string(_('Playing: ') + status))
 
-    @commands.command(hidden=True)
+    @commands.command(brief=_('Plays song, which is displayed in your Spotify status'))
     async def spotify(self, ctx):
         """Reads user status and tries to detect song from Spotify, after that it invoke choose_song with Artst + Song name as argument to search it on YT"""
         for activity in ctx.author.activities:
