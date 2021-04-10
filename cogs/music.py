@@ -186,7 +186,7 @@ class Music(commands.Cog):
                 param = 'playlist'
 
             if 'param' in locals():
-                coroutine = self.choose_song(ctx, param)
+                coroutine = self.choose_song(ctx, arg=str(param))
             elif not self.is_stopped:
                 coroutine = self.stop(ctx)
             if 'coroutine' in locals():
@@ -331,7 +331,7 @@ class Music(commands.Cog):
             if ctx.voice_client is not None and ctx.voice_client.is_playing():
                 pass
             else:
-                await self.choose_song(ctx, 'playlist')
+                await self.choose_song(ctx, arg='playlist')
 
     @commands.command(brief=_('Use to skip current song in playlist.'))
     async def skip(self, ctx, quantity=1):
