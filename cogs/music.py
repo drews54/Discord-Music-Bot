@@ -151,7 +151,7 @@ class Music(commands.Cog):
                     searchrequest += f'{word!s} '
                 url = 'https://www.youtube.com' + \
                     YoutubeSearch(searchrequest, max_results=1).to_dict()[
-                        0]['url_suffix']
+                        0]['url_suffix'] # type: ignore
             with YoutubeDL(ydl_opts) as ydl:
                 info = ydl.extract_info(url, download=False)
             self.current_song = {
@@ -290,8 +290,8 @@ class Music(commands.Cog):
         searchlist = YoutubeSearch(searchrequest, max_results=5).to_dict()
         for video in searchlist:
             i += 1
-            self._urlslist.append(video['url_suffix'])
-            string += f'{i!s}. {video["title"]}\n'
+            self._urlslist.append(video['url_suffix']) # type: ignore
+            string += f'{i!s}. {video["title"]}\n' #type: ignore
         string += _('Use {}download <number> to download song from list.').format(
             self.client.command_prefix)
         await ctx.send(boxed_string(string))
