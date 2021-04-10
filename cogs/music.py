@@ -107,13 +107,13 @@ class Music(commands.Cog):
             await ctx.send(boxed_string(_('Nothing is playing')))
 
     @commands.command(name='play', brief=_('Plays song from list'))
-    async def choose_song(self, ctx, *, arg: str):
+    async def choose_song(self, ctx, *, arg: str = ''):
         """Lets the user play a song from songlist or start a playlist.
 
         Also used by other methods of Music class which substitute user input.
         """
         playlist = False
-        if arg is None or not arg:
+        if not arg:
             playlist = True
         if arg and arg.startswith('loop'):
             self._stop_loop = False
@@ -129,8 +129,8 @@ class Music(commands.Cog):
             else:
                 await ctx.send(boxed_string(_('Nothing to play!')))
                 return
-        elif arg and arg.isnumeric():
-            number = int(arg)
+        elif arg and arg.split(maxsplit=1)[0].isnumeric():
+            number = int(arg.split(maxsplit=1)[0])
         if 'number' in locals():
             self.current_song = {
                 'name':   _songlist[int(number) - 1][:-5],
