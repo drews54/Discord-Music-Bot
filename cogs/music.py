@@ -350,6 +350,16 @@ class Music(commands.Cog):
         await self.client.change_presence(activity=discord.Activity(type=discord.ActivityType.listening, name=status))
         await ctx.send(boxed_string(_('Playing: ') + status))
 
+    @commands.command(brief=_('Plays song, which is displayed in your Spotify status'))
+    async def spotify(self, ctx):
+        """Checks user's status for Spotify integration and, if it exists, searches the currently playing song on YouTube.
+        
+        Invokes choose_song(artist + name) which plays the first match of the search query."""
+        for activity in ctx.author.activities:
+            if activity.name == 'Spotify':
+                await self.choose_song(ctx, f'{activity.artist} - {activity.title}')
+                return
+        await ctx.send(boxed_string('Can\'t detect your Spotify status.'))
 
 def setup(client):
     client.add_cog(Music(client))
