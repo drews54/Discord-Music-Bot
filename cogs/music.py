@@ -36,7 +36,6 @@ class Music(commands.Cog):
         self._playlist = []
         self.music_path = './music/'
         self.music_ext = '.opus'
-        self.prefix = self.client.command_prefix[0]
         self._looped = False
         self.music_volume = 0.05
         if os.path.exists(self.music_path):
@@ -63,7 +62,7 @@ class Music(commands.Cog):
                 await ctx.send(boxed_string(_('404 bro, use one of {} existing pages').format(max_page)))
                 return
             elif not self._songlist:
-                await ctx.send(boxed_string(_('No songs! Use {}download to download songs').format(self.prefix)))
+                await ctx.send(boxed_string(_('No songs! Use {}download to download songs').format(self.client.command_prefix)))
                 return
             string = f'Page {page!s} of {max_page!s}:\n'
             for i, name in enumerate(self._songlist):
@@ -71,9 +70,9 @@ class Music(commands.Cog):
                     string += f'{(i + 1)!s}. {name[:-5]!s}\n'
         await ctx.send(boxed_string(string))
         if self._unknown_files == 1:
-            await ctx.send(boxed_string(_('Also there is a file with unknown extension. Use {}convert list to convert your music files to "opus" format.').format(self.prefix)))
+            await ctx.send(boxed_string(_('Also there is a file with unknown extension. Use {}convert list to convert your music files to "opus" format.').format(self.client.command_prefix)))
         elif self._unknown_files > 1:
-            await ctx.send(boxed_string(_('Also there are {} files with unknown extension. Use {}convert list to convert your music files to "opus" format.').format(self._unknown_files, self.prefix)))
+            await ctx.send(boxed_string(_('Also there are {} files with unknown extension. Use {}convert list to convert your music files to "opus" format.').format(self._unknown_files, self.client.command_prefix)))
 
     @commands.command(brief=_('Stops playing audio'))
     async def stop(self, ctx, loop=''):
@@ -181,7 +180,7 @@ class Music(commands.Cog):
                     future.result()
                 except:
                     print(_('Disconnect has failed. Run {}stop manually').format(
-                        self.prefix), error)
+                        self.client.command_prefix), error)
         ctx.voice_client.play(discord.PCMVolumeTransformer(discord.FFmpegPCMAudio(
             self.current_song['source'], **ffmpeg_opts), self.music_volume), after=after_play)
 
@@ -277,7 +276,7 @@ class Music(commands.Cog):
                 string += f'{i!s}. {name!s}\n'
             string = string + \
                 _('Use {}convert [number] to convert files from the list to ".opus" format.').format(
-                    self.prefix)
+                    self.client.command_prefix)
             await ctx.send(boxed_string(string))
         elif (1 <= int(arg) <= len(self._filelist)):
             file = self._filelist[int(arg) - 1]
@@ -291,7 +290,7 @@ class Music(commands.Cog):
             await ctx.send(boxed_string(_('Conversion successful!')))
             await self.list_(ctx)
         else:
-            await ctx.send(boxed_string(_('Select an existing file from the list or use {}convert list.').format(self.prefix)))
+            await ctx.send(boxed_string(_('Select an existing file from the list or use {}convert list.').format(self.client.command_prefix)))
 
     @commands.command(brief=_('Use to search videos in YT'))
     async def search(self, ctx, *key):
@@ -307,7 +306,7 @@ class Music(commands.Cog):
             i += 1
             self._urlslist.append(video['url_suffix'])
             string += f'{i!s}. {video["title"]}\n'
-        string += _('Use {}download <number> to download song from list.').format(self.prefix)
+        string += _('Use {}download <number> to download song from list.').format(self.client.command_prefix)
         await ctx.send(boxed_string(string))
 
     @commands.command(brief=_('Use with <add/del/clear> + song number to edit the current playlist.'))

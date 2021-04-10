@@ -10,9 +10,7 @@ from gettext import translation
 from discord.ext import commands
 
 token = os.getenv('DISCORD_TOKEN')
-# Import prefixes as space-separated values
-client = commands.Bot(command_prefix=tuple(
-    os.getenv('DISCORD_PREFIXES').split()))
+client = commands.Bot(command_prefix=os.getenv('DISCORD_PREFIXES'))
 
 if os.getenv('LANG').casefold().startswith('ru'):
     _ = translation('Discord-Music-Bot', './locale', languages=['ru']).gettext
