@@ -6,13 +6,12 @@ It only contains a few top-level commands and initialization procedures.
 import os
 import textwrap
 import time
-import discord
+from discord import Intents
 from gettext import translation
 from discord.ext import commands
 
 token = os.getenv('DISCORD_TOKEN')
-intents = discord.Intents.all()
-client = commands.Bot(command_prefix=os.getenv('DISCORD_PREFIXES'), intents=intents)
+client = commands.Bot(command_prefix=os.getenv('DISCORD_PREFIXES'), intents=Intents.all())
 
 if os.getenv('LANG').casefold().startswith('ru'):
     _ = translation('Discord-Music-Bot', './locale', languages=['ru']).gettext

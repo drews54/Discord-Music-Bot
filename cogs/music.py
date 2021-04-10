@@ -359,7 +359,7 @@ class Music(commands.Cog):
             if activity.name == 'Spotify':
                 await self.choose_song(ctx, f'{activity.artist} - {activity.title}')
                 return
-        await ctx.send(boxed_string('Can`t detect your Spotify status.'))
+        await ctx.send(boxed_string('Can\'t detect your Spotify status.'))
 
 def setup(client):
     client.add_cog(Music(client))
