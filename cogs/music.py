@@ -352,6 +352,9 @@ class Music(commands.Cog):
         await self.client.change_presence(activity=discord.Activity(type=discord.ActivityType.listening, name=status))
         await ctx.send(boxed_string(_('Playing: ') + status))
 
+    @commands.command(hidden=True)
+    async def spotify(self, ctx):
+        await ctx.send(boxed_string(f'{ctx.author.activities[1].artist} - {ctx.author.activities[1].title}'))
 
 def setup(client):
     client.add_cog(Music(client))
