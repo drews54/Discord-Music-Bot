@@ -4,9 +4,9 @@
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: 1.0.0\n"
-"POT-Creation-Date: 2021-04-10 12:35+0300\n"
-"PO-Revision-Date: 2021-04-10 12:45+0300\n"
+"Project-Id-Version: Discord-Music-Bot\n"
+"POT-Creation-Date: 2021-04-10 14:42+0300\n"
+"PO-Revision-Date: 2021-04-10 14:45+0300\n"
 "Last-Translator: Andrei Amosov <duha9898@gmail.com>\n"
 "Language-Team: Drews&Co\n"
 "Language: ru\n"
@@ -15,116 +15,118 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Generated-By: pygettext.py 1.5\n"
 "X-Generator: Poedit 2.4.2\n"
-"Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%10<=4 "
-"&& (n%100<12 || n%100>14) ? 1 : 2);\n"
+"Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n"
+"%10<=4 && (n%100<12 || n%100>14) ? 1 : 2);\n"
 
-#: bot.py:59
+#: bot.py:58
 msgid "GitHub source code"
 msgstr "Исходный код GitHub"
 
-#: bot.py:60
+#: bot.py:59
 msgid "Docker Hub repository"
 msgstr "Репозиторий Docker Hub"
 
-#: cogs/music.py:49
+#: cogs/music.py:65
 msgid "Shows songs list"
 msgstr "Показывает список песен"
 
-#: cogs/music.py:54
+#: cogs/music.py:70
 msgid "Full song list:\n"
 msgstr "Полный список песен:\n"
 
-#: cogs/music.py:63
+#: cogs/music.py:79
 msgid "404 bro, use one of {} existing pages"
 msgstr "404 бро, используй одну из {} существующих страниц"
 
-#: cogs/music.py:66
+#: cogs/music.py:82
 msgid "No songs! Use {}download to download songs"
 msgstr "Нет песен! Используй {}download для загрузки песен"
 
-#: cogs/music.py:74
+#: cogs/music.py:90
 msgid ""
-"Also there is a file with unknown extension. Use {}convert list to convert your "
-"music files to \"opus\" format."
+"Also there is a file with unknown extension. Use {}convert list to convert "
+"your music files to \"opus\" format."
 msgstr ""
 "Также есть файл с неизвестным расширением. Используйте {}convert list для "
 "преобразования музыкальных файлов в формат «opus»."
 
-#: cogs/music.py:76
+#: cogs/music.py:92
 msgid ""
-"Also there are {} files with unknown extension. Use {}convert list to convert "
-"your music files to \"opus\" format."
+"Also there are {} files with unknown extension. Use {}convert list to "
+"convert your music files to \"opus\" format."
 msgstr ""
 "Также есть файлы с неизвестными расширениями. Используйте {}convert list для "
 "преобразования музыкальных файлов в формат «opus»."
 
-#: cogs/music.py:78
+#: cogs/music.py:94
 msgid "Stops playing audio"
 msgstr "Прекращает воспроизведение звука"
 
-#: cogs/music.py:84
+#: cogs/music.py:100
 msgid "Loop stopped!"
 msgstr "Петля остановилась!"
 
-#: cogs/music.py:91 cogs/music.py:194
+#: cogs/music.py:107 cogs/music.py:210
 msgid "Nothing is playing"
 msgstr "Ничего не играет"
 
-#: cogs/music.py:93
+#: cogs/music.py:109
 msgid "Plays song from list"
 msgstr "Воспроизведение песни из списка"
 
-#: cogs/music.py:105
+#: cogs/music.py:121
 msgid "Loop activated!"
 msgstr "Петля активирована!"
 
-#: cogs/music.py:114
+#: cogs/music.py:130
 msgid "Nothing to play!"
 msgstr "Нечего играть!"
 
-#: cogs/music.py:160
+#: cogs/music.py:176
 msgid "Connect to a voice channel before playing"
 msgstr "Присоединитесь к голосовому каналу прежде чем воспроизводить"
 
-#: cogs/music.py:183
+#: cogs/music.py:199
 msgid "Disconnect has failed. Run {}stop manually"
 msgstr "Отключение провалилось. Выполните {}stop вручную"
 
-#: cogs/music.py:188
+#: cogs/music.py:204
 msgid "Pauses playback"
 msgstr "Приостанавливает проигрывание"
 
-#: cogs/music.py:196
+#: cogs/music.py:212
 msgid "Resumes playback"
 msgstr "Возобновляет проигрывание"
 
-#: cogs/music.py:202
+#: cogs/music.py:218
 msgid "Nothing is paused"
 msgstr "Ничего не стоит на паузе"
 
-#: cogs/music.py:204
+#: cogs/music.py:220
 msgid "Changes music volume (0-100)"
 msgstr "Изменяет громкость музыки (0-100)"
 
-#: cogs/music.py:211
+#: cogs/music.py:227
 msgid "Volume = {}%"
 msgstr "Громкость = {}%"
 
-#: cogs/music.py:216
+#: cogs/music.py:232
 msgid "Volume set to {}%"
 msgstr "Громкость установлена на {}%"
 
-#: cogs/music.py:218
+#: cogs/music.py:234
 msgid ""
-"Incorrect arguments were given. Only whole values from 0 to 100 are supported."
+"Incorrect arguments were given. Only whole values from 0 to 100 are "
+"supported."
 msgstr ""
-"Были даны неверные аргументы. Поддерживаются только целые значения от 0 до 100."
+"Были даны неверные аргументы. Поддерживаются только целые значения от 0 до "
+"100."
 
-#: cogs/music.py:220
+#: cogs/music.py:236
 msgid "Downloads audio from YouTube"
 msgstr "Загружает аудио из YouTube"
 
-#: cogs/music.py:239
+#: cogs/music.py:254
 msgid ""
 "Song downloaded:\n"
 "{}\n"
@@ -134,102 +136,101 @@ msgstr ""
 "{}\n"
 "Номер песни: {}"
 
-#: cogs/music.py:241
+#: cogs/music.py:256
 msgid "Removes a song selected from the list"
 msgstr "Удаляет выбранную из списка песню"
 
-#: cogs/music.py:248
+#: cogs/music.py:263
 msgid "Song {} has been deleted"
 msgstr "Песня {} была удалена"
 
-#: cogs/music.py:250
-msgid "Unable to delete song file, probably because it is being played right now."
-msgstr "Не удаётся удалить файл песни, вероятно поскольку он сейчас проигрывается."
+#: cogs/music.py:265
+msgid ""
+"Unable to delete song file, probably because it is being played right now."
+msgstr ""
+"Не удаётся удалить файл песни, вероятно поскольку он сейчас проигрывается."
 
-#: cogs/music.py:252
+#: cogs/music.py:267
 msgid "Unable to delete song file as it no longer exists."
-msgstr "Не удаётся удалить файл песни, вероятно поскольку он более не существует."
+msgstr ""
+"Не удаётся удалить файл песни, вероятно поскольку он более не существует."
 
-#: cogs/music.py:254
+#: cogs/music.py:269
 msgid "Select an existing song from the list"
 msgstr "Выберите существующую песню из списка"
 
-#: cogs/music.py:256
+#: cogs/music.py:271
 msgid "Flushes the music directory"
 msgstr "Очищает директорию с музыкой"
 
-#: cogs/music.py:263
+#: cogs/music.py:278
 msgid "Music folder is now empty"
 msgstr "Папка с музыкой теперь пуста"
 
-#: cogs/music.py:266
-msgid "Converts music files to opus format"
-msgstr "Преобразует музыкальные файлы в формат opus"
-
-#: cogs/music.py:271
-msgid "No files to convert"
-msgstr "Отсутствуют файлы для преобразования"
-
-#: cogs/music.py:279
-msgid "Use {}convert [number] to convert files from the list to \".opus\" format."
-msgstr ""
-"Используйте {}convert [номер] для преобразования файлов из списка в формат \"."
-"opus\"."
-
-#: cogs/music.py:284
-msgid "Performing conversion {} to \".opus\" format..."
-msgstr "Выполняется преобразование {} в формат \".opus\"."
-
-#: cogs/music.py:291
-msgid "Conversion successful!"
-msgstr "Преобразование выполнено успешно!"
-
-#: cogs/music.py:294
-msgid "Select an existing file from the list or use {}convert list."
-msgstr ""
-"Выберите существующий файл из списка или используйте команду {}convert list."
-
-#: cogs/music.py:296
+#: cogs/music.py:281
 msgid "Use to search videos in YT"
 msgstr "Используйте для поиска видео на YouTube"
 
-#: cogs/music.py:302
+#: cogs/music.py:287
 msgid "Search results:\n"
 msgstr "Результаты поиска:\n"
 
-#: cogs/music.py:310
+#: cogs/music.py:295
 msgid "Use {}download <number> to download song from list."
 msgstr "Используйте {}download <number> для загрузки песни из списка."
 
-#: cogs/music.py:313
+#: cogs/music.py:299
 msgid "Use with <add/del/clear> + song number to edit the current playlist."
 msgstr ""
-"Используйте вместе с <add/del/clear> + номер песни для редактирования текущего "
-"плейлиста."
+"Используйте вместе с <add/del/clear> + номер песни для редактирования "
+"текущего плейлиста."
 
-#: cogs/music.py:325
+#: cogs/music.py:311
 msgid "Playlist is empty"
 msgstr "Плейлист пуст"
 
-#: cogs/music.py:332 cogs/music.py:346
+#: cogs/music.py:318 cogs/music.py:332
 msgid "«‎{}»‎ added to queue."
 msgstr "«‎{}»‎ добавлена в очередь."
 
-#: cogs/music.py:335
+#: cogs/music.py:321
 msgid "Song «‎{}»‎ has been removed from queue"
 msgstr "Песня «‎{}»‎ была удалена из очереди"
 
-#: cogs/music.py:340
+#: cogs/music.py:326
 msgid "Playlist is cleared."
 msgstr "Плейлист очищен."
 
-#: cogs/music.py:352
+#: cogs/music.py:338
 msgid "Use to skip current song in playlist."
 msgstr "Использайте для пропуска текущей песни в плейлисте."
 
-#: cogs/music.py:367
+#: cogs/music.py:353
 msgid "Playing: "
 msgstr "Проигрывается: "
+
+#~ msgid "Converts music files to opus format"
+#~ msgstr "Преобразует музыкальные файлы в формат opus"
+
+#~ msgid "No files to convert"
+#~ msgstr "Отсутствуют файлы для преобразования"
+
+#~ msgid ""
+#~ "Use {}convert [number] to convert files from the list to \".opus\" format."
+#~ msgstr ""
+#~ "Используйте {}convert [номер] для преобразования файлов из списка в "
+#~ "формат \".opus\"."
+
+#~ msgid "Performing conversion {} to \".opus\" format..."
+#~ msgstr "Выполняется преобразование {} в формат \".opus\"."
+
+#~ msgid "Conversion successful!"
+#~ msgstr "Преобразование выполнено успешно!"
+
+#~ msgid "Select an existing file from the list or use {}convert list."
+#~ msgstr ""
+#~ "Выберите существующий файл из списка или используйте команду {}convert "
+#~ "list."
 
 #~ msgid "Unable to delete song file"
 #~ msgstr "Не удаётся удалить файл песни"
