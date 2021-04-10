@@ -5,7 +5,6 @@ Uses Discord's commands.Cog as a base class.
 """
 import os
 import math
-import subprocess
 import random
 from gettext import translation
 from asyncio import run_coroutine_threadsafe
@@ -26,53 +25,71 @@ def boxed_string(text) -> str:
     return '```' + text + '```'
 
 
+# pylint: disable=C0103
+_songlist = []
+_unknown_files = 0
+_playlist = []
+MUSIC_PATH = './music/'
+MUSIC_EXT = '.opus'
+# pylint: enable=C0103
+
+
+def update_songlist():
+    """Updates songlist variable in Music class. (will be deprecated)"""
+    for filename in os.listdir(MUSIC_PATH):
+        if filename.endswith(MUSIC_EXT):
+            _songlist.append(filename)
+        else:
+            _unknown_files += 1
+
+
+if os.path.exists(MUSIC_PATH):
+    update_songlist()
+else:
+    os.mkdir(MUSIC_PATH)
+random.seed()
+
+
 class Music(commands.Cog):
     """Contains all invokable commands within music module."""
 
     def __init__(self, client):
         self.client = client
-        self._songlist = []
-        self._unknown_files = 0
-        self._playlist = []
-        self.music_path = './music/'
-        self.music_ext = '.opus'
+        self.current_song = {}
+        self.is_stopped = False
+        self._stop_loop = False
         self._looped = False
         self.music_volume = 0.05
-        if os.path.exists(self.music_path):
-            self._songlist, self._unknown_files = update_songlist(
-                self.music_path)
-        else:
-            os.mkdir(self.music_path)
-        random.seed()
+        self._urlslist = []
 
     @commands.command(name='list', brief=_('Shows songs list'))
     async def list_(self, ctx, page='all'):
         """Displays list of songs page by page."""
-        max_page = math.ceil(len(self._songlist)/10)
+        max_page = math.ceil(len(_songlist)/10)
         if page == 'all':
             string = _('Full song list:\n')
-            for i, name in enumerate(self._songlist):
+            for i, name in enumerate(_songlist):
                 temp_string = f'{(i + 1)!s}. {name[:-5]!s}\n'
                 if len(string + temp_string) > 1994:
                     await ctx.send(boxed_string(string))
                     string = ''
                 string += temp_string
         else:
-            if self._songlist and not 0 < int(page) <= max_page:
+            if _songlist and not 0 < int(page) <= max_page:
                 await ctx.send(boxed_string(_('404 bro, use one of {} existing pages').format(max_page)))
                 return
-            elif not self._songlist:
+            elif not _songlist:
                 await ctx.send(boxed_string(_('No songs! Use {}download to download songs').format(self.client.command_prefix)))
                 return
             string = f'Page {page!s} of {max_page!s}:\n'
-            for i, name in enumerate(self._songlist):
+            for i, name in enumerate(_songlist):
                 if (int)(page) == (i)//10 + 1:
                     string += f'{(i + 1)!s}. {name[:-5]!s}\n'
         await ctx.send(boxed_string(string))
-        if self._unknown_files == 1:
+        if _unknown_files == 1:
             await ctx.send(boxed_string(_('Also there is a file with unknown extension. Use {}convert list to convert your music files to "opus" format.').format(self.client.command_prefix)))
-        elif self._unknown_files > 1:
-            await ctx.send(boxed_string(_('Also there are {} files with unknown extension. Use {}convert list to convert your music files to "opus" format.').format(self._unknown_files, self.client.command_prefix)))
+        elif _unknown_files > 1:
+            await ctx.send(boxed_string(_('Also there are {} files with unknown extension. Use {}convert list to convert your music files to "opus" format.').format(_unknown_files, self.client.command_prefix)))
 
     @commands.command(brief=_('Stops playing audio'))
     async def stop(self, ctx, loop=''):
@@ -104,11 +121,11 @@ class Music(commands.Cog):
             await ctx.send(boxed_string(_('Loop activated!')))
             return
         elif arg and arg[0] == 'random':
-            number = random.randint(0, len(self._songlist) - 1)
+            number = random.randint(0, len(_songlist) - 1)
         elif playlist or arg[0] == 'playlist':
-            if self._playlist:
-                number = self._songlist.index(self._playlist[0]) + 1
-                self._playlist.pop(0)
+            if _playlist:
+                number = _songlist.index(_playlist[0]) + 1
+                _playlist.pop(0)
             else:
                 await ctx.send(boxed_string(_('Nothing to play!')))
                 return
@@ -116,8 +133,8 @@ class Music(commands.Cog):
             number = int(arg[0])
         if 'number' in locals():
             self.current_song = {
-                'name':   self._songlist[int(number) - 1][:-5],
-                'source': self.music_path + self._songlist[int(number) - 1]
+                'name':   _songlist[int(number) - 1][:-5],
+                'source': MUSIC_PATH + _songlist[int(number) - 1]
             }
             ffmpeg_opts = {}
         else:
@@ -165,9 +182,9 @@ class Music(commands.Cog):
                 if self.current_song['source'].startswith('http'):
                     param = self.current_song['source']
                 else:
-                    param = self._songlist.index(
-                        self.current_song['name'] + self.music_ext) + 1
-            elif self._playlist and not self.is_stopped:
+                    param = _songlist.index(
+                        self.current_song['name'] + MUSIC_EXT) + 1
+            elif _playlist and not self.is_stopped:
                 param = 'playlist'
 
             if 'param' in locals():
@@ -203,7 +220,7 @@ class Music(commands.Cog):
     @commands.command(brief=_('Changes music volume (0-100)'))
     async def volume(self, ctx, volume=None):
         """Changes playback volume.
-        
+
         For user convenience, the default linear scale is substituted with an exponent.
         """
         if volume is None:
@@ -221,7 +238,7 @@ class Music(commands.Cog):
         """Parses YouTube link passed by user and downloads found audio."""
         ydl_opts = {
             'format': 'bestaudio/opus',
-            'outtmpl': f'{self.music_path}%(title)s.%(ext)s',
+            'outtmpl': f'{MUSIC_PATH}%(title)s.%(ext)s',
             'postprocessors': [{
                 'key': 'FFmpegExtractAudio',
                 'preferredcodec': 'opus',
@@ -232,18 +249,17 @@ class Music(commands.Cog):
             url = f'https://www.youtube.com{self._urlslist[int(url) - 1]}'
         with YoutubeDL(ydl_opts) as ydl:
             info = ydl.extract_info(url)
-            self._songlist, self._unknown_files = update_songlist(
-                self.music_path)
+            update_songlist()
             name = info['title'].replace('"', "'")
-            await ctx.send(boxed_string(_('Song downloaded:\n{}\nSong number: {}').format(name, self._songlist.index(name + ".opus") + 1)))
+            await ctx.send(boxed_string(_('Song downloaded:\n{}\nSong number: {}').format(name, _songlist.index(name + ".opus") + 1)))
 
     @commands.command(brief=_('Removes a song selected from the list'))
     async def remove(self, ctx, number=0):
         """Removes a song's data and file from songlist and music directory."""
-        if 1 <= int(number) <= len(self._songlist):
-            song = self._songlist.pop(int(number) - 1)
+        if 1 <= int(number) <= len(_songlist):
+            song = _songlist.pop(int(number) - 1)
             try:
-                os.remove(self.music_path + song)
+                os.remove(MUSIC_PATH + song)
                 await ctx.send(boxed_string(_('Song {} has been deleted').format(song[:-5])))
             except PermissionError:
                 await ctx.send(boxed_string(_('Unable to delete song file, probably because it is being played right now.')))
@@ -257,46 +273,16 @@ class Music(commands.Cog):
         """Removes all files from music directory."""
         status = get(self.client.voice_clients, guild=ctx.guild)
         if not status:
-            for filename in os.scandir(self.music_path):
+            for filename in os.scandir(MUSIC_PATH):
                 os.remove(filename.path)
             await ctx.send(boxed_string(_('Music folder is now empty')))
-        self._songlist.clear()
-
-    @commands.command(brief=_('Converts music files to opus format'))
-    async def convert(self, ctx, arg, ext='mp3'):
-        if arg == 'list':
-            self._filelist = update_songlist(self.music_path, ext)[0]
-            if not self._filelist:
-                await ctx.send(boxed_string(_('No files to convert')))
-                return
-            i = 0
-            string = ''
-            for name in self._filelist:
-                i += 1
-                string += f'{i!s}. {name!s}\n'
-            string = string + \
-                _('Use {}convert [number] to convert files from the list to ".opus" format.').format(
-                    self.client.command_prefix)
-            await ctx.send(boxed_string(string))
-        elif (1 <= int(arg) <= len(self._filelist)):
-            file = self._filelist[int(arg) - 1]
-            await ctx.send(boxed_string(_('Performing conversion {} to ".opus" format...').format(file)))
-            cmd = f'ffmpeg -i "music/{file}" "music/{file[:-len(ext)]}opus"'
-            subprocess.call(cmd, shell=True)
-            os.remove('./music/' + file)
-            self._songlist.append(f'{file[:-len(ext)]}opus')
-            self._songlist.sort()
-            self._unknown_files -= 1
-            await ctx.send(boxed_string(_('Conversion successful!')))
-            await self.list_(ctx)
-        else:
-            await ctx.send(boxed_string(_('Select an existing file from the list or use {}convert list.').format(self.client.command_prefix)))
+        _songlist.clear()
 
     @commands.command(brief=_('Use to search videos in YT'))
     async def search(self, ctx, *key):
         """Searches YouTube videos by user-provided string."""
         i = 0
-        self._urlslist = []
+        self._urlslist.clear()
         searchrequest = ''
         string = _('Search results:\n')
         for word in key:
@@ -306,7 +292,8 @@ class Music(commands.Cog):
             i += 1
             self._urlslist.append(video['url_suffix'])
             string += f'{i!s}. {video["title"]}\n'
-        string += _('Use {}download <number> to download song from list.').format(self.client.command_prefix)
+        string += _('Use {}download <number> to download song from list.').format(
+            self.client.command_prefix)
         await ctx.send(boxed_string(string))
 
     @commands.command(brief=_('Use with <add/del/clear> + song number to edit the current playlist.'))
@@ -316,8 +303,8 @@ class Music(commands.Cog):
         if action == 'show':
             string = ''
             i = 0
-            if self._playlist:
-                for song in self._playlist:
+            if _playlist:
+                for song in _playlist:
                     i += 1
                     string += f'{i}. {song[:-5]}\n'
             else:
@@ -326,23 +313,23 @@ class Music(commands.Cog):
 
         elif action == 'add':
             if song_number == 'random':
-                song_number = random.randint(0, len(self._songlist) - 1)
-            self._playlist.append(self._songlist[int(song_number) - 1])
-            await ctx.send(boxed_string(_('«‎{}»‎ added to queue.').format(self._songlist[int(song_number) - 1][:-5])))
+                song_number = random.randint(0, len(_songlist) - 1)
+            _playlist.append(_songlist[int(song_number) - 1])
+            await ctx.send(boxed_string(_('«‎{}»‎ added to queue.').format(_songlist[int(song_number) - 1][:-5])))
 
         elif action == 'del':
-            await ctx.send(boxed_string(_('Song «‎{}»‎ has been removed from queue').format(self._playlist[int(song_number) - 1][:-5])))
-            self._playlist.pop(int(song_number) - 1)
+            await ctx.send(boxed_string(_('Song «‎{}»‎ has been removed from queue').format(_playlist[int(song_number) - 1][:-5])))
+            _playlist.pop(int(song_number) - 1)
 
         elif action == 'clear':
-            self._playlist.clear()
+            _playlist.clear()
             await ctx.send(boxed_string(_('Playlist is cleared.')))
 
         elif action == 'random':
             for i in range(int(song_number)):
-                number = random.randint(0, len(self._songlist) - 1)
-                self._playlist.append(self._songlist[int(number) - 1])
-                await ctx.send(boxed_string(_('«‎{}»‎ added to queue.').format(self._songlist[int(number) - 1][:-5])))
+                number = random.randint(0, len(_songlist) - 1)
+                _playlist.append(_songlist[int(number) - 1])
+                await ctx.send(boxed_string(_('«‎{}»‎ added to queue.').format(_songlist[int(number) - 1][:-5])))
             if ctx.voice_client is not None and ctx.voice_client.is_playing():
                 pass
             else:
@@ -353,8 +340,8 @@ class Music(commands.Cog):
         """Skips a provided amount of songs in a playlist."""
         i = 0
         while i < quantity - 1:
-            if self._playlist:
-                self._playlist.pop(0)
+            if _playlist:
+                _playlist.pop(0)
             i += 1
         if ctx.voice_client is not None and (ctx.voice_client.is_playing() or ctx.voice_client.is_paused()):
             ctx.voice_client.stop()
@@ -364,18 +351,6 @@ class Music(commands.Cog):
         """Changes bot's status on Discord and displays current song playing."""
         await self.client.change_presence(activity=discord.Activity(type=discord.ActivityType.listening, name=status))
         await ctx.send(boxed_string(_('Playing: ') + status))
-
-
-def update_songlist(music_path, ext='opus'):
-    """Updates songlist variable in Music class. (will be deprecated)"""
-    songlist = []
-    unknown_files = 0
-    for filename in os.listdir(music_path):
-        if filename.endswith(ext):
-            songlist.append(filename)
-        else:
-            unknown_files += 1
-    return songlist, unknown_files
 
 
 def setup(client):
