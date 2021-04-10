@@ -354,7 +354,8 @@ class Music(commands.Cog):
 
     @commands.command(brief=_('Plays song, which is displayed in your Spotify status'))
     async def spotify(self, ctx):
-        """Reads user status and tries to detect song from Spotify, after that it invoke choose_song with Artst + Song name as argument to search it on YT"""
+        """Checks user's status for Spotify integration and, if it exists, searches the currently playing song on YouTube.
+        Invokes choose_song(artist + name) which plays the first match of the search query."""
         for activity in ctx.author.activities:
             if activity.name == 'Spotify':
                 await self.choose_song(ctx, f'{activity.artist} - {activity.title}')
