@@ -107,30 +107,30 @@ class Music(commands.Cog):
             await ctx.send(boxed_string(_('Nothing is playing')))
 
     @commands.command(name='play', brief=_('Plays song from list'))
-    async def choose_song(self, ctx, *arg):
+    async def choose_song(self, ctx, *, arg: str):
         """Lets the user play a song from songlist or start a playlist.
 
         Also used by other methods of Music class which substitute user input.
         """
         playlist = False
-        if not arg:
+        if arg is None or not arg:
             playlist = True
-        if arg and arg[0] == 'loop':
+        if arg and arg.startswith('loop'):
             self._stop_loop = False
             self._looped = True
             await ctx.send(boxed_string(_('Loop activated!')))
             return
-        elif arg and arg[0] == 'random':
+        elif arg and arg.startswith('random'):
             number = random.randint(0, len(_songlist) - 1)
-        elif playlist or arg[0] == 'playlist':
+        elif playlist or arg.startswith('playlist'):
             if _playlist:
                 number = _songlist.index(_playlist[0]) + 1
                 _playlist.pop(0)
             else:
                 await ctx.send(boxed_string(_('Nothing to play!')))
                 return
-        elif arg and str(arg[0]).isnumeric():
-            number = int(arg[0])
+        elif arg and arg.isnumeric():
+            number = int(arg)
         if 'number' in locals():
             self.current_song = {
                 'name':   _songlist[int(number) - 1][:-5],
@@ -143,12 +143,10 @@ class Music(commands.Cog):
                 'before_options': '-reconnect 1 -reconnect_streamed 1 -reconnect_delay_max 5',
                 'options': '-vn'
             }
-            if arg[0].startswith('http'):
-                url = arg[0]
+            if arg.startswith('http'):
+                url = arg
             else:
-                searchrequest = ''
-                for word in arg:
-                    searchrequest += f'{word!s} '
+                searchrequest = arg
                 url = 'https://www.youtube.com' + \
                     YoutubeSearch(searchrequest, max_results=1).to_dict()[
                         0]['url_suffix'] # type: ignore
@@ -158,8 +156,8 @@ class Music(commands.Cog):
                 'name':   info['title'],
                 'source': info['formats'][0]['url']
             }
-
-        if len(arg) > 1 and arg[1] == 'loop' and str(arg[0]).isnumeric():
+        arg_split = arg.split()
+        if len(arg_split) > 1 and arg_split[1] == 'loop' and str(arg_split[0]).isnumeric():
             self._looped = True
         self._stop_loop = False
         self.is_stopped = False
