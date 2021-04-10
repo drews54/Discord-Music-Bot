@@ -68,12 +68,12 @@ async def about_system(ctx):
     """
     if os.name == 'posix':
         uname_result = os.uname()
-        await ctx.send(f"""\
-System name: {uname_result.sysname}
-Machine name: {uname_result.nodename}
-Release: {uname_result.release}
-Version: {uname_result.version}
-Hardware: {uname_result.machine}""")
+        await ctx.send(textwrap.dedent(f"""\
+            System name: {uname_result.sysname}
+            Machine name: {uname_result.nodename}
+            Release: {uname_result.release}
+            Version: {uname_result.version}
+            Hardware: {uname_result.machine}"""))
     else:
         await ctx.send('This OS type is not yet supported.')
 
