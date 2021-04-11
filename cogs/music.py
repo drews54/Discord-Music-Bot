@@ -357,7 +357,7 @@ class Music(commands.Cog):
         Invokes choose_song(artist + name) which plays the first match of the search query."""
         for activity in ctx.author.activities:
             if activity.name == 'Spotify':
-                await self.choose_song(ctx, f'{activity.artist} - {activity.title}')
+                await self.choose_song(ctx, arg=f'{activity.artist} - {activity.title}')
                 return
         await ctx.send(boxed_string('Can\'t detect your Spotify status.'))
 
