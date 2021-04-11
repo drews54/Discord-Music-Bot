@@ -10,8 +10,8 @@ from gettext import translation
 from discord import Intents
 from discord.ext import commands
 
-token = os.getenv('DISCORD_TOKEN')
-bot = commands.Bot(command_prefix=os.getenv('DISCORD_PREFIXES'), intents=Intents.all())
+bot = commands.Bot(command_prefix=os.getenv('DISCORD_PREFIXES'), strip_after_prefix=True, intents=Intents(
+    guilds=True, guild_messages=True, voice_states=True, presences=True, members=True))
 
 if os.getenv('LANG').casefold().startswith('ru'):
     _ = translation('Discord-Music-Bot', './locale', languages=['ru']).gettext

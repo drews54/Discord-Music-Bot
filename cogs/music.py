@@ -356,12 +356,12 @@ class Music(commands.Cog):
 
         Invokes choose_song(artist + name) which plays the first match of the search query."""
         for activity in ctx.author.activities:
-            if activity.name == 'Spotify':
+            if isinstance(activity, discord.Spotify):
                 await self.choose_song(ctx, arg=f'{activity.artist} - {activity.title}')
                 return
         await ctx.send(boxed_string('Can\'t detect your Spotify status.'))
 
 
-def setup(client):
+def setup(bot: commands.Bot):
     """Initializes Music as a cog of the Bot."""
-    client.add_cog(Music(client))
+    bot.add_cog(Music(bot))
