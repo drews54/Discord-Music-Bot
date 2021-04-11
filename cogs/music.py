@@ -53,8 +53,8 @@ random.seed()
 class Music(commands.Cog):
     """Contains all invokable commands within music module."""
 
-    def __init__(self, client):
-        self.client = client
+    def __init__(self, bot: commands.Bot):
+        self.bot = bot
         self.current_song = {}
         self.is_stopped = False
         self._stop_loop = False
@@ -79,7 +79,7 @@ class Music(commands.Cog):
                 await ctx.send(boxed_string(_('404 bro, use one of {} existing pages').format(max_page)))
                 return
             elif not _songlist:
-                await ctx.send(boxed_string(_('No songs! Use {}download to download songs').format(self.client.command_prefix)))
+                await ctx.send(boxed_string(_('No songs! Use {}download to download songs').format(self.bot.command_prefix)))
                 return
             string = f'Page {page!s} of {max_page!s}:\n'
             for i, name in enumerate(_songlist):
@@ -87,9 +87,9 @@ class Music(commands.Cog):
                     string += f'{(i + 1)!s}. {name[:-5]!s}\n'
         await ctx.send(boxed_string(string))
         if _unknown_files == 1:
-            await ctx.send(boxed_string(_('Also there is a file with unknown extension. Use {}convert list to convert your music files to "opus" format.').format(self.client.command_prefix)))
+            await ctx.send(boxed_string(_('Also there is a file with unknown extension. Use {}convert list to convert your music files to "opus" format.').format(self.bot.command_prefix)))
         elif _unknown_files > 1:
-            await ctx.send(boxed_string(_('Also there are {} files with unknown extension. Use {}convert list to convert your music files to "opus" format.').format(_unknown_files, self.client.command_prefix)))
+            await ctx.send(boxed_string(_('Also there are {} files with unknown extension. Use {}convert list to convert your music files to "opus" format.').format(_unknown_files, self.bot.command_prefix)))
 
     @commands.command(brief=_('Stops playing audio'))
     async def stop(self, ctx, loop=''):
@@ -100,7 +100,7 @@ class Music(commands.Cog):
             await ctx.send(boxed_string(_('Loop stopped!')))
         elif ctx.voice_client is not None and ctx.voice_client.is_connected():
             await ctx.voice_client.disconnect()
-            await self.client.change_presence(status=discord.Status.idle, afk=True)
+            await self.bot.change_presence(status=discord.Status.idle, afk=True)
             self.is_stopped = True
             self._looped = False
         else:
@@ -166,7 +166,7 @@ class Music(commands.Cog):
 
     async def player(self, ctx, ffmpeg_opts):
         """Core player function."""
-        status = get(self.client.voice_clients, guild=ctx.guild)
+        status = get(self.bot.voice_clients, guild=ctx.guild)
         try:
             if not status:
                 await ctx.author.voice.channel.connect()
@@ -190,12 +190,12 @@ class Music(commands.Cog):
             elif not self.is_stopped:
                 coroutine = self.stop(ctx)
             if 'coroutine' in locals():
-                future = run_coroutine_threadsafe(coroutine, self.client.loop)
+                future = run_coroutine_threadsafe(coroutine, self.bot.loop)
                 try:
                     future.result()
                 except CancelledError:
                     print(_('Disconnect has failed. Run {}stop manually').format(
-                        self.client.command_prefix), error)
+                        self.bot.command_prefix), error)
         ctx.voice_client.play(discord.PCMVolumeTransformer(discord.FFmpegPCMAudio(
             self.current_song['source'], **ffmpeg_opts), self.music_volume), after=after_play)
 
@@ -269,7 +269,7 @@ class Music(commands.Cog):
     @commands.command(brief=_('Flushes the music directory'))
     async def flush(self, ctx):
         """Removes all files from music directory."""
-        status = get(self.client.voice_clients, guild=ctx.guild)
+        status = get(self.bot.voice_clients, guild=ctx.guild)
         if not status:
             for filename in os.scandir(MUSIC_PATH):
                 os.remove(filename.path)
@@ -291,7 +291,7 @@ class Music(commands.Cog):
             self._urlslist.append(video['url_suffix'])  # type: ignore
             string += f'{i!s}. {video["title"]}\n'  # type: ignore
         string += _('Use {}download <number> to download song from list.').format(
-            self.client.command_prefix)
+            self.bot.command_prefix)
         await ctx.send(boxed_string(string))
 
     @commands.command(brief=_('Use with <add/del/clear> + song number to edit the current playlist.'))
@@ -347,7 +347,7 @@ class Music(commands.Cog):
     @commands.command(hidden=True)
     async def changestatus(self, ctx, status):
         """Changes bot's status on Discord and displays current song playing."""
-        await self.client.change_presence(activity=discord.Activity(type=discord.ActivityType.listening, name=status))
+        await self.bot.change_presence(activity=discord.Activity(type=discord.ActivityType.listening, name=status))
         await ctx.send(boxed_string(_('Playing: ') + status))
 
     @commands.command(brief=_('Plays song, which is displayed in your Spotify status'))
