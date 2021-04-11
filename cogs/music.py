@@ -353,7 +353,7 @@ class Music(commands.Cog):
     @commands.command(brief=_('Plays song, which is displayed in your Spotify status'))
     async def spotify(self, ctx):
         """Checks user's status for Spotify integration and, if it exists, searches the currently playing song on YouTube.
-        
+
         Invokes choose_song(artist + name) which plays the first match of the search query."""
         for activity in ctx.author.activities:
             if activity.name == 'Spotify':
@@ -362,4 +362,5 @@ class Music(commands.Cog):
         await ctx.send(boxed_string('Can\'t detect your Spotify status.'))
 
 def setup(client):
+    """Initializes Music as a cog of the Bot."""
     client.add_cog(Music(client))
