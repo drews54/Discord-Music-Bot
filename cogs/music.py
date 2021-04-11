@@ -7,7 +7,7 @@ import os
 import math
 import random
 from gettext import translation
-from asyncio import run_coroutine_threadsafe
+from asyncio import run_coroutine_threadsafe, CancelledError
 import discord
 from discord.utils import get
 from discord.ext import commands
@@ -193,7 +193,7 @@ class Music(commands.Cog):
                 future = run_coroutine_threadsafe(coroutine, self.client.loop)
                 try:
                     future.result()
-                except:
+                except CancelledError:
                     print(_('Disconnect has failed. Run {}stop manually').format(
                         self.client.command_prefix), error)
         ctx.voice_client.play(discord.PCMVolumeTransformer(discord.FFmpegPCMAudio(
