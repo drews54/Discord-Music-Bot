@@ -19,7 +19,7 @@ else:
     _ = translation('Discord-Music-Bot', './locale', languages=['en']).gettext
 
 
-def boxed_string(text) -> str:
+def boxed_string(text: str) -> str:
     """Returns passed text string wrapped in triple backticks."""
     return '```' + text + '```'
 
@@ -31,21 +31,21 @@ async def on_ready():
 
 
 @bot.command(hidden=True)
-async def load(ctx, extension: str):
+async def load(ctx: commands.Context, extension: str):
     """Loads a module from ./cogs/ folder."""
     bot.load_extension(f'cogs.{extension}')
     print(f'Module "{extension}" loaded')
 
 
 @bot.command(hidden=True)
-async def unload(ctx, extension: str):
+async def unload(ctx: commands.Context, extension: str):
     """Unloads a module from ./cogs/ folder."""
     bot.unload_extension(f'cogs.{extension}')
     print(f'Module "{extension}" unloaded')
 
 
 @bot.command(hidden=True)
-async def reload(ctx, extension: str = 'music'):
+async def reload(ctx: commands.Context, extension: str = 'music'):
     """Reloads a module from ./cogs/ folder."""
     bot.unload_extension(f'cogs.{extension}')
     bot.load_extension(f'cogs.{extension}')
@@ -53,7 +53,7 @@ async def reload(ctx, extension: str = 'music'):
 
 
 @bot.command()
-async def about(ctx):
+async def about(ctx: commands.Context):
     """Prints information about the bot to the active channel."""
     await ctx.send(boxed_string(
         _('GitHub source code') + ': https://github.com/duha54rus/Discord-Music-Bot' + '\n' +
@@ -62,7 +62,7 @@ async def about(ctx):
 
 
 @bot.command(hidden=True)
-async def about_system(ctx):
+async def about_system(ctx: commands.Context):
     """Prints information about the OS running the bot to the active channel.
 
     Only works on certain flavors of Linux.
@@ -81,7 +81,7 @@ async def about_system(ctx):
 
 @bot.command(hidden=True, aliases=('exit', 'die', 'logout'))
 @commands.is_owner()
-async def shutdown(ctx, sec: int = 3):
+async def shutdown(ctx: commands.Context, sec: int = 3):
     """Logs out and closes the bot after a certain time in seconds.
 
     Use rights are currently limited to the bot owner.
@@ -93,7 +93,7 @@ async def shutdown(ctx, sec: int = 3):
 
 
 @bot.event
-async def on_command_error(ctx, error):
+async def on_command_error(ctx: commands.Context, error):
     """Prints error contents to current channel when encountered."""
     if isinstance(error, commands.CommandNotFound):
         await ctx.send(textwrap.dedent("""\

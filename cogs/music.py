@@ -20,7 +20,7 @@ else:
     _ = translation('Discord-Music-Bot', './locale', languages=['en']).gettext
 
 
-def boxed_string(text) -> str:
+def boxed_string(text: str) -> str:
     """Returns passed text string wrapped in triple backticks."""
     return '```' + text + '```'
 
@@ -63,7 +63,7 @@ class Music(commands.Cog):
         self._urlslist = []
 
     @commands.command(name='list', brief=_('Shows songs list'))
-    async def list_(self, ctx, page='all'):
+    async def list_(self, ctx: commands.Context, page='all'):
         """Displays list of songs page by page."""
         max_page = math.ceil(len(_songlist)/10)
         if page == 'all':
@@ -92,7 +92,7 @@ class Music(commands.Cog):
             await ctx.send(boxed_string(_('Also there are {} files with unknown extension. Use {}convert list to convert your music files to "opus" format.').format(_unknown_files, self.bot.command_prefix)))
 
     @commands.command(brief=_('Stops playing audio'))
-    async def stop(self, ctx, loop=''):
+    async def stop(self, ctx: commands.Context, loop=''):
         """Stops current playback or breaks the playback loop."""
         if loop == 'loop':
             self._stop_loop = True
@@ -107,7 +107,7 @@ class Music(commands.Cog):
             await ctx.send(boxed_string(_('Nothing is playing')))
 
     @commands.command(name='play', brief=_('Plays song from list'))
-    async def choose_song(self, ctx, *, arg: str = ''):
+    async def choose_song(self, ctx: commands.Context, *, arg: str = ''):
         """Lets the user play a song from songlist or start a playlist.
 
         Also used by other methods of Music class which substitute user input.
@@ -164,12 +164,12 @@ class Music(commands.Cog):
 
         await self.player(ctx, ffmpeg_opts)
 
-    async def player(self, ctx, ffmpeg_opts):
+    async def player(self, ctx: commands.Context, ffmpeg_opts):
         """Core player function."""
         status = get(self.bot.voice_clients, guild=ctx.guild)
         try:
             if not status:
-                await ctx.author.voice.channel.connect()
+                await ctx.author.voice.channel.connect()  # type: ignore
         except AttributeError:
             await ctx.send(boxed_string(_('Connect to a voice channel before playing')))
             return
@@ -200,7 +200,7 @@ class Music(commands.Cog):
             self.current_song['source'], **ffmpeg_opts), self.music_volume), after=after_play)
 
     @commands.command(brief=_('Pauses playback'))
-    async def pause(self, ctx):
+    async def pause(self, ctx: commands.Context):
         """Pauses current playback."""
         if ctx.voice_client is not None and ctx.voice_client.is_playing():
             ctx.voice_client.pause()
@@ -208,7 +208,7 @@ class Music(commands.Cog):
             await ctx.send(boxed_string(_('Nothing is playing')))
 
     @commands.command(brief=_('Resumes playback'))
-    async def resume(self, ctx):
+    async def resume(self, ctx: commands.Context):
         """Resumes playback if it was paused."""
         if ctx.voice_client is not None and ctx.voice_client.is_paused():
             ctx.voice_client.resume()
@@ -216,7 +216,7 @@ class Music(commands.Cog):
             await ctx.send(boxed_string(_('Nothing is paused')))
 
     @commands.command(brief=_('Changes music volume (0-100)'))
-    async def volume(self, ctx, volume=None):
+    async def volume(self, ctx: commands.Context, volume=None):
         """Changes playback volume.
 
         For user convenience, the default linear scale is substituted with an exponent.
@@ -232,7 +232,7 @@ class Music(commands.Cog):
             await ctx.send(boxed_string(_('Incorrect arguments were given. Only whole values from 0 to 100 are supported.')))
 
     @commands.command(brief=_('Downloads audio from YouTube'))
-    async def download(self, ctx, url):
+    async def download(self, ctx: commands.Context, url):
         """Parses YouTube link passed by user and downloads found audio."""
         ydl_opts = {
             'format': 'bestaudio/opus',
@@ -252,7 +252,7 @@ class Music(commands.Cog):
             await ctx.send(boxed_string(_('Song downloaded:\n{}\nSong number: {}').format(name, _songlist.index(name + ".opus") + 1)))
 
     @commands.command(brief=_('Removes a song selected from the list'))
-    async def remove(self, ctx, number=0):
+    async def remove(self, ctx: commands.Context, number=0):
         """Removes a song's data and file from songlist and music directory."""
         if 1 <= int(number) <= len(_songlist):
             song = _songlist.pop(int(number) - 1)
@@ -267,7 +267,7 @@ class Music(commands.Cog):
             await ctx.send(boxed_string(_('Select an existing song from the list')))
 
     @commands.command(brief=_('Flushes the music directory'))
-    async def flush(self, ctx):
+    async def flush(self, ctx: commands.Context):
         """Removes all files from music directory."""
         status = get(self.bot.voice_clients, guild=ctx.guild)
         if not status:
@@ -277,7 +277,7 @@ class Music(commands.Cog):
         _songlist.clear()
 
     @commands.command(brief=_('Use to search videos in YT'))
-    async def search(self, ctx, *key):
+    async def search(self, ctx: commands.Context, *key):
         """Searches YouTube videos by user-provided string."""
         i = 0
         self._urlslist.clear()
@@ -295,7 +295,7 @@ class Music(commands.Cog):
         await ctx.send(boxed_string(string))
 
     @commands.command(brief=_('Use with <add/del/clear> + song number to edit the current playlist.'))
-    async def playlist(self, ctx, action='show', song_number=None):
+    async def playlist(self, ctx: commands.Context, action='show', song_number=None):
         """Performs actions with a playlist."""
         # TODO: write a bit more detailed description of what playlist() does.
         if action == 'show':
@@ -334,7 +334,7 @@ class Music(commands.Cog):
                 await self.choose_song(ctx, arg='playlist')
 
     @commands.command(brief=_('Use to skip current song in playlist.'))
-    async def skip(self, ctx, quantity=1):
+    async def skip(self, ctx: commands.Context, quantity=1):
         """Skips a provided amount of songs in a playlist."""
         i = 0
         while i < quantity - 1:
@@ -345,17 +345,17 @@ class Music(commands.Cog):
             ctx.voice_client.stop()
 
     @commands.command(hidden=True)
-    async def changestatus(self, ctx, status):
+    async def changestatus(self, ctx: commands.Context, status):
         """Changes bot's status on Discord and displays current song playing."""
         await self.bot.change_presence(activity=discord.Activity(type=discord.ActivityType.listening, name=status))
         await ctx.send(boxed_string(_('Playing: ') + status))
 
     @commands.command(brief=_('Plays song, which is displayed in your Spotify status'))
-    async def spotify(self, ctx):
+    async def spotify(self, ctx: commands.Context):
         """Checks user's status for Spotify integration and, if it exists, searches the currently playing song on YouTube.
 
         Invokes choose_song(artist + name) which plays the first match of the search query."""
-        for activity in ctx.author.activities:
+        for activity in ctx.author.activities:  # type: ignore
             if isinstance(activity, discord.Spotify):
                 await self.choose_song(ctx, arg=f'{activity.artist} - {activity.title}')
                 return
