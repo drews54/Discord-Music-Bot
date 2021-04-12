@@ -84,7 +84,7 @@ class Music(commands.Cog):
                 return
             string = f'Page {page!s} of {max_page!s}:\n'
             for i, name in enumerate(_songlist):
-                if (int)(page) == (i)//10 + 1:
+                if int(page) == i//10 + 1:
                     string += f'{(i + 1)!s}. {name[:-5]!s}\n'
         await ctx.send(boxed_string(string))
         if _unknown_files == 1:
