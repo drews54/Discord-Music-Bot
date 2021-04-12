@@ -36,6 +36,7 @@ MUSIC_EXT = '.opus'
 
 def update_songlist():
     """Updates songlist variable in Music class. (will be deprecated)"""
+    _songlist.clear()
     for filename in os.listdir(MUSIC_PATH):
         if filename.endswith(MUSIC_EXT):
             _songlist.append(filename)
