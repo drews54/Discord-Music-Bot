@@ -1,0 +1,13 @@
+services:
+  bot:
+    image: drews54/discord-music-bot
+    volumes:
+      - music:/usr/src/app/music
+    environment:
+      # Values assigned here will override env_file contents.
+      DISCORD_PREFIX:
+      DISCORD_TOKEN:
+    env_file: .env
+
+volumes:
+  music:
