@@ -236,11 +236,11 @@ class Music(commands.Cog):
     async def download(self, ctx: commands.Context, url):
         """Parses YouTube link passed by user and downloads found audio."""
         ydl_opts = {
-            'format': 'bestaudio/opus',
+            'format': f'bestaudio/{MUSIC_EXT[1-len(MUSIC_EXT):]}',
             'outtmpl': f'{MUSIC_PATH}%(title)s.%(ext)s',
             'postprocessors': [{
                 'key': 'FFmpegExtractAudio',
-                'preferredcodec': 'opus',
+                'preferredcodec': MUSIC_EXT[1-len(MUSIC_EXT):],
             }],
         }
 
@@ -250,7 +250,8 @@ class Music(commands.Cog):
             info = ydl.extract_info(url)
             update_songlist()
             name = info['title'].replace('"', "'")
-            await ctx.send(boxed_string(_('Song downloaded:\n{}\nSong number: {}').format(name, _songlist.index(name + ".opus") + 1)))
+            name = info['title'].replace(':', ' -')
+            await ctx.send(boxed_string(_('Song downloaded:\n{}\nSong number: {}').format(name, _songlist.index(name + MUSIC_EXT) + 1)))
 
     @commands.command(brief=_('Removes a song selected from the list'))
     async def remove(self, ctx: commands.Context, number=0):
