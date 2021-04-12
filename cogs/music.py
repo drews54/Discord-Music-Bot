@@ -352,7 +352,7 @@ class Music(commands.Cog):
         await self.bot.change_presence(activity=discord.Activity(type=discord.ActivityType.listening, name=status))
         await ctx.send(boxed_string(_('Playing: ') + status))
 
-    @commands.command(brief=_('Plays song, which is displayed in your Spotify status'))
+    @commands.command(brief=_('Looks up and plays a song from your Spotify status'))
     async def spotify(self, ctx: commands.Context):
         """Checks user's status for Spotify integration and, if it exists, searches the currently playing song on YouTube.
 

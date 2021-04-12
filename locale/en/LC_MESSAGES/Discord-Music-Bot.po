@@ -5,8 +5,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: Discord-Music-Bot\n"
-"POT-Creation-Date: 2021-04-10 14:42+0300\n"
-"PO-Revision-Date: 2021-04-10 14:43+0300\n"
+"POT-Creation-Date: 2021-04-13 01:45+0300\n"
+"PO-Revision-Date: 2021-04-13 01:45+0300\n"
 "Last-Translator: Andrei Amosov <duha9898@gmail.com>\n"
 "Language-Team: Drews&Co\n"
 "Language: en\n"
@@ -18,105 +18,105 @@ msgstr ""
 "X-Generator: Poedit 2.4.2\n"
 "X-Poedit-SourceCharset: UTF-8\n"
 
-#: bot.py:58
+#: bot.py:59
 msgid "GitHub source code"
 msgstr ""
 
-#: bot.py:59
+#: bot.py:60
 msgid "Docker Hub repository"
 msgstr ""
 
-#: cogs/music.py:65
+#: cogs/music.py:66
 msgid "Shows songs list"
 msgstr ""
 
-#: cogs/music.py:70
+#: cogs/music.py:71
 msgid "Full song list:\n"
 msgstr ""
 
-#: cogs/music.py:79
+#: cogs/music.py:80
 msgid "404 bro, use one of {} existing pages"
 msgstr ""
 
-#: cogs/music.py:82
+#: cogs/music.py:83
 msgid "No songs! Use {}download to download songs"
 msgstr ""
 
-#: cogs/music.py:90
+#: cogs/music.py:91
 msgid ""
 "Also there is a file with unknown extension. Use {}convert list to convert "
 "your music files to \"opus\" format."
 msgstr ""
 
-#: cogs/music.py:92
+#: cogs/music.py:93
 msgid ""
 "Also there are {} files with unknown extension. Use {}convert list to "
 "convert your music files to \"opus\" format."
 msgstr ""
 
-#: cogs/music.py:94
+#: cogs/music.py:95
 msgid "Stops playing audio"
 msgstr ""
 
-#: cogs/music.py:100
+#: cogs/music.py:101
 msgid "Loop stopped!"
 msgstr ""
 
-#: cogs/music.py:107 cogs/music.py:210
+#: cogs/music.py:108 cogs/music.py:209
 msgid "Nothing is playing"
 msgstr ""
 
-#: cogs/music.py:109
+#: cogs/music.py:110
 msgid "Plays song from list"
 msgstr ""
 
-#: cogs/music.py:121
+#: cogs/music.py:122
 msgid "Loop activated!"
 msgstr ""
 
-#: cogs/music.py:130
+#: cogs/music.py:131
 msgid "Nothing to play!"
 msgstr ""
 
-#: cogs/music.py:176
+#: cogs/music.py:175
 msgid "Connect to a voice channel before playing"
 msgstr ""
 
-#: cogs/music.py:199
+#: cogs/music.py:198
 msgid "Disconnect has failed. Run {}stop manually"
 msgstr ""
 
-#: cogs/music.py:204
+#: cogs/music.py:203
 msgid "Pauses playback"
 msgstr ""
 
-#: cogs/music.py:212
+#: cogs/music.py:211
 msgid "Resumes playback"
 msgstr ""
 
-#: cogs/music.py:218
+#: cogs/music.py:217
 msgid "Nothing is paused"
 msgstr ""
 
-#: cogs/music.py:220
+#: cogs/music.py:219
 msgid "Changes music volume (0-100)"
 msgstr ""
 
-#: cogs/music.py:227
+#: cogs/music.py:226
 msgid "Volume = {}%"
 msgstr ""
 
-#: cogs/music.py:232
+#: cogs/music.py:231
 msgid "Volume set to {}%"
 msgstr ""
 
-#: cogs/music.py:234
+#: cogs/music.py:233
 msgid ""
 "Incorrect arguments were given. Only whole values from 0 to 100 are "
 "supported."
 msgstr ""
 
-#: cogs/music.py:236
+#: cogs/music.py:235
 msgid "Downloads audio from YouTube"
 msgstr ""
 
@@ -194,4 +194,8 @@ msgstr ""
 
 #: cogs/music.py:353
 msgid "Playing: "
+msgstr ""
+
+#: cogs/music.py:355
+msgid "Looks up and plays a song from your Spotify status"
 msgstr ""

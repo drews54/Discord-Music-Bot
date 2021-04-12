@@ -5,8 +5,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: Discord-Music-Bot\n"
-"POT-Creation-Date: 2021-04-10 14:42+0300\n"
-"PO-Revision-Date: 2021-04-10 14:45+0300\n"
+"POT-Creation-Date: 2021-04-13 01:45+0300\n"
+"PO-Revision-Date: 2021-04-13 01:46+0300\n"
 "Last-Translator: Andrei Amosov <duha9898@gmail.com>\n"
 "Language-Team: Drews&Co\n"
 "Language: ru\n"
@@ -18,31 +18,31 @@ msgstr ""
 "Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n"
 "%10<=4 && (n%100<12 || n%100>14) ? 1 : 2);\n"
 
-#: bot.py:58
+#: bot.py:59
 msgid "GitHub source code"
 msgstr "Исходный код GitHub"
 
-#: bot.py:59
+#: bot.py:60
 msgid "Docker Hub repository"
 msgstr "Репозиторий Docker Hub"
 
-#: cogs/music.py:65
+#: cogs/music.py:66
 msgid "Shows songs list"
 msgstr "Показывает список песен"
 
-#: cogs/music.py:70
+#: cogs/music.py:71
 msgid "Full song list:\n"
 msgstr "Полный список песен:\n"
 
-#: cogs/music.py:79
+#: cogs/music.py:80
 msgid "404 bro, use one of {} existing pages"
 msgstr "404 бро, используй одну из {} существующих страниц"
 
-#: cogs/music.py:82
+#: cogs/music.py:83
 msgid "No songs! Use {}download to download songs"
 msgstr "Нет песен! Используй {}download для загрузки песен"
 
-#: cogs/music.py:90
+#: cogs/music.py:91
 msgid ""
 "Also there is a file with unknown extension. Use {}convert list to convert "
 "your music files to \"opus\" format."
@@ -50,7 +50,7 @@ msgstr ""
 "Также есть файл с неизвестным расширением. Используйте {}convert list для "
 "преобразования музыкальных файлов в формат «opus»."
 
-#: cogs/music.py:92
+#: cogs/music.py:93
 msgid ""
 "Also there are {} files with unknown extension. Use {}convert list to "
 "convert your music files to \"opus\" format."
@@ -58,63 +58,63 @@ msgstr ""
 "Также есть файлы с неизвестными расширениями. Используйте {}convert list для "
 "преобразования музыкальных файлов в формат «opus»."
 
-#: cogs/music.py:94
+#: cogs/music.py:95
 msgid "Stops playing audio"
 msgstr "Прекращает воспроизведение звука"
 
-#: cogs/music.py:100
+#: cogs/music.py:101
 msgid "Loop stopped!"
 msgstr "Петля остановилась!"
 
-#: cogs/music.py:107 cogs/music.py:210
+#: cogs/music.py:108 cogs/music.py:209
 msgid "Nothing is playing"
 msgstr "Ничего не играет"
 
-#: cogs/music.py:109
+#: cogs/music.py:110
 msgid "Plays song from list"
 msgstr "Воспроизведение песни из списка"
 
-#: cogs/music.py:121
+#: cogs/music.py:122
 msgid "Loop activated!"
 msgstr "Петля активирована!"
 
-#: cogs/music.py:130
+#: cogs/music.py:131
 msgid "Nothing to play!"
 msgstr "Нечего играть!"
 
-#: cogs/music.py:176
+#: cogs/music.py:175
 msgid "Connect to a voice channel before playing"
 msgstr "Присоединитесь к голосовому каналу прежде чем воспроизводить"
 
-#: cogs/music.py:199
+#: cogs/music.py:198
 msgid "Disconnect has failed. Run {}stop manually"
 msgstr "Отключение провалилось. Выполните {}stop вручную"
 
-#: cogs/music.py:204
+#: cogs/music.py:203
 msgid "Pauses playback"
 msgstr "Приостанавливает проигрывание"
 
-#: cogs/music.py:212
+#: cogs/music.py:211
 msgid "Resumes playback"
 msgstr "Возобновляет проигрывание"
 
-#: cogs/music.py:218
+#: cogs/music.py:217
 msgid "Nothing is paused"
 msgstr "Ничего не стоит на паузе"
 
-#: cogs/music.py:220
+#: cogs/music.py:219
 msgid "Changes music volume (0-100)"
 msgstr "Изменяет громкость музыки (0-100)"
 
-#: cogs/music.py:227
+#: cogs/music.py:226
 msgid "Volume = {}%"
 msgstr "Громкость = {}%"
 
-#: cogs/music.py:232
+#: cogs/music.py:231
 msgid "Volume set to {}%"
 msgstr "Громкость установлена на {}%"
 
-#: cogs/music.py:234
+#: cogs/music.py:233
 msgid ""
 "Incorrect arguments were given. Only whole values from 0 to 100 are "
 "supported."
@@ -122,7 +122,7 @@ msgstr ""
 "Были даны неверные аргументы. Поддерживаются только целые значения от 0 до "
 "100."
 
-#: cogs/music.py:236
+#: cogs/music.py:235
 msgid "Downloads audio from YouTube"
 msgstr "Загружает аудио из YouTube"
 
@@ -208,6 +208,10 @@ msgstr "Использайте для пропуска текущей песни
 #: cogs/music.py:353
 msgid "Playing: "
 msgstr "Проигрывается: "
+
+#: cogs/music.py:355
+msgid "Looks up and plays a song from your Spotify status"
+msgstr "Ищет и проигрывает песню из вашего статуса Spotify"
 
 #~ msgid "Converts music files to opus format"
 #~ msgstr "Преобразует музыкальные файлы в формат opus"
