@@ -63,36 +63,50 @@ class Music(commands.Cog):
         self.music_volume = 0.05
         self._urlslist = []
 
-    @commands.command(name='list', brief=_('Shows songs list'))
+    @commands.command(name='list', brief=_('Shows the list of songs.'))
     async def list_(self, ctx: commands.Context, page='all'):
         """Displays list of songs page by page."""
         max_page = math.ceil(len(_songlist)/10)
         if page == 'all':
             string = _('Full song list:\n')
             for i, name in enumerate(_songlist):
-                temp_string = f'{(i + 1)!s}. {name[:-5]!s}\n'
+                temp_string = f'{(i + 1)!s}. {name[: -len(MUSIC_EXT)]!s}\n'
                 if len(boxed_string(string + temp_string)) > 2000:
                     await ctx.send(boxed_string(string))
                     string = ''
                 string += temp_string
         else:
             if _songlist and not 0 < int(page) <= max_page:
-                await ctx.send(boxed_string(_('404 bro, use one of {} existing pages').format(max_page)))
+                await ctx.send(boxed_string(
+                    _('404 bro, use one of {} existing pages.')
+                    .format(max_page)
+                ))
                 return
             elif not _songlist:
-                await ctx.send(boxed_string(_('No songs! Use {}download to download songs').format(self.bot.command_prefix)))
+                await ctx.send(boxed_string(
+                    _('No songs! Use {}download to download songs.')
+                    .format(self.bot.command_prefix)
+                ))
                 return
             string = f'Page {page!s} of {max_page!s}:\n'
             for i, name in enumerate(_songlist):
                 if int(page) == i//10 + 1:
-                    string += f'{(i + 1)!s}. {name[:-5]!s}\n'
+                    string += f'{(i + 1)!s}. {name[: -len(MUSIC_EXT)]!s}\n'
         await ctx.send(boxed_string(string))
         if _unknown_files == 1:
-            await ctx.send(boxed_string(_('Also there is a file with unknown extension. Use {}convert list to convert your music files to "opus" format.').format(self.bot.command_prefix)))
+            await ctx.send(boxed_string(
+                _('Also there is a file with an unknown extension!\n'
+                  'Use {}convert list to convert your music files to "opus" format.')
+                .format(self.bot.command_prefix)
+            ))
         elif _unknown_files > 1:
-            await ctx.send(boxed_string(_('Also there are {} files with unknown extension. Use {}convert list to convert your music files to "opus" format.').format(_unknown_files, self.bot.command_prefix)))
+            await ctx.send(boxed_string(
+                _('Also there are {} files with unknown extensions!\n'
+                  'Use {}convert list to convert your music files to "opus" format.')
+                .format(_unknown_files, self.bot.command_prefix)
+            ))
 
-    @commands.command(brief=_('Stops playing audio'))
+    @commands.command(brief=_('Stops playing audio.'))
     async def stop(self, ctx: commands.Context, loop=''):
         """Stops current playback or breaks the playback loop."""
         if loop == 'loop':
@@ -105,9 +119,9 @@ class Music(commands.Cog):
             self.is_stopped = True
             self._looped = False
         else:
-            await ctx.send(boxed_string(_('Nothing is playing')))
+            await ctx.send(boxed_string(_('Nothing is playing.')))
 
-    @commands.command(name='play', brief=_('Plays song from list'))
+    @commands.command(name='play', brief=_('Plays a song from the list.'))
     async def choose_song(self, ctx: commands.Context, *, arg: str = ''):
         """Lets the user play a song from songlist or start a playlist.
 
@@ -134,8 +148,8 @@ class Music(commands.Cog):
             number = int(arg.split(maxsplit=1)[0])
         if 'number' in locals():
             self.current_song = {
-                'name':   _songlist[int(number) - 1][:-5],
-                'source': MUSIC_PATH + _songlist[int(number) - 1]
+                'name':   _songlist[int(number) - 1][: -len(MUSIC_EXT)],  # type: ignore # nopep8
+                'source': MUSIC_PATH + _songlist[int(number) - 1]         # type: ignore # nopep8
             }
             ffmpeg_opts = {}
         else:
@@ -172,7 +186,7 @@ class Music(commands.Cog):
             if not status:
                 await ctx.author.voice.channel.connect()  # type: ignore
         except AttributeError:
-            await ctx.send(boxed_string(_('Connect to a voice channel before playing')))
+            await ctx.send(boxed_string(_('Connect to a voice channel before playing.')))
             return
         await self.changestatus(ctx, self.current_song['name'])
 
@@ -187,60 +201,79 @@ class Music(commands.Cog):
                 param = 'playlist'
 
             if 'param' in locals():
-                coroutine = self.choose_song(ctx, arg=str(param))
+                coroutine = self.choose_song(
+                    ctx, arg=str(param))  # type: ignore
             elif not self.is_stopped:
                 coroutine = self.stop(ctx)
             if 'coroutine' in locals():
-                future = run_coroutine_threadsafe(coroutine, self.bot.loop)
+                future = run_coroutine_threadsafe(
+                    coroutine, self.bot.loop)  # type: ignore
                 try:
                     future.result()
                 except CancelledError:
-                    print(_('Disconnect has failed. Run {}stop manually').format(
+                    print(_('Disconnect has failed. Run {}stop manually.').format(
                         self.bot.command_prefix), error)
         ctx.voice_client.play(discord.PCMVolumeTransformer(discord.FFmpegPCMAudio(
             self.current_song['source'], **ffmpeg_opts), self.music_volume), after=after_play)
 
-    @commands.command(brief=_('Pauses playback'))
+    @commands.command(brief=_('Pauses playback.'))
     async def pause(self, ctx: commands.Context):
         """Pauses current playback."""
         if ctx.voice_client is not None and ctx.voice_client.is_playing():
             ctx.voice_client.pause()
         else:
-            await ctx.send(boxed_string(_('Nothing is playing')))
+            await ctx.send(boxed_string(_('Nothing is playing.')))
 
-    @commands.command(brief=_('Resumes playback'))
+    @commands.command(brief=_('Resumes playback.'))
     async def resume(self, ctx: commands.Context):
         """Resumes playback if it was paused."""
         if ctx.voice_client is not None and ctx.voice_client.is_paused():
             ctx.voice_client.resume()
         else:
-            await ctx.send(boxed_string(_('Nothing is paused')))
+            await ctx.send(boxed_string(_('Nothing is paused.')))
 
-    @commands.command(brief=_('Changes music volume (0-100)'))
-    async def volume(self, ctx: commands.Context, volume=None):
+    @commands.command(brief=_('Changes music volume (0-100).'))
+    async def volume(self, ctx: commands.Context, volume: str = None):
         """Changes playback volume.
 
         For user convenience, the default linear scale is substituted with an exponent.
         """
         if volume is None:
-            await ctx.send(boxed_string(_('Volume = {}%').format((math.pow(self.music_volume, math.exp(-1))*100).__trunc__())))
+            await ctx.send(boxed_string(
+                _('Volume = {}%').format(
+                    (math.pow(
+                        self.music_volume, math.exp(-1)
+                    )*100
+                    ).__trunc__()
+                )
+            ))
         elif volume.isnumeric() and 0 <= int(volume) <= 100:
             self.music_volume = math.pow(int(volume) / 100, math.exp(1))
             if ctx.voice_client is not None and ctx.voice_client.is_playing():
                 ctx.voice_client.source.volume = self.music_volume
-            await ctx.send(boxed_string(_('Volume set to {}%').format((math.pow(self.music_volume, math.exp(-1))*100).__trunc__())))
+            await ctx.send(boxed_string(
+                _('Volume set to {}%').format(
+                    (math.pow(
+                        self.music_volume, math.exp(-1)
+                    )*100
+                    ).__trunc__()
+                )
+            ))
         else:
-            await ctx.send(boxed_string(_('Incorrect arguments were given. Only whole values from 0 to 100 are supported.')))
+            await ctx.send(boxed_string(
+                _('Incorrect arguments were given. '
+                  'Only whole values from 0 to 100 are supported.')
+            ))
 
-    @commands.command(brief=_('Downloads audio from YouTube'))
+    @commands.command(brief=_('Downloads songs from YouTube.'))
     async def download(self, ctx: commands.Context, url):
         """Parses YouTube link passed by user and downloads found audio."""
         ydl_opts = {
-            'format': f'bestaudio/{MUSIC_EXT[1-len(MUSIC_EXT):]}',
+            'format': f'bestaudio/{MUSIC_EXT[1:]}',
             'outtmpl': f'{MUSIC_PATH}%(title)s.%(ext)s',
             'postprocessors': [{
                 'key': 'FFmpegExtractAudio',
-                'preferredcodec': MUSIC_EXT[1-len(MUSIC_EXT):],
+                'preferredcodec': MUSIC_EXT[1:],
             }],
         }
 
@@ -251,24 +284,33 @@ class Music(commands.Cog):
             update_songlist()
             name = info['title'].replace('"', "'")
             name = info['title'].replace(':', ' -')
-            await ctx.send(boxed_string(_('Song downloaded:\n{}\nSong number: {}').format(name, _songlist.index(name + MUSIC_EXT) + 1)))
+            await ctx.send(boxed_string(
+                _('Song downloaded:\n'
+                  '{}\n'
+                  'Song number: {}')
+                .format(name, _songlist.index(name + MUSIC_EXT) + 1)
+            ))
 
-    @commands.command(brief=_('Removes a song selected from the list'))
+    @commands.command(brief=_('Removes a song selected from the list.'))
     async def remove(self, ctx: commands.Context, number=0):
         """Removes a song's data and file from songlist and music directory."""
         if 1 <= int(number) <= len(_songlist):
             song = _songlist.pop(int(number) - 1)
             try:
                 os.remove(MUSIC_PATH + song)
-                await ctx.send(boxed_string(_('Song {} has been deleted').format(song[:-5])))
+                await ctx.send(boxed_string(_('Song {} has been deleted.').format(song[:-5])))
             except PermissionError:
-                await ctx.send(boxed_string(_('Unable to delete song file, probably because it is being played right now.')))
+                await ctx.send(boxed_string(
+                    _('Unable to delete song file, probably because it is being played right now.')
+                ))
             except FileNotFoundError:
-                await ctx.send(boxed_string(_('Unable to delete song file as it no longer exists.')))
+                await ctx.send(boxed_string(
+                    _('Unable to delete song file as it no longer exists.')
+                ))
         else:
-            await ctx.send(boxed_string(_('Select an existing song from the list')))
+            await ctx.send(boxed_string(_('Select an existing song from the list.')))
 
-    @commands.command(brief=_('Flushes the music directory'))
+    @commands.command(brief=_('Flushes the music directory.'))
     async def flush(self, ctx: commands.Context):
         """Removes all files from music directory."""
         status = get(self.bot.voice_clients, guild=ctx.guild)
@@ -278,7 +320,7 @@ class Music(commands.Cog):
             await ctx.send(boxed_string(_('Music folder is now empty')))
         _songlist.clear()
 
-    @commands.command(brief=_('Use to search videos in YT'))
+    @commands.command(brief=_('Use to search videos in YT.'))
     async def search(self, ctx: commands.Context, *, key: str):
         """Searches YouTube videos by user-provided string."""
         i = 0
@@ -293,32 +335,51 @@ class Music(commands.Cog):
             self.bot.command_prefix)
         await ctx.send(boxed_string(string))
 
-    @commands.command(brief=_('Use with <add/del/clear> + song number to edit the current playlist.'))
-    async def playlist(self, ctx: commands.Context, action='show', song_number=None):
-        """Performs actions with a playlist."""
-        # TODO: write a bit more detailed description of what playlist() does.
+    @commands.command(brief=_('Use with add|del|clr|random + song index to edit the playlist.'))
+    async def playlist(self, ctx: commands.Context, action: str = 'show', song_number=None):
+        """Performs actions `(show|add|del|clr)` with a playlist.
+
+        Actions:
+            `show` -- default option; prints all songs in `_playlist` appended by their index
+
+            `add (int|'random')` -- adds a song to `_playlist` by index or random
+
+            `del (int)` -- deletes a song from `_playlist` by index
+
+            `clr` -- clears all songs from `_playlist`
+
+            `random (int)` -- appends `song_number` random songs to `_playlist`
+        """
         if action == 'show':
             string = ''
             i = 0
             if _playlist:
                 for song in _playlist:
                     i += 1
-                    string += f'{i}. {song[:-5]}\n'
+                    string += f'{i}. {song[: -len(MUSIC_EXT)]}\n'
             else:
-                string = _('Playlist is empty')
+                string = _('Playlist is empty.')
             await ctx.send(boxed_string(string))
 
         elif action == 'add':
             if song_number == 'random':
                 song_number = random.randint(0, len(_songlist) - 1)
             _playlist.append(_songlist[int(song_number) - 1])
-            await ctx.send(boxed_string(_('«‎{}»‎ added to queue.').format(_songlist[int(song_number) - 1][:-5])))
+            await ctx.send(boxed_string(
+                _('«‎{}»‎ added to queue.').format(
+                    _songlist[int(song_number) - 1][: -len(MUSIC_EXT)]
+                )
+            ))
 
         elif action == 'del':
-            await ctx.send(boxed_string(_('Song «‎{}»‎ has been removed from queue').format(_playlist[int(song_number) - 1][:-5])))
+            await ctx.send(boxed_string(
+                _('Song «‎{}»‎ has been removed from queue.').format(
+                    _playlist[int(song_number) - 1][: -len(MUSIC_EXT)]
+                )
+            ))
             _playlist.pop(int(song_number) - 1)
 
-        elif action == 'clear':
+        elif action == 'clr':
             _playlist.clear()
             await ctx.send(boxed_string(_('Playlist is cleared.')))
 
@@ -326,10 +387,12 @@ class Music(commands.Cog):
             for i in range(int(song_number)):
                 number = random.randint(0, len(_songlist) - 1)
                 _playlist.append(_songlist[int(number) - 1])
-                await ctx.send(boxed_string(_('«‎{}»‎ added to queue.').format(_songlist[int(number) - 1][:-5])))
-            if ctx.voice_client is not None and ctx.voice_client.is_playing():
-                pass
-            else:
+                await ctx.send(boxed_string(
+                    _('«‎{}»‎ added to queue.').format(
+                        _songlist[int(number) - 1][: -len(MUSIC_EXT)]
+                    )
+                ))
+            if ctx.voice_client is None or not ctx.voice_client.is_playing():
                 await self.choose_song(ctx, arg='playlist')
 
     @commands.command(brief=_('Use to skip current song in playlist.'))
@@ -340,25 +403,30 @@ class Music(commands.Cog):
             if _playlist:
                 _playlist.pop(0)
             i += 1
-        if ctx.voice_client is not None and (ctx.voice_client.is_playing() or ctx.voice_client.is_paused()):
+        if (ctx.voice_client is not None and (
+            ctx.voice_client.is_playing() or
+            ctx.voice_client.is_paused()
+        )):
             ctx.voice_client.stop()
 
     @commands.command(hidden=True)
     async def changestatus(self, ctx: commands.Context, status):
         """Changes bot's status on Discord and displays current song playing."""
-        await self.bot.change_presence(activity=discord.Activity(type=discord.ActivityType.listening, name=status))
+        await self.bot.change_presence(
+            activity=discord.Activity(
+                type=discord.ActivityType.listening, name=status))
         await ctx.send(boxed_string(_('Playing: ') + status))
 
-    @commands.command(brief=_('Looks up and plays a song from your Spotify status'))
+    @commands.command(brief=_('Looks up and plays a song from your Spotify status.'))
     async def spotify(self, ctx: commands.Context):
-        """Checks user's status for Spotify integration and, if it exists, searches the currently playing song on YouTube.
+        """Checks user's Spotify integration status and searches the displayed song on YouTube.
 
         Invokes choose_song(artist + name) which plays the first match of the search query."""
         for activity in ctx.author.activities:  # type: ignore
             if isinstance(activity, discord.Spotify):
                 await self.choose_song(ctx, arg=f'{activity.artist} - {activity.title}')
                 return
-        await ctx.send(boxed_string('Can\'t detect your Spotify status.'))
+        await ctx.send(boxed_string(_("Can't detect your Spotify status.")))
 
 
 def setup(bot: commands.Bot):

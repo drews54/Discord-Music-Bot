@@ -31,21 +31,21 @@ async def on_ready():
 
 
 @bot.command(hidden=True)
-async def load(ctx: commands.Context, extension: str):
+async def load(ctx: commands.Context, extension: str):  # pylint: disable=unused-argument
     """Loads a module from ./cogs/ folder."""
     bot.load_extension(f'cogs.{extension}')
     print(f'Module "{extension}" loaded')
 
 
 @bot.command(hidden=True)
-async def unload(ctx: commands.Context, extension: str):
+async def unload(ctx: commands.Context, extension: str):  # pylint: disable=unused-argument
     """Unloads a module from ./cogs/ folder."""
     bot.unload_extension(f'cogs.{extension}')
     print(f'Module "{extension}" unloaded')
 
 
 @bot.command(hidden=True)
-async def reload(ctx: commands.Context, extension: str = 'music'):
+async def reload(ctx: commands.Context, extension: str = 'music'):  # pylint: disable=unused-argument
     """Reloads a module from ./cogs/ folder."""
     bot.unload_extension(f'cogs.{extension}')
     bot.load_extension(f'cogs.{extension}')
