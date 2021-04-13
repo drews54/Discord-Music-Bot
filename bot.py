@@ -6,17 +6,35 @@ It only contains a few top-level commands and initialization procedures.
 import os
 import textwrap
 import time
+from re import fullmatch
+from getpass import getpass
 from gettext import translation
 from discord import Intents
 from discord.ext import commands
 
-bot = commands.Bot(command_prefix=os.getenv('DISCORD_PREFIXES'), strip_after_prefix=True, intents=Intents(
-    guilds=True, guild_messages=True, voice_states=True, presences=True, members=True))
+TOKEN = os.getenv('DISCORD_TOKEN')
+PREFIX = os.getenv('DISCORD_PREFIX')
+LANG = os.getenv('LANG')
 
-if os.getenv('LANG').casefold().startswith('ru'):
+if LANG is None or LANG.strip() == '':
+    LANG = input('Select language | Выберите язык [EN/ru]: ').strip() or 'en'
+if LANG.casefold().startswith('en'):
+    _ = translation('Discord-Music-Bot', './locale', languages=['en']).gettext
+elif LANG.casefold().startswith('ru'):
     _ = translation('Discord-Music-Bot', './locale', languages=['ru']).gettext
 else:
-    _ = translation('Discord-Music-Bot', './locale', languages=['en']).gettext
+    raise NameError(f"Couldn't find locale | Не найдена локаль: {LANG}")
+
+if PREFIX is None or PREFIX.lstrip() == '':
+    PREFIX = input(_('Enter prefix: ')).lstrip() or '$'
+
+bot = commands.Bot(
+    command_prefix=PREFIX, strip_after_prefix=True, intents=Intents(
+        guilds=True, guild_messages=True, voice_states=True, presences=True, members=True))
+
+if TOKEN is None or TOKEN == '':
+    TOKEN = getpass(_('Enter token (not displayed): '))
+assert fullmatch(r'[MN][A-Za-z\d]{23}\.[\w-]{6}\.[\w-]{27}', TOKEN)
 
 
 def boxed_string(text: str) -> str:
@@ -126,4 +144,4 @@ for filename in os.listdir('./cogs'):
         print(f'Module {filename[:-3]} loaded')
 
 print('Connecting to gateway...')
-bot.run(os.getenv('DISCORD_TOKEN'))
+bot.run(TOKEN)
