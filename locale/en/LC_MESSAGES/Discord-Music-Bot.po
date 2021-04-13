@@ -5,8 +5,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: Discord-Music-Bot\n"
-"POT-Creation-Date: 2021-04-13 01:45+0300\n"
-"PO-Revision-Date: 2021-04-13 01:45+0300\n"
+"POT-Creation-Date: 2021-04-13 12:59+0300\n"
+"PO-Revision-Date: 2021-04-13 12:59+0300\n"
 "Last-Translator: Andrei Amosov <duha9898@gmail.com>\n"
 "Language-Team: Drews&Co\n"
 "Language: en\n"
@@ -160,42 +160,42 @@ msgstr ""
 msgid "Use to search videos in YT"
 msgstr ""
 
-#: cogs/music.py:287
+#: cogs/music.py:286
 msgid "Search results:\n"
 msgstr ""
 
-#: cogs/music.py:295
+#: cogs/music.py:292
 msgid "Use {}download <number> to download song from list."
 msgstr ""
 
-#: cogs/music.py:299
+#: cogs/music.py:296
 msgid "Use with <add/del/clear> + song number to edit the current playlist."
 msgstr ""
 
-#: cogs/music.py:311
+#: cogs/music.py:308
 msgid "Playlist is empty"
 msgstr ""
 
-#: cogs/music.py:318 cogs/music.py:332
+#: cogs/music.py:315 cogs/music.py:329
 msgid "«‎{}»‎ added to queue."
 msgstr ""
 
-#: cogs/music.py:321
+#: cogs/music.py:318
 msgid "Song «‎{}»‎ has been removed from queue"
 msgstr ""
 
-#: cogs/music.py:326
+#: cogs/music.py:323
 msgid "Playlist is cleared."
 msgstr ""
 
-#: cogs/music.py:338
+#: cogs/music.py:335
 msgid "Use to skip current song in playlist."
 msgstr ""
 
-#: cogs/music.py:353
+#: cogs/music.py:350
 msgid "Playing: "
 msgstr ""
 
-#: cogs/music.py:355
+#: cogs/music.py:352
 msgid "Looks up and plays a song from your Spotify status"
 msgstr ""

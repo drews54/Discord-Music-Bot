@@ -279,15 +279,12 @@ class Music(commands.Cog):
         _songlist.clear()
 
     @commands.command(brief=_('Use to search videos in YT'))
-    async def search(self, ctx: commands.Context, *key):
+    async def search(self, ctx: commands.Context, *, key: str):
         """Searches YouTube videos by user-provided string."""
         i = 0
         self._urlslist.clear()
-        searchrequest = ''
         string = _('Search results:\n')
-        for word in key:
-            searchrequest += f'{word!s} '
-        searchlist = YoutubeSearch(searchrequest, max_results=5).to_dict()
+        searchlist = YoutubeSearch(key, max_results=5).to_dict()
         for video in searchlist:
             i += 1
             self._urlslist.append(video['url_suffix'])  # type: ignore
