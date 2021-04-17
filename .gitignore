@@ -129,7 +129,7 @@ dmypy.json
 # Pyre type checker
 .pyre/
 
-# Visual Studio stuff (added manually)
+# Visual Studio Code
 .vs
 .vscode
 .devcontainer
