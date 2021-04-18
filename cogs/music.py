@@ -60,8 +60,21 @@ class Music(commands.Cog):
         self.is_stopped = False
         self._stop_loop = False
         self._looped = False
-        self.music_volume = 0.05
+        self._music_volume = 0.05
         self._urlslist = []
+
+    @property
+    def music_volume_exp(self) -> int:
+        """Transforms between linear and exponential volume values.
+
+        set: takes exponential volume, transforms to linear and stores locally.
+        get: returns exponential volume (for display).
+        """
+        return (math.pow(self._music_volume, math.exp(-1))*100).__trunc__()
+
+    @music_volume_exp.setter
+    def music_volume_exp(self, volume: int):
+        self._music_volume = math.pow(volume / 100, math.exp(1))
 
     @commands.command(name='list', brief=_('Shows the list of songs.'))
     async def list_(self, ctx: commands.Context, page='all'):
@@ -214,7 +227,7 @@ class Music(commands.Cog):
                     print(_('Disconnect has failed. Run {}stop manually.').format(
                         self.bot.command_prefix), error)
         ctx.voice_client.play(discord.PCMVolumeTransformer(discord.FFmpegPCMAudio(
-            self.current_song['source'], **ffmpeg_opts), self.music_volume), after=after_play)
+            self.current_song['source'], **ffmpeg_opts), self._music_volume), after=after_play)
 
     @commands.command(brief=_('Pauses playback.'))
     async def pause(self, ctx: commands.Context):
@@ -232,33 +245,21 @@ class Music(commands.Cog):
         else:
             await ctx.send(boxed_string(_('Nothing is paused.')))
 
-    @commands.command(brief=_('Changes music volume (0-100).'))
-    async def volume(self, ctx: commands.Context, volume: str = None):
+    @commands.command(name='volume', brief=_('Changes music volume (0-100).'))
+    async def change_volume(self, ctx: commands.Context, volume: str = None):
         """Changes playback volume.
 
         For user convenience, the default linear scale is substituted with an exponent.
         """
         if volume is None:
             await ctx.send(boxed_string(
-                _('Volume = {}%').format(
-                    (math.pow(
-                        self.music_volume, math.exp(-1)
-                    )*100
-                    ).__trunc__()
-                )
-            ))
+                _('Volume = {}%').format(self.music_volume_exp)))
         elif volume.isnumeric() and 0 <= int(volume) <= 100:
-            self.music_volume = math.pow(int(volume) / 100, math.exp(1))
+            self.music_volume_exp = int(volume)
             if ctx.voice_client is not None and ctx.voice_client.is_playing():
-                ctx.voice_client.source.volume = self.music_volume
+                ctx.voice_client.source.volume = self._music_volume
             await ctx.send(boxed_string(
-                _('Volume set to {}%').format(
-                    (math.pow(
-                        self.music_volume, math.exp(-1)
-                    )*100
-                    ).__trunc__()
-                )
-            ))
+                _('Volume set to {}%').format(self.music_volume_exp)))
         else:
             await ctx.send(boxed_string(
                 _('Incorrect arguments were given. '
