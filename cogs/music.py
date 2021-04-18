@@ -13,6 +13,7 @@ from discord.utils import get
 from discord.ext import commands
 from youtube_dl import YoutubeDL
 from youtube_search import YoutubeSearch
+import sqlalchemy
 
 if os.getenv('LANG').casefold().startswith('ru'):
     _ = translation('Discord-Music-Bot', './locale', languages=['ru']).gettext
@@ -33,6 +34,26 @@ MUSIC_PATH = './music/'
 MUSIC_EXT = '.opus'
 # pylint: enable=C0103
 
+engine = sqlalchemy.create_engine(
+    "sqlite+pysqlite:///:memory:", echo=True, future=True)
+conn1: sqlalchemy.engine.Connection
+with engine.begin() as conn1:
+    conn1.execute(sqlalchemy.text(
+        'CREATE TABLE music (id int primary key, name text, path text)'))
+
+
+def update_songlist_fromdb():
+    """Updates `_songlist` from database."""
+    with engine.connect() as conn2:
+        conn2.execute(sqlalchemy.text('DELETE FROM music'))
+        conn2.execute(sqlalchemy.text('INSERT INTO music (name, path) VALUES (:name, :path)'),
+                      [{'name': p, 'path': p} if p.endswith(MUSIC_EXT) else
+                       {'name': 'unknown', 'path': p} for p in os.listdir(MUSIC_PATH)])
+        conn2.commit()
+        _songlist.clear()
+        _songlist.extend([row[0] for row in conn2.execute(
+            sqlalchemy.text('SELECT name, path FROM music')).fetchall()])
+
 
 def update_songlist():
     """Updates songlist variable in Music class. (will be deprecated)"""
@@ -45,7 +66,7 @@ def update_songlist():
 
 
 if os.path.exists(MUSIC_PATH):
-    update_songlist()
+    update_songlist_fromdb()
 else:
     os.mkdir(MUSIC_PATH)
 random.seed()
@@ -282,7 +303,7 @@ class Music(commands.Cog):
             url = f'https://www.youtube.com{self._urlslist[int(url) - 1]}'
         with YoutubeDL(ydl_opts) as ydl:
             info = ydl.extract_info(url)
-            update_songlist()
+            update_songlist_fromdb()
             name = info['title'].replace('"', "'")
             name = info['title'].replace(':', ' -')
             await ctx.send(boxed_string(
@@ -308,6 +329,10 @@ class Music(commands.Cog):
                 await ctx.send(boxed_string(
                     _('Unable to delete song file as it no longer exists.')
                 ))
+            finally:
+                with engine.begin() as conn2:
+                    conn2.execute(sqlalchemy.text(
+                        'DELETE FROM music WHERE name = :song'), {'song': song})
         else:
             await ctx.send(boxed_string(_('Select an existing song from the list.')))
 

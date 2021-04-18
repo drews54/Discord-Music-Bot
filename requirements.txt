@@ -1,3 +1,4 @@
 discord.py[voice]~=1.7
 youtube-dl~=2021.4
 youtube-search~=2.1
+SQLAlchemy~=1.4
