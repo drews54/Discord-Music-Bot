@@ -372,7 +372,7 @@ class Music(commands.Cog):
                 )
             ))
 
-        elif action == 'del':
+        elif action in ['del', 'delete']:
             await ctx.send(boxed_string(
                 _('Song «‎{}»‎ has been removed from queue.').format(
                     _playlist[int(song_number) - 1][: -len(MUSIC_EXT)]
@@ -380,11 +380,11 @@ class Music(commands.Cog):
             ))
             _playlist.pop(int(song_number) - 1)
 
-        elif action == 'clr':
+        elif action in ['clr', 'clear']:
             _playlist.clear()
             await ctx.send(boxed_string(_('Playlist is cleared.')))
 
-        elif action == 'random':
+        elif action in ['rnd' ,'random']:
             for i in range(int(song_number)):
                 number = random.randint(0, len(_songlist) - 1)
                 _playlist.append(_songlist[int(number) - 1])
