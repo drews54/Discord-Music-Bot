@@ -107,6 +107,7 @@ async def shutdown(ctx: commands.Context, sec: int = 3):
     await ctx.send(f'Shutdown has been planned in {sec} s')
     time.sleep(sec)
     await ctx.send('Shutting down. Goodbye.')
+    await ctx.voice_client.disconnect()
     await bot.close()
 
 
