@@ -6,10 +6,10 @@ if (-Not (Get-Module -All Set-PsEnv -ErrorAction Ignore)) {
 }
 Set-PsEnv
 if (-Not (Test-Path Env:DISCORD_TOKEN -WarningAction SilentlyContinue)) {
-    $Env:DISCORD_TOKEN = 'PASTE_YOUR_TOKEN_HERE'
+    $Env:DISCORD_TOKEN = 'PASTE_TOKEN_HERE'
 }
 if (-Not (Test-Path Env:DISCORD_PREFIXES -WarningAction SilentlyContinue)) {
-    $Env:DISCORD_PREFIXES = 'TYPE_PREFIXES_HERE'
+    $Env:DISCORD_PREFIX = 'TYPE_PREFIX_HERE'
 }
 if (-Not (Test-Path Env:LANG -WarningAction SilentlyContinue)) {
     $Env:LANG = 'EN_or_RU'
