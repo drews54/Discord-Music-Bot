@@ -254,6 +254,17 @@ class Music(commands.Cog):
         if volume is None:
             await ctx.send(boxed_string(
                 _('Volume = {}%').format(self.music_volume_exp)))
+        elif volume.startswith(('+', '-')):
+            if self.music_volume_exp + int(volume) > 100:
+                volume = 100 - self.music_volume_exp
+            elif self.music_volume_exp + int(volume) < 0:
+                volume = -self.music_volume_exp
+            self.music_volume_exp = self.music_volume_exp + int(volume)
+            if ctx.voice_client is not None and ctx.voice_client.is_playing():
+                ctx.voice_client.source.volume = self._music_volume
+            await ctx.send(boxed_string(
+                _('Volume set to {}%').format(self.music_volume_exp)))
+
         elif volume.isnumeric() and 0 <= int(volume) <= 100:
             self.music_volume_exp = int(volume)
             if ctx.voice_client is not None and ctx.voice_client.is_playing():
