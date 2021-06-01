@@ -134,5 +134,6 @@ dmypy.json
 .vscode
 .devcontainer
 
-# Music folder
+# Music folder and database file
 music/
+music.db

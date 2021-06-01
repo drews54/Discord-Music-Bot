@@ -8,12 +8,14 @@ import math
 import random
 from gettext import translation
 from asyncio import run_coroutine_threadsafe, CancelledError
+from tempfile import TemporaryDirectory
 import discord
 from discord.utils import get
 from discord.ext import commands
 from youtube_dl import YoutubeDL
 from youtube_search import YoutubeSearch
-import sqlalchemy
+from sqlalchemy import create_engine, MetaData, Table, Column, Integer, Text, LargeBinary
+from sqlalchemy.orm import mapper, sessionmaker
 
 if os.getenv('LANG').casefold().startswith('ru'):
     _ = translation('Discord-Music-Bot', './locale', languages=['ru']).gettext
@@ -26,49 +28,71 @@ def boxed_string(text: str) -> str:
     return '```' + text + '```'
 
 
+engine = create_engine(
+    "sqlite+pysqlite:///music.db", echo=True, future=True)
+metadata = MetaData(engine)
+music_table = Table(
+    "music", metadata,
+    Column('id', Integer, primary_key=True),
+    Column('name', Text, nullable=False),
+    Column('link', Text),
+    Column('file', LargeBinary)
+)
+metadata.create_all()
+# with engine.begin() as conn:
+#     conn: sqlalchemy.engine.Connection
+#     conn.execute(sqlalchemy.text(
+#         'CREATE TABLE IF NOT EXISTS music'
+#         '(id INTEGER PRIMARY KEY, name TEXT NOT NULL, link TEXT, file BLOB)'))
+
+
+# def update_songlist():
+#     """Updates `_songlist` from database. (stub)"""
+# with engine.connect() as conn:
+#     conn: sqlalchemy.engine.Connection
+#     conn.execute(sqlalchemy.text('DELETE FROM music'))
+#     conn.execute(sqlalchemy.text(
+#         'INSERT INTO music(name, file) VALUES(:name, :file)'), _files)
+#     conn.commit()
+#     _songlist.clear()
+#     _songlist.extend([row for row in conn.execute(
+#         sqlalchemy.text('SELECT * FROM music ORDER BY name'))])
+
+
 # pylint: disable=C0103
-_songlist = []
+_songlist = music_table.select().columns.get('name')
 _unknown_files = 0
 _playlist = []
 MUSIC_PATH = './music/'
 MUSIC_EXT = '.opus'
 # pylint: enable=C0103
 
-engine = sqlalchemy.create_engine(
-    "sqlite+pysqlite:///:memory:", echo=True, future=True)
-conn1: sqlalchemy.engine.Connection
-with engine.begin() as conn1:
-    conn1.execute(sqlalchemy.text(
-        'CREATE TABLE music (id int primary key, name text, path text)'))
-
-
-def update_songlist_fromdb():
-    """Updates `_songlist` from database."""
-    with engine.connect() as conn2:
-        conn2.execute(sqlalchemy.text('DELETE FROM music'))
-        conn2.execute(sqlalchemy.text('INSERT INTO music (name, path) VALUES (:name, :path)'),
-                      [{'name': p, 'path': p} if p.endswith(MUSIC_EXT) else
-                       {'name': 'unknown', 'path': p} for p in os.listdir(MUSIC_PATH)])
-        conn2.commit()
-        _songlist.clear()
-        _songlist.extend([row[0] for row in conn2.execute(
-            sqlalchemy.text('SELECT name, path FROM music')).fetchall()])
-
-
-def update_songlist():
-    """Updates songlist variable in Music class. (will be deprecated)"""
-    _songlist.clear()
-    for filename in os.listdir(MUSIC_PATH):
-        if filename.endswith(MUSIC_EXT):
-            _songlist.append(filename)
-        else:
-            _unknown_files += 1
+# ! WONTFIX: Old function for updating _songlist, serves no purpose.
+# def update_songlist():
+#     """Updates songlist variable in Music class. (will be deprecated)"""
+#     _songlist.clear()
+#     for filename in os.listdir(MUSIC_PATH):
+#         if filename.endswith(MUSIC_EXT):
+#             _songlist.append(filename)
+#         else:
+#             _unknown_files += 1
 
 
 if os.path.exists(MUSIC_PATH):
-    update_songlist_fromdb()
-else:
-    os.mkdir(MUSIC_PATH)
+    _files = []
+
+    for file in os.listdir(MUSIC_PATH):
+        file_path = MUSIC_PATH + file
+        with open(file_path, 'rb') as file_bin:
+            _files.append(
+                {
+                    'name': file,
+                    'file': file_bin.read()
+                })
+
+    music_table.insert().values(_files)
+    from shutil import rmtree
+    rmtree(MUSIC_PATH)
 random.seed()
 
 
@@ -78,9 +102,7 @@ class Music(commands.Cog):
     def __init__(self, bot: commands.Bot):
         self.bot = bot
         self.current_song = {}
-        self.is_stopped = False
-        self._stop_loop = False
-        self._looped = False
+        self.is_stopped = self._stop_loop = self._looped = False
         self._music_volume = 0.05
         self._urlslist = []
 
@@ -116,7 +138,7 @@ class Music(commands.Cog):
                     .format(max_page)
                 ))
                 return
-            elif not _songlist:
+            if not _songlist:
                 await ctx.send(boxed_string(
                     _('No songs! Use {}download to download songs.')
                     .format(self.bot.command_prefix)
@@ -290,61 +312,88 @@ class Music(commands.Cog):
     @commands.command(brief=_('Downloads songs from YouTube.'))
     async def download(self, ctx: commands.Context, url):
         """Parses YouTube link passed by user and downloads found audio."""
-        ydl_opts = {
-            'format': f'bestaudio/{MUSIC_EXT[1:]}',
-            'outtmpl': f'{MUSIC_PATH}%(title)s.%(ext)s',
-            'postprocessors': [{
-                'key': 'FFmpegExtractAudio',
-                'preferredcodec': MUSIC_EXT[1:],
-            }],
-        }
+        # filename: str
+        async def ydl_hook(download):
+            if download['status'] == 'finished':
+                # filename.join(download['filename'])
+                await ctx.send(_('Song downloaded, converting...'))
 
-        if not url.startswith('http'):
-            url = f'https://www.youtube.com{self._urlslist[int(url) - 1]}'
-        with YoutubeDL(ydl_opts) as ydl:
-            info = ydl.extract_info(url)
-            update_songlist_fromdb()
-            name = info['title'].replace('"', "'")
-            name = info['title'].replace(':', ' -')
-            await ctx.send(boxed_string(
-                _('Song downloaded:\n'
-                  '{}\n'
-                  'Song number: {}')
-                .format(name, _songlist.index(name + MUSIC_EXT) + 1)
-            ))
+        with TemporaryDirectory() as tmpdir:
+            ydl_opts = {
+                'format': f'bestaudio/{MUSIC_EXT[1:]}',
+                'outtmpl': f'{tmpdir}%(title)s.%(ext)s',
+                'postprocessors': [{
+                    'key': 'FFmpegExtractAudio',
+                    'preferredcodec': MUSIC_EXT[1:],
+                }],
+                'progress_hooks': [ydl_hook]
+            }
+
+            if not url.startswith('http'):
+                url = f'https://www.youtube.com{self._urlslist[int(url) - 1]}'
+            with YoutubeDL(ydl_opts) as ydl:
+                info = ydl.extract_info(url=url)
+                with open(tmpdir + info['filename'], 'rb') as downloaded_file:
+                    result = {
+                        'name': info['title'],
+                        'link': url,
+                        'file': downloaded_file.read()
+                    }
+                    music_table.insert().values(result)
+                    result.update({
+                        'id': music_table.select(music_table.c.id).where(music_table.c.name == info['name'])
+                    })
+                # name = info['title'].replace('"', "'")
+                # name = info['title'].replace(':', ' -')
+                await ctx.send(boxed_string(
+                    _('Song downloaded:\n'
+                      '{}\n'
+                      'Song number: {}')
+                    .format(result['name'], result['id'])
+                ))
 
     @commands.command(brief=_('Removes a song selected from the list.'))
     async def remove(self, ctx: commands.Context, number=0):
         """Removes a song's data and file from songlist and music directory."""
-        if 1 <= int(number) <= len(_songlist):
-            song = _songlist.pop(int(number) - 1)
-            try:
-                os.remove(MUSIC_PATH + song)
-                await ctx.send(boxed_string(_('Song {} has been deleted.').format(song[:-5])))
-            except PermissionError:
-                await ctx.send(boxed_string(
-                    _('Unable to delete song file, probably because it is being played right now.')
-                ))
-            except FileNotFoundError:
-                await ctx.send(boxed_string(
-                    _('Unable to delete song file as it no longer exists.')
-                ))
-            finally:
-                with engine.begin() as conn2:
-                    conn2.execute(sqlalchemy.text(
-                        'DELETE FROM music WHERE name = :song'), {'song': song})
+        selection = music_table.select().where(music_table.c.id == number)
+        if selection:
+            music_table.delete().where(music_table.c.id == number)
+            await ctx.send(boxed_string(_('Song {} has been deleted.').format(selection.c.name)))
         else:
             await ctx.send(boxed_string(_('Select an existing song from the list.')))
+        # if 1 <= int(number) <= len(_songlist):
+        #     song = _songlist.pop(int(number) - 1)
+        #     try:
+        #         os.remove(MUSIC_PATH + song)
+        #         await ctx.send(boxed_string(_('Song {} has been deleted.').format(song[:-5])))
+        #     except PermissionError:
+        #         await ctx.send(boxed_string(
+        #             _('Unable to delete song file, probably because it is being played right now.')
+        #         ))
+        #     except FileNotFoundError:
+        #         await ctx.send(boxed_string(
+        #             _('Unable to delete song file as it no longer exists.')
+        #         ))
+        #     finally:
+        #         with engine.begin() as conn2:
+        #             conn2.execute(sqlalchemy.text(
+        #                 'DELETE FROM music WHERE name = :song'), {'song': song})
+        # else:
+        #     await ctx.send(boxed_string(_('Select an existing song from the list.')))
 
     @commands.command(brief=_('Flushes the music directory.'))
     async def flush(self, ctx: commands.Context):
         """Removes all files from music directory."""
         status = get(self.bot.voice_clients, guild=ctx.guild)
-        if not status:
-            for filename in os.scandir(MUSIC_PATH):
-                os.remove(filename.path)
-            await ctx.send(boxed_string(_('Music folder is now empty')))
-        _songlist.clear()
+        if status:
+            await ctx.send(_('Disconnect from voice channel first.'))
+            return
+        music_table.delete()
+        await ctx.send(boxed_string(_('Music database is now empty')))
+        #     for filename in os.scandir(MUSIC_PATH):
+        #         os.remove(filename.path)
+        #     await ctx.send(boxed_string(_('Music folder is now empty')))
+        # _songlist.clear()
 
     @commands.command(brief=_('Use to search videos in YT.'))
     async def search(self, ctx: commands.Context, *, key: str):
@@ -409,7 +458,7 @@ class Music(commands.Cog):
             _playlist.clear()
             await ctx.send(boxed_string(_('Playlist is cleared.')))
 
-        elif action in ['rnd' ,'random']:
+        elif action in ['rnd', 'random']:
             for i in range(int(song_number)):
                 number = random.randint(0, len(_songlist) - 1)
                 _playlist.append(_songlist[int(number) - 1])
