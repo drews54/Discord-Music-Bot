@@ -25,6 +25,7 @@ If you want to build the container yourself:
     ```env
     DISCORD_TOKEN=***********************************************************
     DISCORD_PREFIX="any sequence of symbols"
+    LANG=RU or EN
     ```
 
 4. Run `docker run --volume music:/usr/src/app/music --env-file .env --rm -d discord-music-bot`
