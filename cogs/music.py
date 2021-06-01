@@ -104,7 +104,6 @@ class Music(commands.Cog):
                     string += f'{(i + 1)!s}. {name[: -len(MUSIC_EXT)]!s}\n'
         await ctx.send(boxed_string(string))
 
-
     @commands.command(brief=_('Stops playing audio.'))
     async def stop(self, ctx: commands.Context, loop=''):
         """Stops current playback or breaks the playback loop."""
@@ -232,7 +231,7 @@ class Music(commands.Cog):
             await ctx.send(boxed_string(_('Nothing is paused.')))
 
     @commands.command(name='volume', brief=_('Changes music volume (0-100).'))
-    async def change_volume(self, ctx: commands.Context, volume: str = None):
+    async def change_volume(self, ctx: commands.Context, volume=None):
         """Changes playback volume.
 
         For user convenience, the default linear scale is substituted with an exponent.
@@ -241,7 +240,7 @@ class Music(commands.Cog):
             await ctx.send(boxed_string(
                 _('Volume = {}%').format(self.music_volume_exp)))
             return
-        elif volume.startswith(('+', '-')):
+        if volume.startswith(('+', '-')):
             if volume[1:].isnumeric():
                 volume = int(volume)
                 if self.music_volume_exp + volume > 100:
@@ -254,15 +253,16 @@ class Music(commands.Cog):
                 await ctx.send(boxed_string(
                     _('Volume set to {}%').format(self.music_volume_exp)))
                 return
-        elif volume.isnumeric() and 0 <= int(volume) <= 100:
+        elif volume.isnumeric():
             volume = int(volume)
-            self.music_volume_exp = int(volume)
-            if ctx.voice_client is not None and ctx.voice_client.is_playing():
-                ctx.voice_client.source.volume = self._music_volume
-            await ctx.send(boxed_string(
-                _('Volume set to {}%').format(self.music_volume_exp)))
-            return
-        #If none of the conditions above were met:
+            if 0 <= volume <= 100:
+                self.music_volume_exp = int(volume)
+                if ctx.voice_client is not None and ctx.voice_client.is_playing():
+                    ctx.voice_client.source.volume = self._music_volume
+                await ctx.send(boxed_string(
+                    _('Volume set to {}%').format(self.music_volume_exp)))
+                return
+        # If none of the conditions above were met:
         await ctx.send(boxed_string(
             _('Incorrect arguments were given. '
                 'Only whole values from 0 to 100 are supported.')
@@ -386,7 +386,7 @@ class Music(commands.Cog):
             _playlist.clear()
             await ctx.send(boxed_string(_('Playlist is cleared.')))
 
-        elif action in ['rnd' ,'random']:
+        elif action in ['rnd', 'random']:
             for i in range(int(song_number)):
                 number = random.randint(0, len(_songlist) - 1)
                 _playlist.append(_songlist[int(number) - 1])
