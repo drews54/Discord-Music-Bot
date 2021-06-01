@@ -27,7 +27,6 @@ def boxed_string(text: str) -> str:
 
 # pylint: disable=C0103
 _songlist = []
-_unknown_files = 0
 _playlist = []
 MUSIC_PATH = './music/'
 MUSIC_EXT = '.opus'
@@ -40,8 +39,6 @@ def update_songlist():
     for filename in os.listdir(MUSIC_PATH):
         if filename.endswith(MUSIC_EXT):
             _songlist.append(filename)
-        else:
-            _unknown_files += 1
 
 
 if os.path.exists(MUSIC_PATH):
@@ -106,18 +103,7 @@ class Music(commands.Cog):
                 if int(page) == i//10 + 1:
                     string += f'{(i + 1)!s}. {name[: -len(MUSIC_EXT)]!s}\n'
         await ctx.send(boxed_string(string))
-        if _unknown_files == 1:
-            await ctx.send(boxed_string(
-                _('Also there is a file with an unknown extension!\n'
-                  'Use {}convert list to convert your music files to "opus" format.')
-                .format(self.bot.command_prefix)
-            ))
-        elif _unknown_files > 1:
-            await ctx.send(boxed_string(
-                _('Also there are {} files with unknown extensions!\n'
-                  'Use {}convert list to convert your music files to "opus" format.')
-                .format(_unknown_files, self.bot.command_prefix)
-            ))
+
 
     @commands.command(brief=_('Stops playing audio.'))
     async def stop(self, ctx: commands.Context, loop=''):
