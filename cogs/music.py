@@ -241,16 +241,16 @@ class Music(commands.Cog):
             await ctx.send(boxed_string(
                 _('Volume = {}%').format(self.music_volume_exp)))
         elif volume.startswith(('+', '-')):
-            if self.music_volume_exp + int(volume) > 100:
-                volume = 100 - self.music_volume_exp
-            elif self.music_volume_exp + int(volume) < 0:
-                volume = -self.music_volume_exp
-            self.music_volume_exp = self.music_volume_exp + int(volume)
-            if ctx.voice_client is not None and ctx.voice_client.is_playing():
-                ctx.voice_client.source.volume = self._music_volume
-            await ctx.send(boxed_string(
-                _('Volume set to {}%').format(self.music_volume_exp)))
-
+            if self.music_volume_exp + int(volume) > 100: #Проверяем, что громкость, которую мы добавим не приведет к выходу за груницу в 100%
+                volume = 100 - self.music_volume_exp      #Высчисляем необходимую разницу, чтобы при сложении получилось 100
+            elif self.music_volume_exp + int(volume) < 0: #Проверяем, что громкость, которую мы добавим не приведет к выходу за границу ниже 0
+                volume = -self.music_volume_exp           #Вычисляем необходимую разницу, чтобы при сложении получилось 0
+            self.music_volume_exp = self.music_volume_exp + int(volume)         #Собстевенно складываем значение корректированного аргумента с текущей громкостью
+            if ctx.voice_client is not None and ctx.voice_client.is_playing():  #И при необходимости меняем громкость текущего воспроизведения
+                ctx.voice_client.source.volume = self._music_volume             
+            await ctx.send(boxed_string(                                        #Выводим значение новой громкости
+                _('Volume set to {}%').format(self.music_volume_exp)))          #???
+                                                                                #PROFIT!!!!
         elif volume.isnumeric() and 0 <= int(volume) <= 100:
             self.music_volume_exp = int(volume)
             if ctx.voice_client is not None and ctx.voice_client.is_playing():
