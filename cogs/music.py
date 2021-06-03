@@ -256,7 +256,7 @@ class Music(commands.Cog):
         elif volume.isnumeric():
             volume = int(volume)
             if 0 <= volume <= 100:
-                self.music_volume_exp = int(volume)
+                self.music_volume_exp = volume
                 if ctx.voice_client is not None and ctx.voice_client.is_playing():
                     ctx.voice_client.source.volume = self._music_volume
                 await ctx.send(boxed_string(
