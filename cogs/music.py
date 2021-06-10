@@ -233,7 +233,7 @@ class Music(commands.Cog):
         else:
             await ctx.send(boxed_string(_('Nothing is paused.')))
 
-    @commands.command(name='volume', brief=_('Changes music volume (0-100).'))
+    @commands.command(name='volume', aliases=('v',), brief=_('Changes music volume (0-100).'))
     async def change_volume(self, ctx: commands.Context, volume=None):
         """Changes playback volume.
 
