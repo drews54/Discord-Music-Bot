@@ -137,7 +137,10 @@ class Music(commands.Cog):
             number = random.randint(0, len(_songlist) - 1)
         elif playlist or arg.startswith('playlist'):
             if _playlist:
-                number = _songlist.index(_playlist[0]) + 1
+                if str(_playlist[0]).startswith('http'):
+                    arg = _playlist[0]
+                else:
+                    number = _songlist.index(_playlist[0]) + 1
                 _playlist.pop(0)
             else:
                 await ctx.send(boxed_string(_('Nothing to play!')))
@@ -339,7 +342,7 @@ class Music(commands.Cog):
         await ctx.send(boxed_string(string))
 
     @commands.command(brief=_('Use with add|del|clr|random + song index to edit the playlist.'))
-    async def playlist(self, ctx: commands.Context, action: str = 'show', song_number=None):
+    async def playlist(self, ctx: commands.Context, action: str = 'show', song_number: str = None):
         """Performs actions `(show|add|del|clr)` with a playlist.
 
         Actions:
@@ -367,12 +370,16 @@ class Music(commands.Cog):
         elif action == 'add':
             if song_number == 'random':
                 song_number = random.randint(0, len(_songlist) - 1)
-            _playlist.append(_songlist[int(song_number) - 1])
-            await ctx.send(boxed_string(
-                _('«‎{}»‎ added to queue.').format(
-                    _songlist[int(song_number) - 1][: -len(MUSIC_EXT)]
-                )
-            ))
+            elif song_number.startswith('http'):
+                _playlist.append(song_number)
+                await ctx.send(boxed_string(f'Url {song_number} added to queue.'))
+            if song_number.isnumeric():
+                _playlist.append(_songlist[int(song_number) - 1])
+                await ctx.send(boxed_string(
+                    _('«‎{}»‎ added to queue.').format(
+                        _songlist[int(song_number) - 1][: -len(MUSIC_EXT)]
+                    )
+                ))
 
         elif action in ['del', 'delete']:
             await ctx.send(boxed_string(
