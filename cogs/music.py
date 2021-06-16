@@ -342,7 +342,7 @@ class Music(commands.Cog):
         await ctx.send(boxed_string(string))
 
     @commands.command(brief=_('Use with add|del|clr|random + song index to edit the playlist.'))
-    async def playlist(self, ctx: commands.Context, action: str = 'show', song_number: str = None):
+    async def playlist(self, ctx: commands.Context, action: str = 'show', song_identifier=None):
         """Performs actions `(show|add|del|clr)` with a playlist.
 
         Actions:
@@ -368,33 +368,38 @@ class Music(commands.Cog):
             await ctx.send(boxed_string(string))
 
         elif action == 'add':
-            if song_number == 'random':
-                song_number = random.randint(0, len(_songlist) - 1)
-            elif song_number.startswith('http'):
-                _playlist.append(song_number)
-                await ctx.send(boxed_string(f'Url {song_number} added to queue.'))
-            if song_number.isnumeric():
-                _playlist.append(_songlist[int(song_number) - 1])
+            if song_identifier == 'random':
+                song_identifier = random.randint(0, len(_songlist) - 1)
+            elif song_identifier.startswith('http'):
+                _playlist.append(song_identifier)
+                song_info = YoutubeDL({'format': 'bestaudio'}).extract_info(song_identifier, download=False)
                 await ctx.send(boxed_string(
                     _('«‎{}»‎ added to queue.').format(
-                        _songlist[int(song_number) - 1][: -len(MUSIC_EXT)]
+                        song_info['title']
+                    )
+                ))
+            if song_identifier.isnumeric():
+                _playlist.append(_songlist[int(song_identifier) - 1])
+                await ctx.send(boxed_string(
+                    _('«‎{}»‎ added to queue.').format(
+                        _songlist[int(song_identifier) - 1][: -len(MUSIC_EXT)]
                     )
                 ))
 
         elif action in ['del', 'delete']:
             await ctx.send(boxed_string(
                 _('Song «‎{}»‎ has been removed from queue.').format(
-                    _playlist[int(song_number) - 1][: -len(MUSIC_EXT)]
+                    _playlist[int(song_identifier) - 1][: -len(MUSIC_EXT)]
                 )
             ))
-            _playlist.pop(int(song_number) - 1)
+            _playlist.pop(int(song_identifier) - 1)
 
         elif action in ['clr', 'clear']:
             _playlist.clear()
             await ctx.send(boxed_string(_('Playlist is cleared.')))
 
         elif action in ['rnd', 'random']:
-            for i in range(int(song_number)):
+            for i in range(int(song_identifier)):
                 number = random.randint(0, len(_songlist) - 1)
                 _playlist.append(_songlist[int(number) - 1])
                 await ctx.send(boxed_string(
