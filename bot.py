@@ -6,11 +6,14 @@ It only contains a few top-level commands and initialization procedures.
 import os
 import textwrap
 import time
+import json
 from re import fullmatch
 from getpass import getpass
 from gettext import translation
 from discord import Intents
+import discord
 from discord.ext import commands
+import requests
 
 TOKEN = os.getenv('DISCORD_TOKEN')
 PREFIX = os.getenv('DISCORD_PREFIX')
@@ -30,7 +33,7 @@ if PREFIX is None or PREFIX.lstrip() == '':
 
 bot = commands.Bot(
     command_prefix=PREFIX, strip_after_prefix=True, intents=Intents(
-        guilds=True, guild_messages=True, voice_states=True, presences=True, members=True))
+        guilds=True, guild_messages=True, voice_states=True, presences=True, members=True, integrations=True))
 
 if TOKEN is None or TOKEN == '':
     TOKEN = getpass(_('Enter token (not displayed): '))
@@ -46,6 +49,42 @@ def boxed_string(text: str) -> str:
 async def on_ready():
     """Prints to console when bot is ready."""
     print('Connected.')
+
+
+@bot.event
+async def on_interaction(ctx: commands.Context,member: discord.Member, interaction):
+    print(member)
+
+def test(*args):
+    print('Args: '+ args)
+
+bot._connection.parsers['INTEGRATION CREATED'] = test
+
+
+
+
+@bot.command(hidden=True, aliases=('slash',))
+async def update_slash_commands(ctx: commands.Context, action: str, id = None):
+    with open('commands.json', 'r', encoding='utf-8') as file:
+        commands_json = json.load(file)
+
+    headers = {
+        "Authorization": "Bot " + TOKEN
+    }
+
+    if action == 'get':
+        r = requests.get(f'https://discord.com/api/v8/applications/623611714834923559/guilds/{ctx.guild.id}/commands', headers=headers)
+        await ctx.send(r.json())
+    elif action == 'post':
+        r = requests.post(f'https://discord.com/api/v8/applications/623611714834923559/guilds/{ctx.guild.id}/commands', headers=headers, json=commands_json)
+        await ctx.send(r)
+        await ctx.send(r.json())
+    elif action == 'delete':
+        r = requests.delete(f'https://discord.com/api/v8/applications/623611714834923559/guilds/{ctx.guild.id}/commands/{id}', headers=headers)
+        await ctx.send(r)
+        await ctx.send(r.json())
+    else:
+        await ctx.send('Wrong request')
 
 
 @bot.command(hidden=True)

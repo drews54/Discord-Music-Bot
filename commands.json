@@ -1,0 +1,12 @@
+{
+    "name": "play",
+    "description": "Plays an auido",
+    "options": [
+        {
+            "type" : 3,
+            "name" : "url",
+            "description" : "URL on YT",
+            "required": "True"
+        }
+    ]
+}
