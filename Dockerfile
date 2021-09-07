@@ -7,7 +7,7 @@ RUN msgfmt -o locale/ru/LC_MESSAGES/Discord-Music-Bot.mo locale/ru/LC_MESSAGES/D
 RUN msgfmt -o locale/en/LC_MESSAGES/Discord-Music-Bot.mo locale/en/LC_MESSAGES/Discord-Music-Bot.po \
  && rm locale/en/LC_MESSAGES/Discord-Music-Bot.po
 
-FROM python:3-slim
+FROM python:3.8.0a3-slim
 WORKDIR /usr/src/app/
 COPY --from=localization /root/locale/ locale/
 
