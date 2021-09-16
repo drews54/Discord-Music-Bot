@@ -1,3 +1,4 @@
 discord.py[voice]~=1.7
-youtube-dl~=2021.5
+yt-dlp~=2021.9
 youtube-search~=2.1
+
