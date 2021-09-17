@@ -286,8 +286,7 @@ class Music(commands.Cog):
         with YoutubeDL(ydl_opts) as ydl:
             info = ydl.extract_info(url)
             update_songlist()
-            name = info['title'].replace('"', "'")
-            name = info['title'].replace(':', ' -')
+            name = info['title']
             await ctx.send(boxed_string(
                 _('Song downloaded:\n'
                   '{}\n'
