@@ -11,7 +11,7 @@ from asyncio import run_coroutine_threadsafe, CancelledError
 import discord
 from discord.utils import get
 from discord.ext import commands
-from youtube_dl import YoutubeDL
+from yt_dlp import YoutubeDL
 from youtube_search import YoutubeSearch
 
 if os.getenv('LANG').casefold().startswith('ru'):
@@ -285,8 +285,7 @@ class Music(commands.Cog):
         with YoutubeDL(ydl_opts) as ydl:
             info = ydl.extract_info(url)
             update_songlist()
-            name = info['title'].replace('"', "'")
-            name = info['title'].replace(':', ' -')
+            name = info['title']
             await ctx.send(boxed_string(
                 _('Song downloaded:\n'
                   '{}\n'
