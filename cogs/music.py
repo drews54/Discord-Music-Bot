@@ -456,8 +456,10 @@ class Music(commands.Cog):
                 return
         await ctx.send(boxed_string(_("Can't detect your Spotify status.")))
 
-    """Checks URL compability. Now only youtube.com and youtu.be are supported."""
     def url_check(self, url: str) -> bool:
+        """Checks URL compability.
+
+        Now only youtube.com and youtu.be are supported."""
         if re.fullmatch(r'https?://(www\.)?youtu(\.be|be\.com)/[\S]+', url):
             return True
 
