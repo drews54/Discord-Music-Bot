@@ -304,7 +304,6 @@ class Music(commands.Cog):
                 .format(name, _songlist.index(name + MUSIC_EXT) + 1)
             ))
 
-
     @commands.command(brief=_('Removes a song selected from the list.'))
     async def remove(self, ctx: commands.Context, number=0):
         """Removes a song's data and file from songlist and music directory."""
@@ -386,7 +385,8 @@ class Music(commands.Cog):
                           r'https://youtu.be/dQw4w9WgXcQ')))
                     return
                 _playlist.append(song_identifier)
-                song_info = YoutubeDL({'format': 'bestaudio'}).extract_info(song_identifier, download=False)
+                song_info = YoutubeDL({'format': 'bestaudio'}).extract_info(
+                    song_identifier, download=False)
                 await ctx.send(boxed_string(
                     _('«‎{}»‎ added to queue.').format(
                         song_info['title']
