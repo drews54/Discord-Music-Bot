@@ -164,10 +164,10 @@ class Music(commands.Cog):
                 url = arg
                 if not self.url_check(url):
                     await ctx.send(boxed_string(
-                    _('The provided URL is not allowed. '
-                      'Correlate your URL with supported services domains.\nExample: '
-                      r'https://youtu.be/dQw4w9WgXcQ')))
-                return
+                        _('The provided URL is not allowed. '
+                          'Correlate your URL with supported services domains.\nExample: '
+                          r'https://youtu.be/dQw4w9WgXcQ')))
+                    return
             else:
                 searchrequest = arg
                 url = 'https://www.youtube.com' + \
