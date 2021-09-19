@@ -286,7 +286,7 @@ class Music(commands.Cog):
 
         if not url.startswith('http'):
             url = f'https://www.youtube.com{self._urlslist[int(url) - 1]}'
-        if not re.fullmatch(r'https?://(www\.)?youtu(\.be|be\.com)/[\S]+', url):
+        if not self.url_check(url):
             await ctx.send(boxed_string(
                 _('Wrong URL was given. '
                 'Correlate your URL with suppoted services domains.'
@@ -378,7 +378,7 @@ class Music(commands.Cog):
             if song_identifier == 'random':
                 song_identifier = random.randint(0, len(_songlist) - 1)
             elif song_identifier.startswith('http'):
-                if not re.fullmatch(r'https?://(www\.)?youtu(\.be|be\.com)/[\S]+', song_identifier):
+                if not self.url_check(song_identifier):
                     await ctx.send(boxed_string(
                         _('Wrong URL was given. '
                         'Correlate your URL with suppoted services domains.'
@@ -456,7 +456,7 @@ class Music(commands.Cog):
                 return
         await ctx.send(boxed_string(_("Can't detect your Spotify status.")))
 
-    """Unused function"""
+    """Checks URL compability. Now only youtube.com and youtu.be are supported."""
     def url_check(self, url: str) -> bool:
         if re.fullmatch(r'https?://(www\.)?youtu(\.be|be\.com)/[\S]+', url):
             return True
