@@ -288,9 +288,9 @@ class Music(commands.Cog):
             url = f'https://www.youtube.com{self._urlslist[int(url) - 1]}'
         if not self.url_check(url):
             await ctx.send(boxed_string(
-                _('Wrong URL was given. '
-                'Correlate your URL with suppoted services domains.'
-                '\n(e.g. https://youtu.be/dQw4w9WgXcQ)')))
+                _('The provided URL is not allowed. '
+                  'Correlate your URL with supported services domains.\nExample: '
+                  r'https://youtu.be/dQw4w9WgXcQ')))
             return
         with YoutubeDL(ydl_opts) as ydl:
             info = ydl.extract_info(url)
@@ -380,9 +380,9 @@ class Music(commands.Cog):
             elif song_identifier.startswith('http'):
                 if not self.url_check(song_identifier):
                     await ctx.send(boxed_string(
-                        _('Wrong URL was given. '
-                        'Correlate your URL with suppoted services domains.'
-                        '\n(e.g. https://youtu.be/dQw4w9WgXcQ)')))
+                        _('The provided URL is not allowed. '
+                          'Correlate your URL with supported services domains.\nExample: '
+                          r'https://youtu.be/dQw4w9WgXcQ')))
                     return
                 _playlist.append(song_identifier)
                 song_info = YoutubeDL({'format': 'bestaudio'}).extract_info(song_identifier, download=False)
