@@ -185,7 +185,14 @@ class Music(commands.Cog):
         self._stop_loop = False
         self.is_stopped = False
 
-        await self.player(ctx, ffmpeg_opts)
+        if ctx.voice_client is not None and ctx.voice_client.is_playing():
+            await ctx.send(boxed_string(
+                _('Now other song is playing.\n'
+                  'If you want to listen this one, stop playback and start another or '
+                  'just add song to the queue using playlist functionality')))
+        else:
+            await self.player(ctx, ffmpeg_opts)
+        
 
     async def player(self, ctx: commands.Context, ffmpeg_opts):
         """Core player function."""
