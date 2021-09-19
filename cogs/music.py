@@ -383,7 +383,7 @@ class Music(commands.Cog):
                     await ctx.send(boxed_string(
                         _('Wrong URL was given. '
                         'Correlate your URL with suppoted services domains.'
-                        '\n(e.g. http://youtube.com/***********)')))
+                        '\n(e.g. https://youtu.be/dQw4w9WgXcQ)')))
                     return
                 _playlist.append(song_identifier)
                 song_info = YoutubeDL({'format': 'bestaudio'}).extract_info(song_identifier, download=False)
