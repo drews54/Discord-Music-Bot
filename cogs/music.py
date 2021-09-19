@@ -290,7 +290,7 @@ class Music(commands.Cog):
             await ctx.send(boxed_string(
                 _('Wrong URL was given. '
                 'Correlate your URL with suppoted services domains.'
-                '\n(e.g. http://youtube.com/***********)')))
+                '\n(e.g. https://youtu.be/dQw4w9WgXcQ)')))
             return
         with YoutubeDL(ydl_opts) as ydl:
             info = ydl.extract_info(url)
