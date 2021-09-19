@@ -6,6 +6,7 @@ Uses Discord's commands.Cog as a base class.
 import os
 import math
 import random
+import re
 from gettext import translation
 from asyncio import run_coroutine_threadsafe, CancelledError
 import discord
@@ -285,6 +286,12 @@ class Music(commands.Cog):
 
         if not url.startswith('http'):
             url = f'https://www.youtube.com{self._urlslist[int(url) - 1]}'
+        if not re.fullmatch(r'https?://(www\.)?youtu(\.be|be\.com)/[\S]+', url):
+            await ctx.send(boxed_string(
+                _('Wrong URL was given. '
+                'Correlate your URL with suppoted services domains.'
+                '\n(e.g. http://youtube.com/***********)')))
+            return
         with YoutubeDL(ydl_opts) as ydl:
             info = ydl.extract_info(url)
             update_songlist()
@@ -296,6 +303,7 @@ class Music(commands.Cog):
                   'Song number: {}')
                 .format(name, _songlist.index(name + MUSIC_EXT) + 1)
             ))
+
 
     @commands.command(brief=_('Removes a song selected from the list.'))
     async def remove(self, ctx: commands.Context, number=0):
@@ -371,6 +379,12 @@ class Music(commands.Cog):
             if song_identifier == 'random':
                 song_identifier = random.randint(0, len(_songlist) - 1)
             elif song_identifier.startswith('http'):
+                if not re.fullmatch(r'https?://(www\.)?youtu(\.be|be\.com)/[\S]+', song_identifier):
+                    await ctx.send(boxed_string(
+                        _('Wrong URL was given. '
+                        'Correlate your URL with suppoted services domains.'
+                        '\n(e.g. http://youtube.com/***********)')))
+                    return
                 _playlist.append(song_identifier)
                 song_info = YoutubeDL({'format': 'bestaudio'}).extract_info(song_identifier, download=False)
                 await ctx.send(boxed_string(
@@ -442,6 +456,11 @@ class Music(commands.Cog):
                 await self.choose_song(ctx, arg=f'{activity.artist} - {activity.title}')
                 return
         await ctx.send(boxed_string(_("Can't detect your Spotify status.")))
+
+    """Unused function"""
+    def url_check(self, url: str) -> bool:
+        if re.fullmatch(r'https?://(www\.)?youtu(\.be|be\.com)/[\S]+', url):
+            return True
 
 
 def setup(bot: commands.Bot):
