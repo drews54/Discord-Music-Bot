@@ -358,7 +358,7 @@ class Music(commands.Cog):
                 return True
         
         try:
-            msg = await self.bot.wait_for('message', check=check, timeout=5)
+            msg = await self.bot.wait_for('message', check=check, timeout=10)
             url = f'https://www.youtube.com{searchlist[int(msg.content) - 1]["url_suffix"]}'
             await self.download(ctx, url)
         except TimeoutError:    
