@@ -8,7 +8,7 @@ import math
 import random
 import re
 from gettext import translation
-from asyncio import run_coroutine_threadsafe, CancelledError
+from asyncio import run_coroutine_threadsafe, CancelledError, TimeoutError
 import discord
 from discord.utils import get
 from discord.ext import commands
@@ -348,17 +348,24 @@ class Music(commands.Cog):
     @commands.command(brief=_('Use to search videos in YT.'))
     async def search(self, ctx: commands.Context, *, key: str):
         """Searches YouTube videos by user-provided string."""
-        i = 0
-        self._urlslist.clear()
         string = _('Search results:\n')
         searchlist = YoutubeSearch(key, max_results=5).to_dict()
-        for video in searchlist:
-            i += 1
-            self._urlslist.append(video['url_suffix'])  # type: ignore
-            string += f'{i!s}. {video["title"]}\n'  # type: ignore
-        string += _('Use {}download <number> to download song from list.').format(
-            self.bot.command_prefix)
+        for i, video in enumerate(searchlist):
+            string += f'{i + 1}. {video["title"]}\n'  # type: ignore
+        string += _('\nSend number to download song from list:')
         await ctx.send(boxed_string(string))
+
+        """Checks user input after showing search relults"""
+        def check(msg: discord.Message):
+            if msg.content.isnumeric() and msg.author == ctx.author:
+                return True
+        
+        try:
+            msg = await self.bot.wait_for('message', check=check, timeout=5)
+            url = f'https://www.youtube.com{searchlist[int(msg.content) - 1]["url_suffix"]}'
+            await self.download(ctx, url)
+        except TimeoutError:    
+            await ctx.send(boxed_string(_('Okay, your deal...')))
 
     @commands.command(brief=_('Use with add|del|clr|random + song index to edit the playlist.'))
     async def playlist(self, ctx: commands.Context, action: str = 'show', song_identifier=None):
