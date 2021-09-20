@@ -296,9 +296,6 @@ class Music(commands.Cog):
                 'preferredcodec': MUSIC_EXT[1:],
             }],
         }
-
-        if not url.startswith('http'):
-            url = f'https://www.youtube.com{self._urlslist[int(url) - 1]}'
         if not self.url_check(url):
             await ctx.send(boxed_string(
                 _('The provided URL is not allowed. '
