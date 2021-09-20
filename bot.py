@@ -11,6 +11,7 @@ from re import fullmatch
 from getpass import getpass
 from gettext import translation
 from discord import Intents
+import discord
 from discord.ext import commands
 import requests
 
@@ -52,8 +53,11 @@ async def on_ready():
 
 @bot.event
 async def on_interaction(interaction):
-    print('Gotcha!\n', interaction)
     """I NEED HELP, I DON'T HAVE IDEA HOW TO INVOKE COMMAND AND DON'T GET SHOT ON LEG"""
+    #await bot.get_channel(interaction['channel_id']).send('IN DEVELOPMENT')
+    id = interaction['id']
+    int_token = interaction['token']
+    await interaction_responder(id, int_token)
     # command = bot.get_command(interaction['data']['name'])
     # ctx = commands.Context(command=command, prefix=bot.command_prefix)
     # await bot.invoke(ctx)
@@ -66,6 +70,19 @@ def interaction_listener(interaction):
         print('Error occured\n', error)
 
 bot._connection.parsers['INTERACTION_CREATE'] = interaction_listener
+
+
+async def interaction_responder(id, int_token):
+    url = f'https://discord.com/api/v8/interactions/{id}/{int_token}/callback'
+
+    json = {
+        'type': 4,
+        'data': {
+            'content': 'IN DEVELOPMENT'
+        }
+    }
+    r = requests.post(url, json=json)
+
 
 @bot.command(hidden=True, aliases=('slash',))
 async def update_slash_commands(ctx: commands.Context, action: str, id = None):
