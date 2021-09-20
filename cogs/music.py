@@ -263,7 +263,7 @@ class Music(commands.Cog):
                 if self.music_volume_exp + volume > 100:
                     volume = 100 - self.music_volume_exp
                 elif self.music_volume_exp + volume < 0:
-                    volume = -self.music_volume_exp
+                    volume = 0 - self.music_volume_exp
                 self.music_volume_exp = self.music_volume_exp + volume
                 if ctx.voice_client is not None and ctx.voice_client.is_playing():
                     ctx.voice_client.source.volume = self._music_volume
