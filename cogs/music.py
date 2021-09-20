@@ -351,8 +351,8 @@ class Music(commands.Cog):
         string += _('\nSend number to download song from list:')
         await ctx.send(boxed_string(string))
 
-        """Checks user input after showing search relults"""
         def check(msg: discord.Message):
+            """Checks user input after showing search relults"""
             if msg.content.isnumeric() and msg.author == ctx.author:
                 return True
         
