@@ -8,7 +8,7 @@ import math
 import random
 import re
 from gettext import translation
-from asyncio import run_coroutine_threadsafe, CancelledError
+from asyncio import run_coroutine_threadsafe, CancelledError, TimeoutError
 import discord
 from discord.utils import get
 from discord.ext import commands
@@ -59,7 +59,6 @@ class Music(commands.Cog):
         self._stop_loop = False
         self._looped = False
         self._music_volume = 0.05
-        self._urlslist = []
 
     @property
     def music_volume_exp(self) -> int:
@@ -296,9 +295,6 @@ class Music(commands.Cog):
                 'preferredcodec': MUSIC_EXT[1:],
             }],
         }
-
-        if not url.startswith('http'):
-            url = f'https://www.youtube.com{self._urlslist[int(url) - 1]}'
         if not self.url_check(url):
             await ctx.send(boxed_string(
                 _('The provided URL is not allowed. '
@@ -348,17 +344,24 @@ class Music(commands.Cog):
     @commands.command(brief=_('Use to search videos in YT.'))
     async def search(self, ctx: commands.Context, *, key: str):
         """Searches YouTube videos by user-provided string."""
-        i = 0
-        self._urlslist.clear()
         string = _('Search results:\n')
         searchlist = YoutubeSearch(key, max_results=5).to_dict()
-        for video in searchlist:
-            i += 1
-            self._urlslist.append(video['url_suffix'])  # type: ignore
-            string += f'{i!s}. {video["title"]}\n'  # type: ignore
-        string += _('Use {}download <number> to download song from list.').format(
-            self.bot.command_prefix)
+        for i, video in enumerate(searchlist):
+            string += f'{i + 1}. {video["title"]}\n'  # type: ignore
+        string += _('\nSend number to download song from list:')
         await ctx.send(boxed_string(string))
+
+        def check(msg: discord.Message):
+            """Checks user input after showing search relults"""
+            if msg.content.isnumeric() and msg.author == ctx.author:
+                return True
+        
+        try:
+            msg = await self.bot.wait_for('message', check=check, timeout=10)
+            url = f'https://www.youtube.com{searchlist[int(msg.content) - 1]["url_suffix"]}'
+            await self.download(ctx, url)
+        except TimeoutError:    
+            await ctx.send(boxed_string(_('Okay, your deal...')))
 
     @commands.command(brief=_('Use with add|del|clr|random + song index to edit the playlist.'))
     async def playlist(self, ctx: commands.Context, action: str = 'show', song_identifier=None):

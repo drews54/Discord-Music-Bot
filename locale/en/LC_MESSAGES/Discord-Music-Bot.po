@@ -5,8 +5,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: Discord-Music-Bot\n"
-"POT-Creation-Date: 2021-09-20 17:02+0300\n"
-"PO-Revision-Date: 2021-09-20 17:16+0300\n"
+"POT-Creation-Date: 2021-09-20 23:34+0300\n"
+"PO-Revision-Date: 2021-09-20 23:34+0300\n"
 "Last-Translator: Piunov Anton <piunov.doc@gmail.com>\n"
 "Language-Team: Drews&Co\n"
 "Language: en\n"
@@ -58,7 +58,7 @@ msgstr ""
 msgid "Nothing to play!"
 msgstr ""
 
-#: cogs/music.py:167 cogs/music.py:304 cogs/music.py:395
+#: cogs/music.py:167 cogs/music.py:301 cogs/music.py:399
 msgid ""
 "The provided URL is not allowed. Correlate your URL with supported services "
 "domains.\n"
@@ -114,86 +114,92 @@ msgstr ""
 msgid "Downloads songs from YouTube."
 msgstr ""
 
-#: cogs/music.py:313
+#: cogs/music.py:310
 msgid ""
 "Song downloaded:\n"
 "{}\n"
 "Song number: {}"
 msgstr ""
 
-#: cogs/music.py:319
+#: cogs/music.py:316
 msgid "Removes a song selected from the list."
 msgstr ""
 
-#: cogs/music.py:326
+#: cogs/music.py:323
 msgid "Song {} has been deleted."
 msgstr ""
 
-#: cogs/music.py:329
+#: cogs/music.py:326
 msgid ""
 "Unable to delete song file, probably because it is being played right now."
 msgstr ""
 
-#: cogs/music.py:333
+#: cogs/music.py:330
 msgid "Unable to delete song file as it no longer exists."
 msgstr ""
 
-#: cogs/music.py:336
+#: cogs/music.py:333
 msgid "Select an existing song from the list."
 msgstr ""
 
-#: cogs/music.py:338
+#: cogs/music.py:335
 msgid "Flushes the music directory."
 msgstr ""
 
-#: cogs/music.py:345
+#: cogs/music.py:342
 msgid "Music folder is now empty"
 msgstr ""
 
-#: cogs/music.py:348
+#: cogs/music.py:345
 msgid "Use to search videos in YT."
 msgstr ""
 
-#: cogs/music.py:353
+#: cogs/music.py:348
 msgid "Search results:\n"
 msgstr ""
 
-#: cogs/music.py:359
-msgid "Use {}download <number> to download song from list."
+#: cogs/music.py:352
+msgid ""
+"\n"
+"Send number to download song from list:"
 msgstr ""
 
-#: cogs/music.py:363
+#: cogs/music.py:365
+msgid "Okay, your deal..."
+msgstr ""
+
+#: cogs/music.py:367
 msgid "Use with add|del|clr|random + song index to edit the playlist."
 msgstr ""
 
-#: cogs/music.py:386
+#: cogs/music.py:390
 msgid "Playlist is empty."
 msgstr ""
 
-#: cogs/music.py:403 cogs/music.py:410 cogs/music.py:432
+#: cogs/music.py:407 cogs/music.py:414 cogs/music.py:436
 msgid "«‎{}»‎ added to queue."
 msgstr ""
 
-#: cogs/music.py:417
+#: cogs/music.py:421
 msgid "Song «‎{}»‎ has been removed from queue."
 msgstr ""
 
-#: cogs/music.py:425
+#: cogs/music.py:429
 msgid "Playlist is cleared."
 msgstr ""
 
-#: cogs/music.py:439
+#: cogs/music.py:443
 msgid "Use to skip current song in playlist."
 msgstr ""
 
-#: cogs/music.py:459
+#: cogs/music.py:463
 msgid "Playing: "
 msgstr ""
 
-#: cogs/music.py:461
+#: cogs/music.py:465
 msgid "Looks up and plays a song from your Spotify status."
 msgstr ""
 
-#: cogs/music.py:470
+#: cogs/music.py:474
 msgid "Can't detect your Spotify status."
 msgstr ""
