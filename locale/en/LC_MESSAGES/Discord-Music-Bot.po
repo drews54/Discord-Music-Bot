@@ -69,7 +69,7 @@ msgstr ""
 msgid ""
 "Now other song is playing.\n"
 "If you want to listen this one, stop playback and start another or just add "
-"song to the queue using playlist functionality"
+"song to the queue using playlist functionality."
 msgstr ""
 
 #: cogs/music.py:204
