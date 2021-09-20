@@ -59,7 +59,6 @@ class Music(commands.Cog):
         self._stop_loop = False
         self._looped = False
         self._music_volume = 0.05
-        self._urlslist = []
 
     @property
     def music_volume_exp(self) -> int:
