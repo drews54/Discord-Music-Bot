@@ -11,7 +11,6 @@ from re import fullmatch
 from getpass import getpass
 from gettext import translation
 from discord import Intents
-import discord
 from discord.ext import commands
 import requests
 
@@ -49,19 +48,24 @@ def boxed_string(text: str) -> str:
 async def on_ready():
     """Prints to console when bot is ready."""
     print('Connected.')
-
+    
 
 @bot.event
-async def on_interaction(ctx: commands.Context,member: discord.Member, interaction):
-    print(member)
-
-def test(*args):
-    print('Args: '+ args)
-
-bot._connection.parsers['INTEGRATION CREATED'] = test
-
+async def on_interaction(interaction):
+    print('Gotcha!\n', interaction)
+    """I NEED HELP, I DON'T HAVE IDEA HOW TO INVOKE COMMAND AND DON'T GET SHOT ON LEG"""
+    # command = bot.get_command(interaction['data']['name'])
+    # ctx = commands.Context(command=command, prefix=bot.command_prefix)
+    # await bot.invoke(ctx)
 
 
+def interaction_listener(interaction):
+    try:
+        bot.loop.create_task(on_interaction(interaction))
+    except Exception as error:
+        print('Error occured\n', error)
+
+bot._connection.parsers['INTERACTION_CREATE'] = interaction_listener
 
 @bot.command(hidden=True, aliases=('slash',))
 async def update_slash_commands(ctx: commands.Context, action: str, id = None):
