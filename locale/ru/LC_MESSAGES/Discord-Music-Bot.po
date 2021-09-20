@@ -5,8 +5,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: Discord-Music-Bot\n"
-"POT-Creation-Date: 2021-04-14 00:53+0300\n"
-"PO-Revision-Date: 2021-04-14 00:57+0300\n"
+"POT-Creation-Date: 2021-09-20 17:02+0300\n"
+"PO-Revision-Date: 2021-09-20 17:13+0300\n"
 "Last-Translator: Andrei Amosov <duha9898@gmail.com>\n"
 "Language-Team: Drews&Co\n"
 "Language: ru\n"
@@ -14,109 +14,103 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Generated-By: pygettext.py 1.5\n"
-"X-Generator: Poedit 2.4.2\n"
+"X-Generator: Poedit 3.0\n"
 "Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n"
 "%10<=4 && (n%100<12 || n%100>14) ? 1 : 2);\n"
 
-#: bot.py:59
-msgid "GitHub source code"
-msgstr "Исходный код GitHub"
-
-#: bot.py:60
-msgid "Docker Hub repository"
-msgstr "Репозиторий Docker Hub"
-
-#: cogs/music.py:66
+#: cogs/music.py:77
 msgid "Shows the list of songs."
 msgstr "Отображает список песен."
 
-#: cogs/music.py:71
+#: cogs/music.py:82
 msgid "Full song list:\n"
 msgstr "Полный список песен:\n"
 
-#: cogs/music.py:81
+#: cogs/music.py:92
 msgid "404 bro, use one of {} existing pages."
 msgstr "404 бро, используй одну из {} существующих страниц."
 
-#: cogs/music.py:87
+#: cogs/music.py:98
 msgid "No songs! Use {}download to download songs."
 msgstr "Нет песен! Используй {}download для загрузки песен."
 
-#: cogs/music.py:98
-msgid ""
-"Also there is a file with an unknown extension!\n"
-"Use {}convert list to convert your music files to \"opus\" format."
-msgstr ""
-"Также есть файл с неизвестным расширением.\n"
-"Используйте {}convert list для преобразования музыкальных файлов в формат "
-"«opus»."
-
-#: cogs/music.py:104
-msgid ""
-"Also there are {} files with unknown extensions!\n"
-"Use {}convert list to convert your music files to \"opus\" format."
-msgstr ""
-"Также есть файлы с неизвестными расширениями.\n"
-"Используйте {}convert list для преобразования музыкальных файлов в формат "
-"«opus»."
-
-#: cogs/music.py:109
+#: cogs/music.py:108
 msgid "Stops playing audio."
 msgstr "Прекращает воспроизведение звука."
 
-#: cogs/music.py:115
+#: cogs/music.py:114
 msgid "Loop stopped!"
 msgstr "Петля остановилась!"
 
-#: cogs/music.py:122 cogs/music.py:225
+#: cogs/music.py:121 cogs/music.py:240
 msgid "Nothing is playing."
 msgstr "Ничего не играет."
 
-#: cogs/music.py:124
+#: cogs/music.py:123
 msgid "Plays a song from the list."
 msgstr "Воспроизведение песни из списка."
 
-#: cogs/music.py:136
+#: cogs/music.py:135
 msgid "Loop activated!"
 msgstr "Петля активирована!"
 
-#: cogs/music.py:145
+#: cogs/music.py:147
 msgid "Nothing to play!"
 msgstr "Нечего играть!"
 
-#: cogs/music.py:189
+#: cogs/music.py:167 cogs/music.py:304 cogs/music.py:395
+msgid ""
+"The provided URL is not allowed. Correlate your URL with supported services "
+"domains.\n"
+"Example: https://youtu.be/dQw4w9WgXcQ"
+msgstr ""
+"Данный URL не поддерживается. Сверьте ваш URL с доменами поддерживаемых "
+"сервисов.\n"
+"Пример: https://youtu.be/dQw4w9WgXcQ"
+
+#: cogs/music.py:190
+msgid ""
+"Now other song is playing.\n"
+"If you want to listen this one, stop playback and start another or just add "
+"song to the queue using playlist functionality"
+msgstr ""
+"Сейчас проигрывается другая песня.\n"
+"Если вы хотите послушать эту, остановите воспроизведение и включите новое, "
+"либо просто добавьте вашу песню в очередь, используя возможности плейлистов."
+
+#: cogs/music.py:204
 msgid "Connect to a voice channel before playing."
 msgstr "Присоединитесь к голосовому каналу прежде чем воспроизводить."
 
-#: cogs/music.py:214
+#: cogs/music.py:229
 msgid "Disconnect has failed. Run {}stop manually."
 msgstr "Отключение провалилось. Выполните {}stop вручную."
 
-#: cogs/music.py:219
+#: cogs/music.py:234
 msgid "Pauses playback."
 msgstr "Приостанавливает проигрывание."
 
-#: cogs/music.py:227
+#: cogs/music.py:242
 msgid "Resumes playback."
 msgstr "Возобновляет проигрывание."
 
-#: cogs/music.py:233
+#: cogs/music.py:248
 msgid "Nothing is paused."
 msgstr "Ничего не стоит на паузе."
 
-#: cogs/music.py:235
+#: cogs/music.py:250
 msgid "Changes music volume (0-100)."
 msgstr "Изменяет громкость музыки (0-100)."
 
-#: cogs/music.py:243
+#: cogs/music.py:258
 msgid "Volume = {}%"
 msgstr "Громкость = {}%"
 
-#: cogs/music.py:255
+#: cogs/music.py:271 cogs/music.py:280
 msgid "Volume set to {}%"
 msgstr "Громкость установлена на {}%"
 
-#: cogs/music.py:264
+#: cogs/music.py:284
 msgid ""
 "Incorrect arguments were given. Only whole values from 0 to 100 are "
 "supported."
@@ -124,11 +118,11 @@ msgstr ""
 "Были даны неверные аргументы. Поддерживаются только целые значения от 0 до "
 "100."
 
-#: cogs/music.py:268
+#: cogs/music.py:288
 msgid "Downloads songs from YouTube."
 msgstr "Загружает аудио с YouTube."
 
-#: cogs/music.py:288
+#: cogs/music.py:313
 msgid ""
 "Song downloaded:\n"
 "{}\n"
@@ -138,86 +132,108 @@ msgstr ""
 "{}\n"
 "Номер песни: {}"
 
-#: cogs/music.py:294
+#: cogs/music.py:319
 msgid "Removes a song selected from the list."
 msgstr "Удаляет выбранную из списка песню."
 
-#: cogs/music.py:301
+#: cogs/music.py:326
 msgid "Song {} has been deleted."
 msgstr "Песня {} была удалена."
 
-#: cogs/music.py:304
+#: cogs/music.py:329
 msgid ""
 "Unable to delete song file, probably because it is being played right now."
 msgstr ""
 "Не удаётся удалить файл песни, вероятно поскольку он сейчас проигрывается."
 
-#: cogs/music.py:308
+#: cogs/music.py:333
 msgid "Unable to delete song file as it no longer exists."
 msgstr ""
 "Не удаётся удалить файл песни, вероятно поскольку он более не существует."
 
-#: cogs/music.py:311
+#: cogs/music.py:336
 msgid "Select an existing song from the list."
 msgstr "Выберите существующую песню из списка."
 
-#: cogs/music.py:313
+#: cogs/music.py:338
 msgid "Flushes the music directory."
 msgstr "Очищает директорию с музыкой."
 
-#: cogs/music.py:320
+#: cogs/music.py:345
 msgid "Music folder is now empty"
 msgstr "Папка с музыкой теперь пуста"
 
-#: cogs/music.py:323
+#: cogs/music.py:348
 msgid "Use to search videos in YT."
 msgstr "Используйте для поиска видео на YouTube."
 
-#: cogs/music.py:328
+#: cogs/music.py:353
 msgid "Search results:\n"
 msgstr "Результаты поиска:\n"
 
-#: cogs/music.py:334
+#: cogs/music.py:359
 msgid "Use {}download <number> to download song from list."
 msgstr "Используйте {}download <number> для загрузки песни из списка."
 
-#: cogs/music.py:338
+#: cogs/music.py:363
 msgid "Use with add|del|clr|random + song index to edit the playlist."
 msgstr ""
 "Используйте вместе с add|del|clr|random + номер песни для редактирования "
 "плейлиста."
 
-#: cogs/music.py:361
+#: cogs/music.py:386
 msgid "Playlist is empty."
 msgstr "Плейлист пуст."
 
-#: cogs/music.py:369 cogs/music.py:391
+#: cogs/music.py:403 cogs/music.py:410 cogs/music.py:432
 msgid "«‎{}»‎ added to queue."
 msgstr "«‎{}»‎ добавлена в очередь."
 
-#: cogs/music.py:376
+#: cogs/music.py:417
 msgid "Song «‎{}»‎ has been removed from queue."
 msgstr "Песня «‎{}»‎ была удалена из очереди."
 
-#: cogs/music.py:384
+#: cogs/music.py:425
 msgid "Playlist is cleared."
 msgstr "Плейлист очищен."
 
-#: cogs/music.py:398
+#: cogs/music.py:439
 msgid "Use to skip current song in playlist."
 msgstr "Использайте для пропуска текущей песни в плейлисте."
 
-#: cogs/music.py:418
+#: cogs/music.py:459
 msgid "Playing: "
 msgstr "Проигрывается: "
 
-#: cogs/music.py:420
+#: cogs/music.py:461
 msgid "Looks up and plays a song from your Spotify status."
 msgstr "Ищет и проигрывает песню из вашего статуса Spotify."
 
-#: cogs/music.py:429
+#: cogs/music.py:470
 msgid "Can't detect your Spotify status."
 msgstr "Ваш статус Spotify не обнаружен."
+
+#~ msgid "GitHub source code"
+#~ msgstr "Исходный код GitHub"
+
+#~ msgid "Docker Hub repository"
+#~ msgstr "Репозиторий Docker Hub"
+
+#~ msgid ""
+#~ "Also there is a file with an unknown extension!\n"
+#~ "Use {}convert list to convert your music files to \"opus\" format."
+#~ msgstr ""
+#~ "Также есть файл с неизвестным расширением.\n"
+#~ "Используйте {}convert list для преобразования музыкальных файлов в формат "
+#~ "«opus»."
+
+#~ msgid ""
+#~ "Also there are {} files with unknown extensions!\n"
+#~ "Use {}convert list to convert your music files to \"opus\" format."
+#~ msgstr ""
+#~ "Также есть файлы с неизвестными расширениями.\n"
+#~ "Используйте {}convert list для преобразования музыкальных файлов в формат "
+#~ "«opus»."
 
 #~ msgid "Shows songs list"
 #~ msgstr "Показывает список песен"

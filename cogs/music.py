@@ -189,7 +189,7 @@ class Music(commands.Cog):
             await ctx.send(boxed_string(
                 _('Now other song is playing.\n'
                   'If you want to listen this one, stop playback and start another or '
-                  'just add song to the queue using playlist functionality')))
+                  'just add song to the queue using playlist functionality.')))
         else:
             await self.player(ctx, ffmpeg_opts)
         
