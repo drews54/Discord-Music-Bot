@@ -14,6 +14,7 @@ from discord.utils import get
 from discord.ext import commands
 from yt_dlp import YoutubeDL
 from youtube_search import YoutubeSearch
+from discord_slash import cog_ext, SlashContext
 
 if os.getenv('LANG').casefold().startswith('ru'):
     _ = translation('Discord-Music-Bot', './locale', languages=['ru']).gettext
@@ -59,6 +60,11 @@ class Music(commands.Cog):
         self._stop_loop = False
         self._looped = False
         self._music_volume = 0.05
+
+    @cog_ext.cog_slash(name='test', guild_ids=[358780693595291652])
+    async def _test(self, ctx: SlashContext):
+        embed = discord.Embed(title="Embed Test")
+        await ctx.send(embed=embed)
 
     @property
     def music_volume_exp(self) -> int:

@@ -11,6 +11,7 @@ from getpass import getpass
 from gettext import translation
 from discord import Intents
 from discord.ext import commands
+from discord_slash import SlashCommand
 
 TOKEN = os.getenv('DISCORD_TOKEN')
 PREFIX = os.getenv('DISCORD_PREFIX')
@@ -31,6 +32,8 @@ if PREFIX is None or PREFIX.lstrip() == '':
 bot = commands.Bot(
     command_prefix=PREFIX, strip_after_prefix=True, intents=Intents(
         guilds=True, guild_messages=True, voice_states=True, presences=True, members=True))
+
+slash = SlashCommand(bot)
 
 if TOKEN is None or TOKEN == '':
     TOKEN = getpass(_('Enter token (not displayed): '))
