@@ -545,8 +545,11 @@ class Music(commands.Cog):
         """Checks URL compability.
 
         Now only youtube.com and youtu.be are supported."""
-        if re.fullmatch(r"https?://(www\.)?youtu(\.be|be\.com)/[\S]+", url):
-            return True
+        return (
+            True
+            if re.fullmatch(r"https?://(www\.)?youtu(\.be|be\.com)/[\S]+", url)
+            else False
+        )
 
 
 def setup(bot: commands.Bot):
