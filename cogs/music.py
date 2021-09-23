@@ -15,22 +15,22 @@ from discord.ext import commands
 from yt_dlp import YoutubeDL
 from youtube_search import YoutubeSearch
 
-if os.getenv('LANG').casefold().startswith('ru'):
-    _ = translation('Discord-Music-Bot', './locale', languages=['ru']).gettext
+if os.getenv("LANG").casefold().startswith("ru"):
+    _ = translation("Discord-Music-Bot", "./locale", languages=["ru"]).gettext
 else:
-    _ = translation('Discord-Music-Bot', './locale', languages=['en']).gettext
+    _ = translation("Discord-Music-Bot", "./locale", languages=["en"]).gettext
 
 
 def boxed_string(text: str) -> str:
     """Returns passed text string wrapped in triple backticks."""
-    return '```' + text + '```'
+    return "```" + text + "```"
 
 
 # pylint: disable=C0103
 _songlist = []
 _playlist = []
-MUSIC_PATH = './music/'
-MUSIC_EXT = '.opus'
+MUSIC_PATH = "./music/"
+MUSIC_EXT = ".opus"
 # pylint: enable=C0103
 
 
@@ -67,60 +67,64 @@ class Music(commands.Cog):
         set: takes exponential volume, transforms to linear and stores locally.
         get: returns exponential volume (for display).
         """
-        return (math.pow(self._music_volume, math.exp(-1))*100).__trunc__()
+        return (math.pow(self._music_volume, math.exp(-1)) * 100).__trunc__()
 
     @music_volume_exp.setter
     def music_volume_exp(self, volume: int):
         self._music_volume = math.pow(volume / 100, math.exp(1))
 
-    @commands.command(name='list', brief=_('Shows the list of songs.'))
-    async def list_(self, ctx: commands.Context, page='all'):
+    @commands.command(name="list", brief=_("Shows the list of songs."))
+    async def list_(self, ctx: commands.Context, page="all"):
         """Displays list of songs page by page."""
-        max_page = math.ceil(len(_songlist)/10)
-        if page == 'all':
-            string = _('Full song list:\n')
+        max_page = math.ceil(len(_songlist) / 10)
+        if page == "all":
+            string = _("Full song list:\n")
             for i, name in enumerate(_songlist):
-                temp_string = f'{(i + 1)!s}. {name[: -len(MUSIC_EXT)]!s}\n'
+                temp_string = f"{(i + 1)!s}. {name[: -len(MUSIC_EXT)]!s}\n"
                 if len(boxed_string(string + temp_string)) > 2000:
                     await ctx.send(boxed_string(string))
-                    string = ''
+                    string = ""
                 string += temp_string
         else:
             if _songlist and not 0 < int(page) <= max_page:
-                await ctx.send(boxed_string(
-                    _('404 bro, use one of {} existing pages.')
-                    .format(max_page)
-                ))
+                await ctx.send(
+                    boxed_string(
+                        _("404 bro, use one of {} existing pages.").format(max_page)
+                    )
+                )
                 return
             elif not _songlist:
-                await ctx.send(boxed_string(
-                    _('No songs! Use {}download to download songs.')
-                    .format(self.bot.command_prefix)
-                ))
+                await ctx.send(
+                    boxed_string(
+                        _("No songs! Use {}download to download songs.").format(
+                            self.bot.command_prefix
+                        )
+                    )
+                )
                 return
-            string = f'Page {page!s} of {max_page!s}:\n'
+            string = f"Page {page!s} of {max_page!s}:\n"
             for i, name in enumerate(_songlist):
-                if int(page) == i//10 + 1:
-                    string += f'{(i + 1)!s}. {name[: -len(MUSIC_EXT)]!s}\n'
+                if int(page) == i // 10 + 1:
+                    string += f"{(i + 1)!s}. {name[: -len(MUSIC_EXT)]!s}\n"
         await ctx.send(boxed_string(string))
 
-    @commands.command(brief=_('Stops playing audio.'))
-    async def stop(self, ctx: commands.Context, loop=''):
+    @commands.command(brief=_("Stops playing audio."))
+    async def stop(self, ctx: commands.Context, loop=""):
         """Stops current playback or breaks the playback loop."""
-        if loop == 'loop':
+        if loop == "loop":
             self._stop_loop = True
             self._looped = False
-            await ctx.send(boxed_string(_('Loop stopped!')))
+            await ctx.send(boxed_string(_("Loop stopped!")))
         elif ctx.voice_client is not None and ctx.voice_client.is_connected():
             await ctx.voice_client.disconnect()
             await self.bot.change_presence(status=discord.Status.idle, afk=True)
             self.is_stopped = True
             self._looped = False
         else:
-            await ctx.send(boxed_string(_('Nothing is playing.')))
+            await ctx.send(boxed_string(_("Nothing is playing.")))
 
-    @commands.command(name='play', brief=_('Plays a song from the list.'))
-    async def choose_song(self, ctx: commands.Context, *, arg: str = ''):
+    @commands.command(name="play", brief=_("Plays a song from the list."))
+    async def choose_song(self, ctx: commands.Context, *, arg: str = ""):
         """Lets the user play a song from songlist or start a playlist.
 
         Also used by other methods of Music class which substitute user input.
@@ -128,70 +132,86 @@ class Music(commands.Cog):
         playlist = False
         if not arg:
             playlist = True
-        if arg and arg.startswith('loop'):
+        if arg and arg.startswith("loop"):
             self._stop_loop = False
             self._looped = True
-            await ctx.send(boxed_string(_('Loop activated!')))
+            await ctx.send(boxed_string(_("Loop activated!")))
             return
-        elif arg and arg.startswith('random'):
+        elif arg and arg.startswith("random"):
             number = random.randint(0, len(_songlist) - 1)
-        elif playlist or arg.startswith('playlist'):
+        elif playlist or arg.startswith("playlist"):
             if _playlist:
-                if str(_playlist[0]).startswith('http'):
+                if str(_playlist[0]).startswith("http"):
                     arg = _playlist[0]
                 else:
                     number = _songlist.index(_playlist[0]) + 1
                 _playlist.pop(0)
             else:
-                await ctx.send(boxed_string(_('Nothing to play!')))
+                await ctx.send(boxed_string(_("Nothing to play!")))
                 return
         elif arg and arg.split(maxsplit=1)[0].isnumeric():
             number = int(arg.split(maxsplit=1)[0])
-        if 'number' in locals():
+        if "number" in locals():
             self.current_song = {
-                'name':   _songlist[int(number) - 1][: -len(MUSIC_EXT)],  # type: ignore # nopep8
-                'source': MUSIC_PATH + _songlist[int(number) - 1]         # type: ignore # nopep8
+                "name": _songlist[int(number) - 1][: -len(MUSIC_EXT)],  # type: ignore # nopep8
+                "source": MUSIC_PATH + _songlist[int(number) - 1],  # type: ignore # nopep8
             }
             ffmpeg_opts = {}
         else:
-            ydl_opts = {'format': 'bestaudio'}
+            ydl_opts = {"format": "bestaudio"}
             ffmpeg_opts = {
-                'before_options': '-reconnect 1 -reconnect_streamed 1 -reconnect_delay_max 5',
-                'options': '-vn'
+                "before_options": "-reconnect 1 -reconnect_streamed 1 -reconnect_delay_max 5",
+                "options": "-vn",
             }
-            if arg.startswith('http'):
+            if arg.startswith("http"):
                 url = arg
                 if not self.url_check(url):
-                    await ctx.send(boxed_string(
-                        _('The provided URL is not allowed. '
-                          'Correlate your URL with supported services domains.\nExample: '
-                          r'https://youtu.be/dQw4w9WgXcQ')))
+                    await ctx.send(
+                        boxed_string(
+                            _(
+                                "The provided URL is not allowed. "
+                                "Correlate your URL with supported services domains.\nExample: "
+                                r"https://youtu.be/dQw4w9WgXcQ"
+                            )
+                        )
+                    )
                     return
             else:
                 searchrequest = arg
-                url = 'https://www.youtube.com' + \
-                    YoutubeSearch(searchrequest, max_results=1).to_dict()[
-                        0]['url_suffix']  # type: ignore
+                url = (
+                    "https://www.youtube.com"
+                    + YoutubeSearch(searchrequest, max_results=1).to_dict()[0][
+                        "url_suffix"
+                    ]
+                )  # type: ignore
             with YoutubeDL(ydl_opts) as ydl:
                 info = ydl.extract_info(url, download=False)
             self.current_song = {
-                'name':   info['title'],
-                'source': info['formats'][0]['url']
+                "name": info["title"],
+                "source": info["formats"][0]["url"],
             }
         arg_split = arg.split()
-        if len(arg_split) > 1 and arg_split[1] == 'loop' and str(arg_split[0]).isnumeric():
+        if (
+            len(arg_split) > 1
+            and arg_split[1] == "loop"
+            and str(arg_split[0]).isnumeric()
+        ):
             self._looped = True
         self._stop_loop = False
         self.is_stopped = False
 
         if ctx.voice_client is not None and ctx.voice_client.is_playing():
-            await ctx.send(boxed_string(
-                _('Now other song is playing.\n'
-                  'If you want to listen this one, stop playback and start another or '
-                  'just add song to the queue using playlist functionality.')))
+            await ctx.send(
+                boxed_string(
+                    _(
+                        "Now other song is playing.\n"
+                        "If you want to listen this one, stop playback and start another or "
+                        "just add song to the queue using playlist functionality."
+                    )
+                )
+            )
         else:
             await self.player(ctx, ffmpeg_opts)
-        
 
     async def player(self, ctx: commands.Context, ffmpeg_opts):
         """Core player function."""
@@ -200,63 +220,77 @@ class Music(commands.Cog):
             if not status:
                 await ctx.author.voice.channel.connect()  # type: ignore
         except AttributeError:
-            await ctx.send(boxed_string(_('Connect to a voice channel before playing.')))
+            await ctx.send(
+                boxed_string(_("Connect to a voice channel before playing."))
+            )
             return
-        await self.changestatus(ctx, self.current_song['name'])
+        await self.changestatus(ctx, self.current_song["name"])
 
         def after_play(error):
             if self._looped and not self._stop_loop:
-                if self.current_song['source'].startswith('http'):
-                    param = self.current_song['source']
+                if self.current_song["source"].startswith("http"):
+                    param = self.current_song["source"]
                 else:
-                    param = _songlist.index(
-                        self.current_song['name'] + MUSIC_EXT) + 1
+                    param = _songlist.index(self.current_song["name"] + MUSIC_EXT) + 1
             elif _playlist and not self.is_stopped:
-                param = 'playlist'
+                param = "playlist"
 
-            if 'param' in locals():
-                coroutine = self.choose_song(
-                    ctx, arg=str(param))  # type: ignore
+            if "param" in locals():
+                coroutine = self.choose_song(ctx, arg=str(param))  # type: ignore
             elif not self.is_stopped:
                 coroutine = self.stop(ctx)
-            if 'coroutine' in locals():
+            if "coroutine" in locals():
                 future = run_coroutine_threadsafe(
-                    coroutine, self.bot.loop)  # type: ignore
+                    coroutine, self.bot.loop
+                )  # type: ignore
                 try:
                     future.result()
                 except CancelledError:
-                    print(_('Disconnect has failed. Run {}stop manually.').format(
-                        self.bot.command_prefix), error)
-        ctx.voice_client.play(discord.PCMVolumeTransformer(discord.FFmpegPCMAudio(
-            self.current_song['source'], **ffmpeg_opts), self._music_volume), after=after_play)
+                    print(
+                        _("Disconnect has failed. Run {}stop manually.").format(
+                            self.bot.command_prefix
+                        ),
+                        error,
+                    )
 
-    @commands.command(brief=_('Pauses playback.'))
+        ctx.voice_client.play(
+            discord.PCMVolumeTransformer(
+                discord.FFmpegPCMAudio(self.current_song["source"], **ffmpeg_opts),
+                self._music_volume,
+            ),
+            after=after_play,
+        )
+
+    @commands.command(brief=_("Pauses playback."))
     async def pause(self, ctx: commands.Context):
         """Pauses current playback."""
         if ctx.voice_client is not None and ctx.voice_client.is_playing():
             ctx.voice_client.pause()
         else:
-            await ctx.send(boxed_string(_('Nothing is playing.')))
+            await ctx.send(boxed_string(_("Nothing is playing.")))
 
-    @commands.command(brief=_('Resumes playback.'))
+    @commands.command(brief=_("Resumes playback."))
     async def resume(self, ctx: commands.Context):
         """Resumes playback if it was paused."""
         if ctx.voice_client is not None and ctx.voice_client.is_paused():
             ctx.voice_client.resume()
         else:
-            await ctx.send(boxed_string(_('Nothing is paused.')))
+            await ctx.send(boxed_string(_("Nothing is paused.")))
 
-    @commands.command(name='volume', aliases=('v',), brief=_('Changes music volume (0-100).'))
+    @commands.command(
+        name="volume", aliases=("v",), brief=_("Changes music volume (0-100).")
+    )
     async def change_volume(self, ctx: commands.Context, volume=None):
         """Changes playback volume.
 
         For user convenience, the default linear scale is substituted with an exponent.
         """
         if volume is None:
-            await ctx.send(boxed_string(
-                _('Volume = {}%').format(self.music_volume_exp)))
+            await ctx.send(
+                boxed_string(_("Volume = {}%").format(self.music_volume_exp))
+            )
             return
-        if volume.startswith(('+', '-')):
+        if volume.startswith(("+", "-")):
             if volume[1:].isnumeric():
                 volume = int(volume)
                 if self.music_volume_exp + volume > 100:
@@ -266,8 +300,9 @@ class Music(commands.Cog):
                 self.music_volume_exp = self.music_volume_exp + volume
                 if ctx.voice_client is not None and ctx.voice_client.is_playing():
                     ctx.voice_client.source.volume = self._music_volume
-                await ctx.send(boxed_string(
-                    _('Volume set to {}%').format(self.music_volume_exp)))
+                await ctx.send(
+                    boxed_string(_("Volume set to {}%").format(self.music_volume_exp))
+                )
                 return
         elif volume.isnumeric():
             volume = int(volume)
@@ -275,96 +310,121 @@ class Music(commands.Cog):
                 self.music_volume_exp = volume
                 if ctx.voice_client is not None and ctx.voice_client.is_playing():
                     ctx.voice_client.source.volume = self._music_volume
-                await ctx.send(boxed_string(
-                    _('Volume set to {}%').format(self.music_volume_exp)))
+                await ctx.send(
+                    boxed_string(_("Volume set to {}%").format(self.music_volume_exp))
+                )
                 return
         # If none of the conditions above were met:
-        await ctx.send(boxed_string(
-            _('Incorrect arguments were given. '
-                'Only whole values from 0 to 100 are supported.')
-        ))
+        await ctx.send(
+            boxed_string(
+                _(
+                    "Incorrect arguments were given. "
+                    "Only whole values from 0 to 100 are supported."
+                )
+            )
+        )
 
-    @commands.command(brief=_('Downloads songs from YouTube.'))
+    @commands.command(brief=_("Downloads songs from YouTube."))
     async def download(self, ctx: commands.Context, url):
         """Parses YouTube link passed by user and downloads found audio."""
         ydl_opts = {
-            'format': f'bestaudio/{MUSIC_EXT[1:]}',
-            'outtmpl': f'{MUSIC_PATH}%(title)s.%(ext)s',
-            'postprocessors': [{
-                'key': 'FFmpegExtractAudio',
-                'preferredcodec': MUSIC_EXT[1:],
-            }],
+            "format": f"bestaudio/{MUSIC_EXT[1:]}",
+            "outtmpl": f"{MUSIC_PATH}%(title)s.%(ext)s",
+            "postprocessors": [
+                {
+                    "key": "FFmpegExtractAudio",
+                    "preferredcodec": MUSIC_EXT[1:],
+                }
+            ],
         }
         if not self.url_check(url):
-            await ctx.send(boxed_string(
-                _('The provided URL is not allowed. '
-                  'Correlate your URL with supported services domains.\nExample: '
-                  r'https://youtu.be/dQw4w9WgXcQ')))
+            await ctx.send(
+                boxed_string(
+                    _(
+                        "The provided URL is not allowed. "
+                        "Correlate your URL with supported services domains.\n"
+                        "Example: https://youtu.be/dQw4w9WgXcQ"
+                    )
+                )
+            )
             return
         with YoutubeDL(ydl_opts) as ydl:
             info = ydl.extract_info(url)
             update_songlist()
-            name = info['title']
-            await ctx.send(boxed_string(
-                _('Song downloaded:\n'
-                  '{}\n'
-                  'Song number: {}')
-                .format(name, _songlist.index(name + MUSIC_EXT) + 1)
-            ))
+            name = info["title"]
+            await ctx.send(
+                boxed_string(
+                    _("Song downloaded:\n" "{}\n" "Song number: {}").format(
+                        name, _songlist.index(name + MUSIC_EXT) + 1
+                    )
+                )
+            )
 
-    @commands.command(brief=_('Removes a song selected from the list.'))
+    @commands.command(brief=_("Removes a song selected from the list."))
     async def remove(self, ctx: commands.Context, number=0):
         """Removes a song's data and file from songlist and music directory."""
         if 1 <= int(number) <= len(_songlist):
             song = _songlist.pop(int(number) - 1)
             try:
                 os.remove(MUSIC_PATH + song)
-                await ctx.send(boxed_string(_('Song {} has been deleted.').format(song[:-5])))
+                await ctx.send(
+                    boxed_string(_("Song {} has been deleted.").format(song[:-5]))
+                )
             except PermissionError:
-                await ctx.send(boxed_string(
-                    _('Unable to delete song file, probably because it is being played right now.')
-                ))
+                await ctx.send(
+                    boxed_string(
+                        _(
+                            "Unable to delete song file, probably because it is being played right now."
+                        )
+                    )
+                )
             except FileNotFoundError:
-                await ctx.send(boxed_string(
-                    _('Unable to delete song file as it no longer exists.')
-                ))
+                await ctx.send(
+                    boxed_string(
+                        _("Unable to delete song file as it no longer exists.")
+                    )
+                )
         else:
-            await ctx.send(boxed_string(_('Select an existing song from the list.')))
+            await ctx.send(boxed_string(_("Select an existing song from the list.")))
 
-    @commands.command(brief=_('Flushes the music directory.'))
+    @commands.command(brief=_("Flushes the music directory."))
     async def flush(self, ctx: commands.Context):
         """Removes all files from music directory."""
         status = get(self.bot.voice_clients, guild=ctx.guild)
         if not status:
             for filename in os.scandir(MUSIC_PATH):
                 os.remove(filename.path)
-            await ctx.send(boxed_string(_('Music folder is now empty')))
+            await ctx.send(boxed_string(_("Music folder is now empty")))
         _songlist.clear()
 
-    @commands.command(brief=_('Use to search videos in YT.'))
+    @commands.command(brief=_("Use to search videos in YT."))
     async def search(self, ctx: commands.Context, *, key: str):
         """Searches YouTube videos by user-provided string."""
-        string = _('Search results:\n')
+        string = _("Search results:\n")
         searchlist = YoutubeSearch(key, max_results=5).to_dict()
         for i, video in enumerate(searchlist):
             string += f'{i + 1}. {video["title"]}\n'  # type: ignore
-        string += _('\nSend number to download song from list:')
+        string += _("\nSend number to download song from list:")
         await ctx.send(boxed_string(string))
 
         def check(msg: discord.Message):
             """Checks user input after showing search relults"""
             if msg.content.isnumeric() and msg.author == ctx.author:
                 return True
-        
+
         try:
-            msg = await self.bot.wait_for('message', check=check, timeout=10)
+            msg = await self.bot.wait_for("message", check=check, timeout=10)
             url = f'https://www.youtube.com{searchlist[int(msg.content) - 1]["url_suffix"]}'
             await self.download(ctx, url)
-        except TimeoutError:    
-            await ctx.send(boxed_string(_('Okay, your deal...')))
+        except TimeoutError:
+            await ctx.send(boxed_string(_("Okay, your deal...")))
 
-    @commands.command(brief=_('Use with add|del|clr|random + song index to edit the playlist.'))
-    async def playlist(self, ctx: commands.Context, action: str = 'show', song_identifier=None):
+    @commands.command(
+        brief=_("Use with add|del|clr|random + song index to edit the playlist.")
+    )
+    async def playlist(
+        self, ctx: commands.Context, action: str = "show", song_identifier=None
+    ):
         """Performs actions `(show|add|del|clr)` with a playlist.
 
         Actions:
@@ -378,68 +438,78 @@ class Music(commands.Cog):
 
             `random (int)` -- appends `song_number` random songs to `_playlist`
         """
-        if action == 'show':
-            string = ''
+        if action == "show":
+            string = ""
             i = 0
             if _playlist:
                 for song in _playlist:
                     i += 1
-                    string += f'{i}. {song[: -len(MUSIC_EXT)]}\n'
+                    string += f"{i}. {song[: -len(MUSIC_EXT)]}\n"
             else:
-                string = _('Playlist is empty.')
+                string = _("Playlist is empty.")
             await ctx.send(boxed_string(string))
 
-        elif action == 'add':
-            if song_identifier == 'random':
+        elif action == "add":
+            if song_identifier == "random":
                 song_identifier = random.randint(0, len(_songlist) - 1)
-            elif song_identifier.startswith('http'):
+            elif song_identifier.startswith("http"):
                 if not self.url_check(song_identifier):
-                    await ctx.send(boxed_string(
-                        _('The provided URL is not allowed. '
-                          'Correlate your URL with supported services domains.\nExample: '
-                          r'https://youtu.be/dQw4w9WgXcQ')))
+                    await ctx.send(
+                        boxed_string(
+                            _(
+                                "The provided URL is not allowed. "
+                                "Correlate your URL with supported services domains.\n"
+                                "Example: https://youtu.be/dQw4w9WgXcQ"
+                            )
+                        )
+                    )
                     return
                 _playlist.append(song_identifier)
-                song_info = YoutubeDL({'format': 'bestaudio'}).extract_info(
-                    song_identifier, download=False)
-                await ctx.send(boxed_string(
-                    _('«‎{}»‎ added to queue.').format(
-                        song_info['title']
-                    )
-                ))
+                song_info = YoutubeDL({"format": "bestaudio"}).extract_info(
+                    song_identifier, download=False
+                )
+                await ctx.send(
+                    boxed_string(_("«‎{}»‎ added to queue.").format(song_info["title"]))
+                )
             if song_identifier.isnumeric():
                 _playlist.append(_songlist[int(song_identifier) - 1])
-                await ctx.send(boxed_string(
-                    _('«‎{}»‎ added to queue.').format(
-                        _songlist[int(song_identifier) - 1][: -len(MUSIC_EXT)]
+                await ctx.send(
+                    boxed_string(
+                        _("«‎{}»‎ added to queue.").format(
+                            _songlist[int(song_identifier) - 1][: -len(MUSIC_EXT)]
+                        )
                     )
-                ))
-
-        elif action in ['del', 'delete']:
-            await ctx.send(boxed_string(
-                _('Song «‎{}»‎ has been removed from queue.').format(
-                    _playlist[int(song_identifier) - 1][: -len(MUSIC_EXT)]
                 )
-            ))
+
+        elif action in ["del", "delete"]:
+            await ctx.send(
+                boxed_string(
+                    _("Song «‎{}»‎ has been removed from queue.").format(
+                        _playlist[int(song_identifier) - 1][: -len(MUSIC_EXT)]
+                    )
+                )
+            )
             _playlist.pop(int(song_identifier) - 1)
 
-        elif action in ['clr', 'clear']:
+        elif action in ["clr", "clear"]:
             _playlist.clear()
-            await ctx.send(boxed_string(_('Playlist is cleared.')))
+            await ctx.send(boxed_string(_("Playlist is cleared.")))
 
-        elif action in ['rnd', 'random']:
+        elif action in ["rnd", "random"]:
             for i in range(int(song_identifier)):
                 number = random.randint(0, len(_songlist) - 1)
                 _playlist.append(_songlist[int(number) - 1])
-                await ctx.send(boxed_string(
-                    _('«‎{}»‎ added to queue.').format(
-                        _songlist[int(number) - 1][: -len(MUSIC_EXT)]
+                await ctx.send(
+                    boxed_string(
+                        _("«‎{}»‎ added to queue.").format(
+                            _songlist[int(number) - 1][: -len(MUSIC_EXT)]
+                        )
                     )
-                ))
+                )
             if ctx.voice_client is None or not ctx.voice_client.is_playing():
-                await self.choose_song(ctx, arg='playlist')
+                await self.choose_song(ctx, arg="playlist")
 
-    @commands.command(brief=_('Use to skip current song in playlist.'))
+    @commands.command(brief=_("Use to skip current song in playlist."))
     async def skip(self, ctx: commands.Context, quantity=1):
         """Skips a provided amount of songs in a playlist."""
         i = 0
@@ -447,28 +517,27 @@ class Music(commands.Cog):
             if _playlist:
                 _playlist.pop(0)
             i += 1
-        if (ctx.voice_client is not None and (
-            ctx.voice_client.is_playing() or
-            ctx.voice_client.is_paused()
-        )):
+        if ctx.voice_client is not None and (
+            ctx.voice_client.is_playing() or ctx.voice_client.is_paused()
+        ):
             ctx.voice_client.stop()
 
     @commands.command(hidden=True)
     async def changestatus(self, ctx: commands.Context, status):
         """Changes bot's status on Discord and displays current song playing."""
         await self.bot.change_presence(
-            activity=discord.Activity(
-                type=discord.ActivityType.listening, name=status))
-        await ctx.send(boxed_string(_('Playing: ') + status))
+            activity=discord.Activity(type=discord.ActivityType.listening, name=status)
+        )
+        await ctx.send(boxed_string(_("Playing: ") + status))
 
-    @commands.command(brief=_('Looks up and plays a song from your Spotify status.'))
+    @commands.command(brief=_("Looks up and plays a song from your Spotify status."))
     async def spotify(self, ctx: commands.Context):
         """Checks user's Spotify integration status and searches the displayed song on YouTube.
 
         Invokes choose_song(artist + name) which plays the first match of the search query."""
         for activity in ctx.author.activities:  # type: ignore
             if isinstance(activity, discord.Spotify):
-                await self.choose_song(ctx, arg=f'{activity.artist} - {activity.title}')
+                await self.choose_song(ctx, arg=f"{activity.artist} - {activity.title}")
                 return
         await ctx.send(boxed_string(_("Can't detect your Spotify status.")))
 
@@ -476,7 +545,7 @@ class Music(commands.Cog):
         """Checks URL compability.
 
         Now only youtube.com and youtu.be are supported."""
-        if re.fullmatch(r'https?://(www\.)?youtu(\.be|be\.com)/[\S]+', url):
+        if re.fullmatch(r"https?://(www\.)?youtu(\.be|be\.com)/[\S]+", url):
             return True
 
 
