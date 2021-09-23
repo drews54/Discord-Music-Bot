@@ -1,3 +1,4 @@
 discord.py[voice]~=1.7
-yt-dlp~=2021.9
+discord-py-interactions>=3.0.2,<4
+yt-dlp==2021.9.2
 youtube-search~=2.1
