@@ -353,8 +353,7 @@ class Music(commands.Cog):
 
         def check(msg: discord.Message):
             """Checks user input after showing search relults"""
-            if msg.content.isnumeric() and msg.author == ctx.author:
-                return True
+            return msg.content.isnumeric() and msg.author == ctx.author
         
         try:
             msg = await self.bot.wait_for('message', check=check, timeout=10)
@@ -476,8 +475,7 @@ class Music(commands.Cog):
         """Checks URL compability.
 
         Now only youtube.com and youtu.be are supported."""
-        if re.fullmatch(r'https?://(www\.)?youtu(\.be|be\.com)/[\S]+', url):
-            return True
+        return re.fullmatch(r'https?://(www\.)?youtu(\.be|be\.com)/[\S]+', url)
 
 
 def setup(bot: commands.Bot):
