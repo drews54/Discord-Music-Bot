@@ -7,4 +7,4 @@ export DISCORD_TOKEN
 export DISCORD_PREFIX
 export LANG
 python3 bot.py
-read -p "Press any key to continue . . . "
+read -p "Press any key to continue . . . " -r
