@@ -351,7 +351,7 @@ class Music(commands.Cog):
         string += _('\nSend number to download song from list:')
         await ctx.send(boxed_string(string))
 
-        def check(msg: discord.Message):
+        def check(msg: discord.Message) -> bool:
             """Checks user input after showing search relults"""
             return msg.content.isnumeric() and msg.author == ctx.author
         
@@ -475,7 +475,7 @@ class Music(commands.Cog):
         """Checks URL compability.
 
         Now only youtube.com and youtu.be are supported."""
-        return re.fullmatch(r'https?://(www\.)?youtu(\.be|be\.com)/[\S]+', url)
+        return bool(re.fullmatch(r'https?://(www\.)?youtu(\.be|be\.com)/[\S]+', url))
 
 
 def setup(bot: commands.Bot):
