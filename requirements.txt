@@ -1,3 +1,4 @@
 discord.py[voice]~=1.7
 yt-dlp~=2021.9
 youtube-search~=2.1
+discord-py-slash-command~=3.0
