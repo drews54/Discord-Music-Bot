@@ -26,7 +26,7 @@ def boxed_string(text: str) -> str:
     return '```' + text + '```'
 
 
-def embeder(title: str, description: str, color=discord.Colour.green()) -> discord.Embed:
+def embedder(title: str, description: str, color=discord.Colour.random()) -> discord.Embed:
     return discord.Embed(title=title, description=description, color=color)
 
 # pylint: disable=C0103
@@ -86,8 +86,8 @@ class Music(commands.Cog):
             string = ''
             for i, name in enumerate(_songlist):
                 temp_string = f'{(i + 1)!s}. {name[: -len(MUSIC_EXT)]!s}\n'
-                if len(embeder(title, string + temp_string)) > 4000:
-                    await ctx.send(embed=embeder(title, string))
+                if len(embedder(title, string + temp_string)) > 4000:
+                    await ctx.send(embed=embedder(title, string))
                     string = ''
                     title = ''
                 string += temp_string
@@ -109,7 +109,7 @@ class Music(commands.Cog):
             for i, name in enumerate(_songlist):
                 if int(page) == i//10 + 1:
                     string += f'{(i + 1)!s}. {name[: -len(MUSIC_EXT)]!s}\n'
-        await ctx.send(embed=embeder(title=title, description=string))
+        await ctx.send(embed=embedder(title=title, description=string))
 
     @commands.command(brief=_('Stops playing audio.'))
     async def stop(self, ctx: commands.Context, loop=''):
@@ -198,7 +198,7 @@ class Music(commands.Cog):
                   'just add song to the queue using playlist functionality.')))
         else:
             await self.player(ctx, ffmpeg_opts)
-        
+
 
     async def player(self, ctx: commands.Context, ffmpeg_opts):
         """Core player function."""
@@ -361,12 +361,12 @@ class Music(commands.Cog):
         def check(msg: discord.Message) -> bool:
             """Checks user input after showing search relults"""
             return msg.content.isnumeric() and msg.author == ctx.author
-        
+
         try:
             msg = await self.bot.wait_for('message', check=check, timeout=10)
             url = f'https://www.youtube.com{searchlist[int(msg.content) - 1]["url_suffix"]}'
             await self.download(ctx, url)
-        except TimeoutError:    
+        except TimeoutError:
             await ctx.send(boxed_string(_('Okay, your deal...')))
 
     @commands.command(brief=_('Use with add|del|clr|random + song index to edit the playlist.'))
