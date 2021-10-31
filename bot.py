@@ -11,7 +11,7 @@ from getpass import getpass
 from gettext import translation
 from discord import Intents
 from discord.ext import commands
-from discord_slash import SlashCommand
+from discord_slash import SlashCommand, SlashContext
 
 TOKEN = os.getenv('DISCORD_TOKEN')
 PREFIX = os.getenv('DISCORD_PREFIX')
@@ -49,6 +49,11 @@ def boxed_string(text: str) -> str:
 async def on_ready():
     """Prints to console when bot is ready."""
     print('Connected.')
+
+
+@slash.slash(name='test')
+async def test(ctx: SlashContext):
+    await ctx.send('test')
 
 
 @bot.command(hidden=True)
