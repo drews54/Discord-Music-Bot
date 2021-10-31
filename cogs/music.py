@@ -26,6 +26,9 @@ def boxed_string(text: str) -> str:
     return '```' + text + '```'
 
 
+def embeder(title: str, description: str, color=discord.Colour.green()) -> discord.Embed:
+    return discord.Embed(title=title, description=description, color=color)
+
 # pylint: disable=C0103
 _songlist = []
 _playlist = []
@@ -77,13 +80,16 @@ class Music(commands.Cog):
     async def list_(self, ctx: commands.Context, page='all'):
         """Displays list of songs page by page."""
         max_page = math.ceil(len(_songlist)/10)
+        title = ''
         if page == 'all':
-            string = _('Full song list:\n')
+            title = _('Full song list:')
+            string = ''
             for i, name in enumerate(_songlist):
                 temp_string = f'{(i + 1)!s}. {name[: -len(MUSIC_EXT)]!s}\n'
-                if len(boxed_string(string + temp_string)) > 2000:
-                    await ctx.send(boxed_string(string))
+                if len(embeder(title, string + temp_string)) > 4000:
+                    await ctx.send(embed=embeder(title, string))
                     string = ''
+                    title = ''
                 string += temp_string
         else:
             if _songlist and not 0 < int(page) <= max_page:
@@ -98,11 +104,12 @@ class Music(commands.Cog):
                     .format(self.bot.command_prefix)
                 ))
                 return
-            string = f'Page {page!s} of {max_page!s}:\n'
+            title = f'Page {page!s} of {max_page!s}:\n'
+            string = ''
             for i, name in enumerate(_songlist):
                 if int(page) == i//10 + 1:
                     string += f'{(i + 1)!s}. {name[: -len(MUSIC_EXT)]!s}\n'
-        await ctx.send(boxed_string(string))
+        await ctx.send(embed=embeder(title=title, description=string))
 
     @commands.command(brief=_('Stops playing audio.'))
     async def stop(self, ctx: commands.Context, loop=''):
