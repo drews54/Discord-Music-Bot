@@ -8,7 +8,7 @@ RUN msgfmt --check --output-file Discord-Music-Bot.mo Discord-Music-Bot.po && rm
 WORKDIR /locale/ru/LC_MESSAGES/
 RUN msgfmt --check --output-file Discord-Music-Bot.mo Discord-Music-Bot.po && rm Discord-Music-Bot.po
 
-FROM python:3
+FROM python:3.10.0b2
 WORKDIR /opt/bot/
 
 # Keeps Python from generating .pyc files in the container
