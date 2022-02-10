@@ -174,9 +174,10 @@ class Music(commands.Cog):
                         0]['url_suffix']  # type: ignore
             with YoutubeDL(ydl_opts) as ydl:
                 info = ydl.extract_info(url, download=False)
+                song_format = next(f for f in info['formats'] if f['acodec'] != 'none' and f['vcodec'] == 'none')
             self.current_song = {
                 'name':   info['title'],
-                'source': info['formats'][0]['url']
+                'source': song_format['url']
             }
         arg_split = arg.split()
         if len(arg_split) > 1 and arg_split[1] == 'loop' and str(arg_split[0]).isnumeric():
